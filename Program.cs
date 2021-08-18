@@ -9,13 +9,16 @@ namespace GameOfLife
     {
         static void Main(string[] args)
         {
+            const ushort maxRowColumnCount = 9;
+
             var activeLocations = new HashSet<CellLocation>
             {
-                new CellLocation(0,0),
-                new CellLocation(1,2),
-                new CellLocation(5,5)
+                new CellLocation(0, 0),
+                new CellLocation(1, 2),
+                new CellLocation(5, 5),
+                new CellLocation(maxRowColumnCount - 1, maxRowColumnCount - 1)
             };
-            var board = new Board(9, 9, activeLocations);
+            var board = new Board(maxRowColumnCount, maxRowColumnCount, activeLocations);
             board.PrintGrid();
         }
 
@@ -42,34 +45,34 @@ namespace GameOfLife
         public CellLocation Location { get; init; }
         public bool IsOn { get; init; }
 
-        public Cell(ushort x, ushort y, bool isOn = false)
+        public Cell(ushort row, ushort column, bool isOn = false)
         {
-            Location = new CellLocation(x, y);
+            Location = new CellLocation(row, column);
             IsOn = isOn;
         }
     }
 
-    public record CellLocation(ushort X, ushort Y); // TODO: Method to generate random ones
+    public record CellLocation(ushort Row, ushort Column); // TODO: Method to generate random ones
 
     public class Board
     {
         public Cell[,] CellGrid { get; set; }
-        public ushort ColumnCount => (ushort) CellGrid.GetLength(0);
-        public ushort RowCount => (ushort) CellGrid.GetLength(1);
+        public ushort RowCount => (ushort) CellGrid.GetLength(0);
+        public ushort ColumnCount => (ushort) CellGrid.GetLength(1);
 
-        public Board(ushort columnCount, ushort rowCount,
+        public Board(ushort rowCount, ushort columnCount,
                      IEnumerable<CellLocation> cellsToTurnOn = default)
         {
-            CellGrid = new Cell[columnCount, rowCount];
+            CellGrid = new Cell[rowCount, columnCount];
 
             // Create the cells and populate the grid with them.
-            for (ushort column = 0; column < columnCount; column++)
+            for (ushort row = 0; row < rowCount; row++)
             {
-                for (ushort row = 0; row < rowCount; row++)
+                for (ushort column = 0; column < columnCount; column++)
                 {
-                    var testLocation = new CellLocation(column, row);
+                    var testLocation = new CellLocation(row, column);
                     var shouldTurnOn = cellsToTurnOn.Contains(testLocation);
-                    CellGrid[column,row] = new Cell(column, row, shouldTurnOn);
+                    CellGrid[row,column] = new Cell(row, column, shouldTurnOn);
                 }
             }
         }
@@ -77,11 +80,11 @@ namespace GameOfLife
         public void PrintGrid()
         {
             // TODO: Try using LINQ instead.
-            for (ushort column = 0; column < ColumnCount; column++)
+            for (ushort row = 0; row < RowCount; row++)
             {
-                for (ushort row = 0; row < RowCount; row++)
+                for (ushort column = 0; column < ColumnCount; column++)
                 {
-                    Write(CellGrid[column,row].IsOn ? "X" : "•");
+                    Write(CellGrid[row,column].IsOn ? "X" : "•");
                 }
 
                 WriteLine();
