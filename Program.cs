@@ -9,15 +9,29 @@ namespace GameOfLife
     {
         static void Main(string[] args)
         {
-            const ushort maxRowColumnCount = 9;
+            // Check arguments.
+            if (args.Length == 0)
+            {
+                WriteLine("You must specify the grid size by entering a single number.");
+                return;
+            }
+
+            // Check the number range.
+            if (!byte.TryParse(args[0], out var maxRowColumnCount))
+            {
+                WriteLine("Please pass in a single number smaller than 128.");
+                return;
+            }
 
             var activeLocations = new HashSet<CellLocation>
             {
                 new CellLocation(0, 0),
                 new CellLocation(1, 2),
                 new CellLocation(5, 5),
-                new CellLocation(maxRowColumnCount - 1, maxRowColumnCount - 1)
+                new CellLocation((ushort)(maxRowColumnCount - 1),
+                                 (ushort)(maxRowColumnCount - 1))
             };
+
             var board = new Board(maxRowColumnCount, maxRowColumnCount, activeLocations);
             board.PrintGrid();
         }
