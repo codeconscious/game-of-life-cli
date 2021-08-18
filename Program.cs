@@ -84,11 +84,18 @@ namespace GameOfLife
             {
                 for (ushort column = 0; column < ColumnCount; column++)
                 {
-                    Write(CellGrid[row,column].IsOn ? "X" : "•");
+                    var isOn = CellGrid[row,column].IsOn;
+
+                    ForegroundColor = isOn ? ConsoleColor.Green
+                                           : ConsoleColor.DarkGray;
+
+                    Write(isOn ? "X" : "•");
                 }
 
                 WriteLine();
             }
+
+            ResetColor();
         }
     }
 }
