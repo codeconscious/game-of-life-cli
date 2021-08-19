@@ -41,7 +41,7 @@
             }
 
             var board = new Board(rowCount, columnCount, probability);
-            board.PrintGrid();
+            board.Print();
         }
 
         // static Board GetUpdatedBoard(Board board)

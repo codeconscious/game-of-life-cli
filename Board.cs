@@ -19,7 +19,6 @@ namespace GameOfLife
             CellGrid = new Cell[rowCount, columnCount];
 
             // Create the cells and populate the grid with them.
-            // TODO: Try using LINQ instead.
             for (byte row = 0; row < rowCount; row++)
             {
                 for (byte column = 0; column < columnCount; column++)
@@ -38,7 +37,6 @@ namespace GameOfLife
             Random random = new();
 
             // Create the cells and populate the grid with them.
-            // TODO: Try using LINQ instead.
             for (byte row = 0; row < rowCount; row++)
             {
                 for (byte column = 0; column < columnCount; column++)
@@ -49,9 +47,8 @@ namespace GameOfLife
             }
         }
 
-        public void PrintGrid()
+        public void Print()
         {
-            // TODO: Try using LINQ instead.
             for (byte row = 0; row < RowCount; row++)
             {
                 for (byte column = 0; column < ColumnCount; column++)
