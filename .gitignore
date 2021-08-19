@@ -1,6 +1,7 @@
 # Custom
 .vscode/
 .DS_Store
+*.profraw
 
 
 ## Ignore Visual Studio temporary files, build results, and
