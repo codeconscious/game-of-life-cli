@@ -10,16 +10,22 @@ namespace GameOfLife
         static void Main(string[] args)
         {
             // Check arguments.
-            if (args.Length == 0)
+            if (args.Length != 2)
             {
-                WriteLine("You must specify the grid size by entering a single number.");
+                WriteLine("You must specify the grid size by entering two numbers between 3 and 128, inclusive.");
                 return;
             }
 
             // Verify the number range is valid.
-            if (!byte.TryParse(args[0], out var maxRowColumnCount) || maxRowColumnCount < 3)
+            if (!byte.TryParse(args[0], out var maxRowCount) || maxRowCount < 3)
             {
-                WriteLine("Please pass in a single number between 3 and 128.");
+                WriteLine("The first argument is not a number or is out of range. Please pass in numbers between 3 and 128, inclusive.");
+                return;
+            }
+
+            if (!byte.TryParse(args[1], out var maxColumnCount) || maxColumnCount < 3)
+            {
+                WriteLine("The second argument is not a number or is out of range. Please pass in numbers between 3 and 128, inclusive.");
                 return;
             }
 
@@ -33,11 +39,11 @@ namespace GameOfLife
                 new CellLocation(8, 4),
 
                 // Always activate the lower-rightmost cell.
-                new CellLocation((byte)(maxRowColumnCount - 1),
-                                 (byte)(maxRowColumnCount - 1))
+                new CellLocation((byte)(maxRowCount - 1),
+                                 (byte)(maxColumnCount - 1))
             };
 
-            var board = new Board(maxRowColumnCount, maxRowColumnCount, activeLocations);
+            var board = new Board(maxRowCount, maxColumnCount, activeLocations);
             board.PrintGrid();
         }
 
