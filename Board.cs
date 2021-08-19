@@ -13,6 +13,8 @@ namespace GameOfLife
                 { false, "•" }
             };
 
+        public IReadOnlyList<Cell> AllCellsFlattened => CellGrid.Cast<Cell>().ToList();
+
         public Board(byte rowCount, byte columnCount,
                      IEnumerable<Coordinates> cellsToTurnOn)
         {

@@ -42,21 +42,10 @@
 
             var board = new Board(rowCount, columnCount, probability);
             board.Print();
+
+            var newBoard = Utilities.GetUpdatedBoard(board);
+            WriteLine();
+            newBoard.Print();
         }
-
-        // static Board GetUpdatedBoard(Board board)
-        // {
-
-        // }
-
-        // static byte CountLivingNeighbors(Board board, byte x, byte y)
-        // {
-
-        // }
-
-        // static IEnumerable<CellLocation> GetCellNeighborCoords(Board board, byte x, byte y)
-        // {
-
-        // }
     }
 }
