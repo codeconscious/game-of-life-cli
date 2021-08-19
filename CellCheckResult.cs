@@ -1,8 +1,11 @@
 namespace GameOfLife
 {
-    public enum CellCheckResult {
+    // TODO: Determine if this is even necessary...
+    public enum CellCheckResult
+    {
         Underpopulated,
-        StayAlive,
+        Healthy,
         Overpopulated,
-        ToLive }
+        Revive
+    }
 }
