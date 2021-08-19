@@ -30,17 +30,17 @@ namespace GameOfLife
                 return;
             }
 
-            var activeLocations = new HashSet<CellLocation>
+            var activeLocations = new HashSet<Coordinates>
             {
-                new CellLocation(0, 0),
-                new CellLocation(1, 2),
-                new CellLocation(4, 5),
-                new CellLocation(5, 5),
-                new CellLocation(5, 6),
-                new CellLocation(8, 4),
+                new Coordinates(0, 0),
+                new Coordinates(1, 2),
+                new Coordinates(4, 5),
+                new Coordinates(5, 5),
+                new Coordinates(5, 6),
+                new Coordinates(8, 4),
 
                 // Always activate the lower-rightmost cell.
-                new CellLocation((byte)(maxRowCount - 1),
+                new Coordinates((byte)(maxRowCount - 1),
                                  (byte)(maxColumnCount - 1))
             };
 

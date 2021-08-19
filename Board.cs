@@ -7,7 +7,7 @@ namespace GameOfLife
         public byte ColumnCount => (byte) CellGrid.GetLength(1);
 
         public Board(byte rowCount, byte columnCount,
-                     IEnumerable<CellLocation> cellsToTurnOn = default)
+                     IEnumerable<Coordinates> cellsToTurnOn = default)
         {
             CellGrid = new Cell[rowCount, columnCount];
 
@@ -16,7 +16,7 @@ namespace GameOfLife
             {
                 for (byte column = 0; column < columnCount; column++)
                 {
-                    var testLocation = new CellLocation(row, column);
+                    var testLocation = new Coordinates(row, column);
                     var shouldTurnOn = cellsToTurnOn.Contains(testLocation);
                     CellGrid[row,column] = new Cell(row, column, shouldTurnOn);
                 }
