@@ -16,10 +16,10 @@ namespace GameOfLife
                 return;
             }
 
-            // Check the number range.
-            if (!byte.TryParse(args[0], out var maxRowColumnCount))
+            // Verify the number range is valid.
+            if (!byte.TryParse(args[0], out var maxRowColumnCount) || maxRowColumnCount < 3)
             {
-                WriteLine("Please pass in a single number smaller than 128.");
+                WriteLine("Please pass in a single number between 3 and 128.");
                 return;
             }
 
@@ -27,7 +27,12 @@ namespace GameOfLife
             {
                 new CellLocation(0, 0),
                 new CellLocation(1, 2),
+                new CellLocation(4, 5),
                 new CellLocation(5, 5),
+                new CellLocation(5, 6),
+                new CellLocation(8, 4),
+
+                // Always activate the lower-rightmost cell.
                 new CellLocation((byte)(maxRowColumnCount - 1),
                                  (byte)(maxRowColumnCount - 1))
             };
