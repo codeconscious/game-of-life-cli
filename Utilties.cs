@@ -6,6 +6,8 @@ namespace GameOfLife
         {
             var newCells = new List<Cell>();
 
+            // WriteLine($"Found {board.AllCellsFlattened.Count} cells...");
+
             foreach (var cell in board.AllCellsFlattened)
             {
                 var livingNeighbors = CountLivingNeighbors(board, cell.Coordinates);
@@ -24,6 +26,7 @@ namespace GameOfLife
         private static int CountLivingNeighbors(Board board, Coordinates coordinates)
         {
             var neighborCoords = GetCellNeighborCoords(board, coordinates);
+            // WriteLine(neighborCoords.Count());
 
             var neighborCells = board.AllCellsFlattened
                                      .Where(c => neighborCoords.Contains(c.Coordinates));
