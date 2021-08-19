@@ -2,26 +2,32 @@
 {
     static class Program
     {
+        const byte MinRowsOrColumns = 3;
+
         static void Main(string[] args)
         {
+            const string instructions = "Specify the grid size by entering two numbers between 3 and 128, inclusive.";
+
             // Check arguments.
             if (args.Length != 2)
             {
-                WriteLine("You must specify the grid size by entering two numbers between 3 and 128, inclusive.");
+                WriteLine(instructions);
                 return;
             }
 
             // Verify the row arg is valid.
-            if (!byte.TryParse(args[0], out var maxRowCount) || maxRowCount < 3)
+            if (!byte.TryParse(args[0], out var rowCount) || rowCount < MinRowsOrColumns)
             {
-                WriteLine("The first argument is not a number or is out of range. Please pass in numbers between 3 and 128, inclusive.");
+                WriteLine("The first argument is not a number or is out of range.");
+                WriteLine(instructions);
                 return;
             }
 
             // Verify the column arg is valid.
-            if (!byte.TryParse(args[1], out var maxColumnCount) || maxColumnCount < 3)
+            if (!byte.TryParse(args[1], out var columnCount) || columnCount < MinRowsOrColumns)
             {
-                WriteLine("The second argument is not a number or is out of range. Please pass in numbers between 3 and 128, inclusive.");
+                WriteLine("The second argument is not a number or is out of range.");
+                WriteLine(instructions);
                 return;
             }
 
@@ -35,11 +41,11 @@
                 new Coordinates(8, 4),
 
                 // Always activate the lower-rightmost cell.
-                new Coordinates((byte)(maxRowCount - 1),
-                                (byte)(maxColumnCount - 1))
+                new Coordinates((byte)(rowCount - 1),
+                                (byte)(columnCount - 1))
             };
 
-            var board = new Board(maxRowCount, maxColumnCount, activeLocations);
+            var board = new Board(rowCount, columnCount, activeLocations);
             board.PrintGrid();
         }
 
