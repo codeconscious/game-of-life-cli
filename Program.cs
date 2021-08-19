@@ -1,6 +1,6 @@
 ﻿namespace GameOfLife
 {
-    public static class Program
+    static class Program
     {
         static void Main(string[] args)
         {
@@ -36,7 +36,7 @@
 
                 // Always activate the lower-rightmost cell.
                 new Coordinates((byte)(maxRowCount - 1),
-                                 (byte)(maxColumnCount - 1))
+                                (byte)(maxColumnCount - 1))
             };
 
             var board = new Board(maxRowCount, maxColumnCount, activeLocations);
