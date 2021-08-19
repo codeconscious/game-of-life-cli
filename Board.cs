@@ -6,6 +6,13 @@ namespace GameOfLife
         public byte RowCount => (byte) CellGrid.GetLength(0);
         public byte ColumnCount => (byte) CellGrid.GetLength(1);
 
+        public readonly IReadOnlyDictionary<bool, string> GridChars =
+            new Dictionary<bool, string>
+            {
+                { true,  "X" },
+                { false, "•" }
+            };
+
         public Board(byte rowCount, byte columnCount,
                      IEnumerable<Coordinates> cellsToTurnOn = default)
         {
@@ -35,7 +42,7 @@ namespace GameOfLife
                     ForegroundColor = isOn ? ConsoleColor.Green
                                            : ConsoleColor.DarkGray;
 
-                    Write(isOn ? "X" : "•");
+                    Write(GridChars[isOn]);
                 }
 
                 WriteLine();
