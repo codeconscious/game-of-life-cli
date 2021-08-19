@@ -1,17 +1,18 @@
 ﻿namespace GameOfLife
 {
-    static class Program
+    internal static class Program
     {
-        const byte MinRowsOrColumns = 3;
+        private const byte MinRowsOrColumns = 3;
 
-        static void Main(string[] args)
+        private const string Instructions =
+            "Pass in three numbers: row count (0-128), column count (0-128) and percentage (1-100).";
+
+        private static void Main(string[] args)
         {
-            const string instructions = "Specify the grid size by entering two numbers between 3 and 128, inclusive.";
-
             // Check arguments.
-            if (args.Length != 2)
+            if (args.Length != 3)
             {
-                WriteLine(instructions);
+                WriteLine(Instructions);
                 return;
             }
 
@@ -19,7 +20,7 @@
             if (!byte.TryParse(args[0], out var rowCount) || rowCount < MinRowsOrColumns)
             {
                 WriteLine("The first argument is not a number or is out of range.");
-                WriteLine(instructions);
+                WriteLine(Instructions);
                 return;
             }
 
@@ -27,25 +28,19 @@
             if (!byte.TryParse(args[1], out var columnCount) || columnCount < MinRowsOrColumns)
             {
                 WriteLine("The second argument is not a number or is out of range.");
-                WriteLine(instructions);
+                WriteLine(Instructions);
                 return;
             }
 
-            var activeLocations = new HashSet<Coordinates>
+            // Verify the percentage arg is valid.
+            if (!byte.TryParse(args[2], out var probability))
             {
-                new Coordinates(0, 0),
-                new Coordinates(1, 2),
-                new Coordinates(4, 5),
-                new Coordinates(5, 5),
-                new Coordinates(5, 6),
-                new Coordinates(8, 4),
+                WriteLine("The third argument is not a number or is out of range.");
+                WriteLine(Instructions);
+                return;
+            }
 
-                // Always activate the lower-rightmost cell.
-                new Coordinates((byte)(rowCount - 1),
-                                (byte)(columnCount - 1))
-            };
-
-            var board = new Board(rowCount, columnCount, activeLocations);
+            var board = new Board(rowCount, columnCount, probability);
             board.PrintGrid();
         }
 
