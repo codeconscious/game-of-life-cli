@@ -2,7 +2,7 @@ namespace GameOfLife
 {
     public class Board
     {
-        public Cell[,] CellGrid { get; set; }
+        public Cell[,] CellGrid { get; init; }
         public byte RowCount => (byte) CellGrid.GetLength(0);
         public byte ColumnCount => (byte) CellGrid.GetLength(1);
 
