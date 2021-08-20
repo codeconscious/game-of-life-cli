@@ -32,18 +32,18 @@ namespace GameOfLife
             }
         }
 
-        public Board(byte rowCount, byte columnCount, byte probability)
+        public Board(BoardSettings boardSettings)
         {
-            CellGrid = new Cell[rowCount, columnCount];
+            CellGrid = new Cell[boardSettings.RowCount, boardSettings.ColumnCount];
 
             Random random = new();
 
             // Create the cells and populate the grid with them.
-            for (byte row = 0; row < rowCount; row++)
+            for (byte row = 0; row < boardSettings.RowCount; row++)
             {
-                for (byte column = 0; column < columnCount; column++)
+                for (byte column = 0; column < boardSettings.ColumnCount; column++)
                 {
-                    var shouldTurnOn = random.Next(100) < probability;
+                    var shouldTurnOn = random.Next(100) < boardSettings.Probability;
                     CellGrid[row,column] = new Cell(row, column, shouldTurnOn);
                 }
             }
