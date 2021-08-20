@@ -7,10 +7,10 @@
 
         private static void Main(string[] args)
         {
-            BoardSettings settings;
+            GridSettings settings;
             try
             {
-                settings = new BoardSettings(args);
+                settings = new GridSettings(args);
             }
             catch (Exception ex)
             {
@@ -23,12 +23,12 @@
 
             WriteLine();
 
-            var seedBoard = new Board(settings);
-            seedBoard.Print();
+            var seedGrid = new Grid(settings);
+            seedGrid.Print();
             WriteLine();
 
-            var descendantBoard = Utilities.GetDescendantBoard(seedBoard);
-            descendantBoard.Print();
+            var descendantGrid = Utilities.GetDescendantGrid(seedGrid);
+            descendantGrid.Print();
             WriteLine();
         }
     }

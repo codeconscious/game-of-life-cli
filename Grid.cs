@@ -1,6 +1,6 @@
 namespace GameOfLife
 {
-    public class Board
+    public class Grid
     {
         public Cell[,] CellGrid { get; init; }
         public byte RowCount => (byte) CellGrid.GetLength(0);
@@ -15,12 +15,12 @@ namespace GameOfLife
 
         public IReadOnlyList<Cell> AllCellsFlattened => CellGrid.Cast<Cell>().ToList();
 
-        public Board(byte rowCount, byte columnCount,
-                     IEnumerable<Coordinates> cellsToTurnOn)
+        public Grid(byte rowCount, byte columnCount,
+                    IEnumerable<Coordinates> cellsToTurnOn)
         {
             CellGrid = new Cell[rowCount, columnCount];
 
-            // Create the cells and populate the grid with them.
+            // Create all cells and populate the grid with them.
             for (byte row = 0; row < rowCount; row++)
             {
                 for (byte column = 0; column < columnCount; column++)
@@ -32,18 +32,18 @@ namespace GameOfLife
             }
         }
 
-        public Board(BoardSettings boardSettings)
+        public Grid(GridSettings gridSettings)
         {
-            CellGrid = new Cell[boardSettings.RowCount, boardSettings.ColumnCount];
+            CellGrid = new Cell[gridSettings.RowCount, gridSettings.ColumnCount];
 
             Random random = new();
 
             // Create the cells and populate the grid with them.
-            for (byte row = 0; row < boardSettings.RowCount; row++)
+            for (byte row = 0; row < gridSettings.RowCount; row++)
             {
-                for (byte column = 0; column < boardSettings.ColumnCount; column++)
+                for (byte column = 0; column < gridSettings.ColumnCount; column++)
                 {
-                    var shouldTurnOn = random.Next(100) < boardSettings.Probability;
+                    var shouldTurnOn = random.Next(100) < gridSettings.TurnOnProbability;
                     CellGrid[row,column] = new Cell(row, column, shouldTurnOn);
                 }
             }
