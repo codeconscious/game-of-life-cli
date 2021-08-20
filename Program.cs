@@ -9,7 +9,7 @@
 
         private static void Main(string[] args)
         {
-            // Check arguments.
+            // Check arguments. // TODO: Make an Settings record for these?
             if (args.Length != 3)
             {
                 WriteLine(Instructions);
@@ -33,7 +33,7 @@
             }
 
             // Verify the percentage arg is valid.
-            if (!byte.TryParse(args[2], out var probability))
+            if (!byte.TryParse(args[2], out var probability) || probability > 100)
             {
                 WriteLine("The third argument is not a number or is out of range.");
                 WriteLine(Instructions);
