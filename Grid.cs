@@ -51,6 +51,8 @@ namespace GameOfLife
 
         public void Print()
         {
+            Clear();
+
             for (byte row = 0; row < RowCount; row++)
             {
                 for (byte column = 0; column < ColumnCount; column++)
@@ -60,6 +62,8 @@ namespace GameOfLife
                     ForegroundColor = isOn ? ConsoleColor.Green
                                            : ConsoleColor.DarkGray;
 
+                    SetCursorPosition(column, row);
+
                     Write(GridChars[isOn]);
                 }
 
@@ -67,6 +71,8 @@ namespace GameOfLife
             }
 
             ResetColor();
+
+            System.Threading.Thread.Sleep(1000);
         }
     }
 }
