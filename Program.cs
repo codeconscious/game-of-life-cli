@@ -42,12 +42,12 @@
                 return;
             }
 
-            var board = new Board(rowCount, columnCount, probability);
-            board.Print();
-
-            var newBoard = Utilities.GetDescendantBoard(board);
+            var seedBoard = new Board(rowCount, columnCount, probability);
+            seedBoard.Print();
             WriteLine();
-            newBoard.Print();
+
+            var descendantBoard = Utilities.GetDescendantBoard(seedBoard);
+            descendantBoard.Print();
             WriteLine();
         }
     }
