@@ -21,15 +21,15 @@
                 return;
             }
 
-            WriteLine();
+            Grid grid = new(settings);
+            grid.Print();
 
-            var seedGrid = new Grid(settings);
-            seedGrid.Print();
-            WriteLine();
-
-            var descendantGrid = Utilities.GetDescendantGrid(seedGrid);
-            descendantGrid.Print();
-            WriteLine();
+            do
+            {
+                grid = Utilities.GetDescendantGrid(grid);
+                grid.Print(0);
+            }
+            while (grid.IsAlive);
         }
     }
 }

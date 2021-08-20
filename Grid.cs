@@ -5,6 +5,7 @@ namespace GameOfLife
         public Cell[,] CellGrid { get; init; }
         public byte RowCount => (byte) CellGrid.GetLength(0);
         public byte ColumnCount => (byte) CellGrid.GetLength(1);
+        public bool IsAlive => AllCellsFlattened.Any(c => c.IsOn);
 
         public readonly IReadOnlyDictionary<bool, string> GridChars =
             new Dictionary<bool, string>
@@ -49,7 +50,7 @@ namespace GameOfLife
             }
         }
 
-        public void Print()
+        public void Print(ushort delay = 100)
         {
             Clear();
 
@@ -72,7 +73,7 @@ namespace GameOfLife
 
             ResetColor();
 
-            System.Threading.Thread.Sleep(1000);
+            System.Threading.Thread.Sleep(delay);
         }
     }
 }
