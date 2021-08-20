@@ -11,14 +11,19 @@ namespace GameOfLife
             foreach (var cell in board.AllCellsFlattened)
             {
                 var livingNeighbors = CountLivingNeighbors(board, cell.Coordinates);
+                // WriteLine("livingNeighbors == " + livingNeighbors);
+
                 var newCell = CreateDescendantCell(cell, livingNeighbors);
                 newCells.Add(newCell);
             }
+            // WriteLine("newCells.Count == " + newCells.Count());
 
+            WriteLine("newCells.Where(c => c.IsOn): " + newCells.Count(c => c.IsOn));
             var newBoard = new Board(board.RowCount,
                                      board.ColumnCount,
                                      newCells.Where(c => c.IsOn)
                                              .Select(c => c.Coordinates));
+            WriteLine("Cells on: " + newBoard.AllCellsFlattened.Count(c => c.IsOn));
 
             return newBoard;
         }
@@ -30,11 +35,12 @@ namespace GameOfLife
 
             var neighborCells = board.AllCellsFlattened
                                      .Where(c => neighborCoords.Contains(c.Coordinates));
+            // WriteLine("neighborCells.Count: " + neighborCells.Count());
 
             return neighborCells.Count();
         }
 
-        private static IEnumerable<Coordinates> GetCellNeighborCoords(Board board, Coordinates coordinates)
+        private static IEnumerable<Coordinates> GetCellNeighborCoords(Board board, Coordinates sourceCellCoordinates)
         {
             var potentialCoordinateValues = new List<(int Row, int Column)>();
 
@@ -42,14 +48,16 @@ namespace GameOfLife
             {
                 for (var column = -1; column <= 1; column++)
                 {
-                    potentialCoordinateValues.Add((coordinates.Row + row,
-                                                   coordinates.Column + column));
+                    potentialCoordinateValues.Add((sourceCellCoordinates.Row + row,
+                                                   sourceCellCoordinates.Column + column));
                 }
             }
+            // WriteLine("Potential: " + potentialCoordinateValues.Count());
 
             var validCoordinateValues = potentialCoordinateValues
-                .Where(v => v.Row < 0 && v.Column < 0 &&
-                       v.Row >= board.RowCount && v.Column >= board.ColumnCount);
+                .Where(v => v.Row >= 0 && v.Column >= 0 &&
+                       v.Row < board.RowCount && v.Column < board.ColumnCount);
+            // WriteLine("Valid: " + validCoordinateValues.Count());
 
             return validCoordinateValues.Select(v => new Coordinates((byte)v.Row,
                                                                      (byte)v.Column));
@@ -57,12 +65,18 @@ namespace GameOfLife
 
         private static Cell CreateDescendantCell(Cell cell, int livingNeighbors)
         {
+            Write($"Cell {cell.Coordinates.Row},{cell.Coordinates.Column} " +
+                  $"is {(cell.IsOn ? "is ON" : "is off")} " +
+                  $"and has {livingNeighbors} living neighbors");
+
             var shouldLive = livingNeighbors switch
             {
                 2 or 3 when cell.IsOn => true,
                 3 when !cell.IsOn => true,
                 _ => false
             };
+
+            WriteLine("; shouldLive == " + shouldLive.ToString().ToUpper());
 
             return cell with { IsOn = shouldLive };
         }
