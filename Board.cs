@@ -9,8 +9,8 @@ namespace GameOfLife
         public readonly IReadOnlyDictionary<bool, string> GridChars =
             new Dictionary<bool, string>
             {
-                { true,  "X" },
-                { false, "•" }
+                { true,  "X" }, // TODO: Convert into a setting.
+                { false, "·" }
             };
 
         public IReadOnlyList<Cell> AllCellsFlattened => CellGrid.Cast<Cell>().ToList();
@@ -25,8 +25,8 @@ namespace GameOfLife
             {
                 for (byte column = 0; column < columnCount; column++)
                 {
-                    var coodinates = new Coordinates(row, column);
-                    var shouldTurnOn = cellsToTurnOn.Contains(coodinates);
+                    var coordinates = new Coordinates(row, column);
+                    var shouldTurnOn = cellsToTurnOn.Contains(coordinates);
                     CellGrid[row,column] = new Cell(row, column, shouldTurnOn);
                 }
             }

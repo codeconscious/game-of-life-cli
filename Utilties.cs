@@ -2,7 +2,7 @@ namespace GameOfLife
 {
     public static class Utilities
     {
-        public static Board GetUpdatedBoard(Board board)
+        public static Board GetDescendantBoard(Board board)
         {
             var newCells = new List<Cell>();
 
@@ -13,7 +13,7 @@ namespace GameOfLife
                 var livingNeighbors = CountLivingNeighbors(board, cell.Coordinates);
                 // WriteLine("livingNeighbors == " + livingNeighbors);
 
-                var newCell = CreateDescendantCell(cell, livingNeighbors);
+                var newCell = GetDescendantCell(cell, livingNeighbors);
                 newCells.Add(newCell);
             }
             // WriteLine("newCells.Count == " + newCells.Count());
@@ -65,7 +65,7 @@ namespace GameOfLife
                                                                      (byte)v.Column));
         }
 
-        private static Cell CreateDescendantCell(Cell cell, int livingNeighbors)
+        private static Cell GetDescendantCell(Cell cell, int livingNeighbors)
         {
             // Write($"Cell {cell.Coordinates.Row},{cell.Coordinates.Column} " +
             //       $"is {(cell.IsOn ? "is ON" : "is off")} " +

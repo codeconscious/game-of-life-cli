@@ -9,6 +9,8 @@
 
         private static void Main(string[] args)
         {
+            WriteLine();
+
             // Check arguments. // TODO: Make an Settings record for these?
             if (args.Length != 3)
             {
@@ -43,9 +45,10 @@
             var board = new Board(rowCount, columnCount, probability);
             board.Print();
 
-            var newBoard = Utilities.GetUpdatedBoard(board);
+            var newBoard = Utilities.GetDescendantBoard(board);
             WriteLine();
             newBoard.Print();
+            WriteLine();
         }
     }
 }
