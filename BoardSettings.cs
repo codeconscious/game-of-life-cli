@@ -16,15 +16,15 @@ namespace GameOfLife
 
             // Verify the row arg is valid.
             if (!byte.TryParse(args[0], out var rowCount) || rowCount < MinRowsOrColumns)
-                throw new ArgumentOutOfRangeException("The row argument is out of range.");
+                throw new ArgumentOutOfRangeException(nameof(rowCount));
 
             // Verify the column arg is valid.
             if (!byte.TryParse(args[1], out var columnCount) || columnCount < MinRowsOrColumns)
-                throw new ArgumentOutOfRangeException("The column argument is out of range.");
+                throw new ArgumentOutOfRangeException(nameof(columnCount));
 
             // Verify the percentage arg is valid.
             if (!byte.TryParse(args[2], out var probability) || probability > 100)
-                throw new ArgumentOutOfRangeException("The probability argument is out of range.");
+                throw new ArgumentOutOfRangeException(nameof(probability));
 
             RowCount = rowCount;
             ColumnCount = columnCount;

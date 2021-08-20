@@ -12,7 +12,7 @@
             {
                 settings = new BoardSettings(args);
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
                  WriteLine(ex.Message);
                  WriteLine(Instructions);
