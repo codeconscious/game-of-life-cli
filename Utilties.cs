@@ -64,7 +64,7 @@ namespace GameOfLife
                 _ => false
             };
 
-            return new Cell(cell.Coordinates.Row, cell.Coordinates.Column, shouldLive);
+            return cell with { IsOn = shouldLive };
         }
     }
 }
