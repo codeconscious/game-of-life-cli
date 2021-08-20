@@ -24,10 +24,20 @@
             Grid grid = new(settings);
             grid.Print();
 
+            var iteration = 1;
+            const string iterationLabel = "Iteration: ";
+            var iterationRow = grid.RowCount + 1;
+            SetCursorPosition(0, iterationRow);
+            Write(iterationLabel + iteration);
+
             do
             {
                 grid = Utilities.GetDescendantGrid(grid);
                 grid.Print(0);
+
+                // Print iteration
+                SetCursorPosition(0, iterationRow);
+                Write(iterationLabel + ++iteration);
             }
             while (grid.IsAlive);
         }
