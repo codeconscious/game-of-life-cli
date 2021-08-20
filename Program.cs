@@ -5,7 +5,7 @@
         private const byte MinRowsOrColumns = 3;
 
         private const string Instructions =
-            "Pass in three numbers: row count (0-128), column count (0-128) and percentage (1-100).";
+            "Pass in three numbers: row count (3-128), column count (3-128), and activation percentage (1-100).";
 
         private static void Main(string[] args)
         {
