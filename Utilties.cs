@@ -18,24 +18,25 @@ namespace GameOfLife
             }
             // WriteLine("newCells.Count == " + newCells.Count());
 
-            WriteLine("newCells.Where(c => c.IsOn): " + newCells.Count(c => c.IsOn));
+            // WriteLine("  newCells.Where(c => c.IsOn): " + newCells.Count(c => c.IsOn));
             var newBoard = new Board(board.RowCount,
                                      board.ColumnCount,
                                      newCells.Where(c => c.IsOn)
                                              .Select(c => c.Coordinates));
-            WriteLine("Cells on: " + newBoard.AllCellsFlattened.Count(c => c.IsOn));
+            // WriteLine("Cells on: " + newBoard.AllCellsFlattened.Count(c => c.IsOn));
 
             return newBoard;
         }
 
         private static int CountLivingNeighbors(Board board, Coordinates coordinates)
         {
+            // var coords = coordinates.Row + "," + coordinates.Column;
             var neighborCoords = GetCellNeighborCoords(board, coordinates);
-            // WriteLine(neighborCoords.Count());
+            // WriteLine($"  {coords} neighborCoords.Count: " + neighborCoords.Count());
 
             var neighborCells = board.AllCellsFlattened
-                                     .Where(c => neighborCoords.Contains(c.Coordinates));
-            // WriteLine("neighborCells.Count: " + neighborCells.Count());
+                                     .Where(c => neighborCoords.Contains(c.Coordinates) && c.IsOn);
+            // WriteLine($"  {coords} neighborCells.Count: " + neighborCells.Count());
 
             return neighborCells.Count();
         }
@@ -52,7 +53,8 @@ namespace GameOfLife
                                                    sourceCellCoordinates.Column + column));
                 }
             }
-            // WriteLine("Potential: " + potentialCoordinateValues.Count());
+            potentialCoordinateValues.Remove((sourceCellCoordinates.Row, sourceCellCoordinates.Column));
+            // WriteLine("  Potential: " + potentialCoordinateValues.Count());
 
             var validCoordinateValues = potentialCoordinateValues
                 .Where(v => v.Row >= 0 && v.Column >= 0 &&
@@ -65,9 +67,9 @@ namespace GameOfLife
 
         private static Cell CreateDescendantCell(Cell cell, int livingNeighbors)
         {
-            Write($"Cell {cell.Coordinates.Row},{cell.Coordinates.Column} " +
-                  $"is {(cell.IsOn ? "is ON" : "is off")} " +
-                  $"and has {livingNeighbors} living neighbors");
+            // Write($"Cell {cell.Coordinates.Row},{cell.Coordinates.Column} " +
+            //       $"is {(cell.IsOn ? "is ON" : "is off")} " +
+            //       $"and has {livingNeighbors} living neighbors");
 
             var shouldLive = livingNeighbors switch
             {
@@ -76,7 +78,7 @@ namespace GameOfLife
                 _ => false
             };
 
-            WriteLine("; shouldLive == " + shouldLive.ToString().ToUpper());
+            // WriteLine("; shouldLive == " + shouldLive.ToString().ToUpper());
 
             return cell with { IsOn = shouldLive };
         }
