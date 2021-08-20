@@ -14,9 +14,11 @@
             }
             catch (Exception ex)
             {
-                 WriteLine(ex.Message);
-                 WriteLine(Instructions);
-                 return;
+                ForegroundColor = ConsoleColor.Yellow;
+                WriteLine(ex.Message);
+                WriteLine(Instructions);
+                ResetColor();
+                return;
             }
 
             WriteLine();
