@@ -27,34 +27,61 @@
 #endif
             }
 
+            try
+            {
+                CursorVisible = false;
+                RunGame(settings);
+            }
+            catch (Exception ex)
+            {
+                WriteLine(ex.Message);
+            }
+            finally
+            {
+                CursorVisible = true;
+                ResetColor();
+                WriteLine();
+            }
+        }
+
+        private static void RunGame(GridSettings settings)
+        {
+            nuint iteration = 1;
+
+            var startTime = DateTime.Now;
+
             Grid grid = new(settings);
             grid.Print();
 
-            var iteration = 1;
-            const string iterationLabel = "Iteration:";
-            var iterationRow = grid.RowCount + 1;
-            SetCursorPosition(0, iterationRow);
-            Write($"{iterationLabel} {iteration}");
+            var duration = DateTime.Now - startTime;
+            var outputRow = grid.RowCount + 1;
 
+            PrintStatusLine(iteration, duration, outputRow);
+
+            // Process and print grid updates
             do
             {
                 if (Console.KeyAvailable)
                     break;
 
-                var startTime = DateTime.Now;
+                iteration++;
+                startTime = DateTime.Now;
 
-                // Utilities.UpdateGridInParallel(grid);
                 var updates = grid.GetUpdatesForNextIteration();
-                grid.PrintUpdates(updates, 20);
+                grid.PrintUpdates(updates, 500); // TODO: Make the delay a setting.
 
-                var endTime = DateTime.Now - startTime;
+                duration = DateTime.Now - startTime;
 
-                // Print iteration
-                SetCursorPosition(0, iterationRow);
-                WriteLine($"{iterationLabel} {++iteration} ({endTime.TotalMilliseconds:#,##0}ms)");
-                WriteLine("Please any key to quit.");
+                PrintStatusLine(iteration, duration, outputRow);
             }
             while (!grid.IsStale && grid.IsAlive); // TODO: Need to check for endless loops too.
+        }
+
+        private static void PrintStatusLine(nuint iteration, TimeSpan duration, int outputRow)
+        {
+            SetCursorPosition(0, outputRow);
+            WriteLine($"Iteration {iteration:#,##0} ({duration.TotalMilliseconds:#,##0}ms)  ");
+            WriteLine("Please any key to quit."); // TODO: Move elsewhere
         }
     }
 }
