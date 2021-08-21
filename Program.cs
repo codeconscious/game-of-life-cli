@@ -25,21 +25,26 @@
             grid.Print();
 
             var iteration = 1;
-            const string iterationLabel = "Iteration: ";
+            const string iterationLabel = "Iteration:";
             var iterationRow = grid.RowCount + 1;
             SetCursorPosition(0, iterationRow);
             Write(iterationLabel + iteration);
 
+            // TODO: Refactor for performance (Don't create new boards each time)
             do
             {
+                var startTime = DateTime.Now;
+
                 grid = Utilities.GetDescendantGrid(grid);
                 grid.Print(0);
 
+                var endTime = DateTime.Now - startTime;
+
                 // Print iteration
                 SetCursorPosition(0, iterationRow);
-                Write(iterationLabel + ++iteration);
+                Write($"{iterationLabel} {++iteration} ({endTime.TotalMilliseconds}ms)");
             }
-            while (grid.IsAlive);
+            while (grid.IsAlive); // TODO: Add an isStale property too
         }
     }
 }
