@@ -45,7 +45,8 @@
 
                 // Print iteration
                 SetCursorPosition(0, iterationRow);
-                Write($"{iterationLabel} {++iteration} ({endTime.TotalMilliseconds:#,##0}ms)");
+                WriteLine($"{iterationLabel} {++iteration} ({endTime.TotalMilliseconds:#,##0}ms)");
+                WriteLine("Please any key to quit.");
             }
             while (grid.IsAlive); // TODO: Add an isStale property too
         }
