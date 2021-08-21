@@ -28,7 +28,7 @@
             const string iterationLabel = "Iteration:";
             var iterationRow = grid.RowCount + 1;
             SetCursorPosition(0, iterationRow);
-            Write(iterationLabel + iteration);
+            Write($"{iterationLabel} {++iteration}");
 
             // TODO: Refactor for performance (Don't create new boards each time)
             do
@@ -42,7 +42,7 @@
 
                 // Print iteration
                 SetCursorPosition(0, iterationRow);
-                Write($"{iterationLabel} {++iteration} ({endTime.TotalMilliseconds}ms)");
+                Write($"{iterationLabel} {++iteration} ({endTime.TotalMilliseconds:#,##0}ms)");
             }
             while (grid.IsAlive); // TODO: Add an isStale property too
         }
