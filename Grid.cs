@@ -50,7 +50,7 @@ namespace GameOfLife
             }
         }
 
-        public void Print(ushort delay = 100)
+        public void Print(ushort delay = 0)
         {
             Clear();
 
