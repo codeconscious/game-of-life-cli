@@ -7,26 +7,30 @@
 
         private static void Main(string[] args)
         {
+            // Prepare the grid settings.
             GridSettings settings;
-
-            try
+            if (args.Length == 1 && args[0] == "--debug")
             {
-                settings = new GridSettings(args);
-            }
-            catch (Exception ex)
-            {
-#if DEBUG
-                settings = new GridSettings(new[] {"30", "150", "50"});
                 WriteLine("Proceeding with default settings.");
-#else
-                ForegroundColor = ConsoleColor.Yellow;
-                WriteLine(ex.Message);
-                WriteLine(Instructions);
-                ResetColor();
-                return;
-#endif
+                settings = new GridSettings(new[] {"30", "150", "50"});
+            }
+            else
+            {
+                try
+                {
+                    settings = new GridSettings(args);
+                }
+                catch (Exception ex)
+                {
+                    ForegroundColor = ConsoleColor.Yellow;
+                    WriteLine(ex.Message);
+                    WriteLine(Instructions);
+                    ResetColor();
+                    return;
+                }
             }
 
+            // Create the grid and run the game.
             try
             {
                 CursorVisible = false;
