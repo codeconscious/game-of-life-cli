@@ -8,7 +8,7 @@ namespace GameOfLife
         private const byte MinimumRowsColumns = 3;
         public byte RowCount { get; init; }
         public byte ColumnCount { get; init; }
-        public byte TurnOnProbability { get; init; }
+        public byte LifeProbability { get; init; }
 
         public GridSettings(string[] args)
         {
@@ -24,12 +24,12 @@ namespace GameOfLife
                 throw new ArgumentOutOfRangeException(nameof(columnCount));
 
             // Verify the percentage arg is valid.
-            if (!byte.TryParse(args[2], out var turnOnProbability) || turnOnProbability > 100)
-                throw new ArgumentOutOfRangeException(nameof(turnOnProbability));
+            if (!byte.TryParse(args[2], out var lifeProbability) || lifeProbability > 100)
+                throw new ArgumentOutOfRangeException(nameof(lifeProbability));
 
             RowCount = rowCount;
             ColumnCount = columnCount;
-            TurnOnProbability = turnOnProbability;
+            LifeProbability = lifeProbability;
         }
     }
 }

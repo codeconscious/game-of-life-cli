@@ -28,7 +28,7 @@
             const string iterationLabel = "Iteration:";
             var iterationRow = grid.RowCount + 1;
             SetCursorPosition(0, iterationRow);
-            Write($"{iterationLabel} {++iteration}");
+            Write($"{iterationLabel} {iteration}");
 
             // TODO: Refactor for performance (Don't create new boards each time)
             do
@@ -38,8 +38,9 @@
 
                 var startTime = DateTime.Now;
 
-                grid = Utilities.GetDescendantGrid(grid);
-                grid.Print(0);
+                // Utilities.UpdateGridInParallel(grid); // TODO: Static method on class?
+                grid.UpdateForNextIteration();
+                grid.Print();
 
                 var endTime = DateTime.Now - startTime;
 
