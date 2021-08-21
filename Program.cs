@@ -33,6 +33,9 @@
             // TODO: Refactor for performance (Don't create new boards each time)
             do
             {
+                if (Console.KeyAvailable)
+                    break;
+
                 var startTime = DateTime.Now;
 
                 grid = Utilities.GetDescendantGrid(grid);
