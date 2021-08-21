@@ -4,11 +4,11 @@ namespace GameOfLife
 {
     public static class Utilities
     {
-        public static List<Cell> GetCellsToUpdateInParallel(Grid grid)
+        public static List<Cell> GetCellsToUpdate(Grid grid)
         {
             var cellsToFlip = new List<Cell>();
 
-            Parallel.ForEach(grid.AllCellsFlattened, cell =>
+            foreach (var cell in grid.AllCellsFlattened)
             {
                 var livingNeighborCount = grid.NeighborMap[cell].Count(c => c.IsAlive);
 
@@ -16,9 +16,8 @@ namespace GameOfLife
 
                 if (cell.IsAlive != willCellBeAlive)
                     cellsToFlip.Add(cell);
-            });
+            }
 
-            // Console.Beep();
             return cellsToFlip;
         }
 

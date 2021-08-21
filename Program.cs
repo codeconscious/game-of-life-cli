@@ -16,7 +16,8 @@
             catch (Exception ex)
             {
 #if DEBUG
-                settings = new GridSettings(new[] {"30", "150", "40"});
+                settings = new GridSettings(new[] {"30", "150", "50"});
+                WriteLine("Proceeding with default settings.");
 #else
                 ForegroundColor = ConsoleColor.Yellow;
                 WriteLine(ex.Message);
@@ -44,7 +45,7 @@
 
                 // Utilities.UpdateGridInParallel(grid);
                 var updates = grid.GetUpdatesForNextIteration();
-                grid.PrintUpdates(updates, 10);
+                grid.PrintUpdates(updates, 20);
 
                 var endTime = DateTime.Now - startTime;
 

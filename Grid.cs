@@ -118,7 +118,7 @@ namespace GameOfLife
         /// </summary>
         public List<Cell> GetUpdatesForNextIteration()
         {
-            var cellsToUpdate = Utilities.GetCellsToUpdateInParallel(this);
+            var cellsToUpdate = Utilities.GetCellsToUpdate(this);
 
             if (cellsToUpdate.Count == 0)
             {
@@ -126,7 +126,7 @@ namespace GameOfLife
                 return new List<Cell>();
             }
 
-            foreach (var cell in Utilities.GetCellsToUpdateInParallel(this))
+            foreach (var cell in cellsToUpdate)
                 cell.FlipStatus();
 
             return cellsToUpdate;
