@@ -7,11 +7,11 @@ namespace GameOfLife
         public byte ColumnCount => (byte) CellGrid.GetLength(1);
         public bool IsAlive => AllCellsFlattened.Any(c => c.IsOn);
 
-        public readonly IReadOnlyDictionary<bool, string> GridChars =
-            new Dictionary<bool, string>
+        public readonly Dictionary<bool, char> GridChars =
+            new()
             {
-                { true,  "X" }, // TODO: Convert into a setting.
-                { false, "·" }
+                { true,  'X' }, // TODO: Convert into a setting.
+                { false, '·' }
             };
 
         public IReadOnlyList<Cell> AllCellsFlattened => CellGrid.Cast<Cell>().ToList();
