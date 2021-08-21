@@ -8,17 +8,22 @@
         private static void Main(string[] args)
         {
             GridSettings settings;
+
             try
             {
                 settings = new GridSettings(args);
             }
             catch (Exception ex)
             {
+#if DEBUG
+                settings = new GridSettings(new[] {"30", "150", "40"});
+#else
                 ForegroundColor = ConsoleColor.Yellow;
                 WriteLine(ex.Message);
                 WriteLine(Instructions);
                 ResetColor();
                 return;
+#endif
             }
 
             Grid grid = new(settings);
@@ -38,8 +43,8 @@
                 var startTime = DateTime.Now;
 
                 // Utilities.UpdateGridInParallel(grid);
-                grid.UpdateForNextIteration();
-                grid.Print();
+                var updates = grid.GetUpdatesForNextIteration();
+                grid.PrintUpdates(updates, 10);
 
                 var endTime = DateTime.Now - startTime;
 

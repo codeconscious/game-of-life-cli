@@ -4,7 +4,7 @@ namespace GameOfLife
 {
     public static class Utilities
     {
-        public static IEnumerable<Cell> GetCellsToUpdateInParallel(Grid grid)
+        public static List<Cell> GetCellsToUpdateInParallel(Grid grid)
         {
             var cellsToFlip = new List<Cell>();
 
@@ -18,7 +18,7 @@ namespace GameOfLife
                     cellsToFlip.Add(cell);
             });
 
-            Console.Beep();
+            // Console.Beep();
             return cellsToFlip;
         }
 

@@ -5,7 +5,7 @@ namespace GameOfLife
         public Cell[,] CellGrid { get; init; }
         public byte RowCount => (byte) CellGrid.GetLength(0);
         public byte ColumnCount => (byte) CellGrid.GetLength(1);
-        public Dictionary<Cell, IEnumerable<Cell>> NeighborMap { get; init; }
+        public Dictionary<Cell, List<Cell>> NeighborMap { get; init; }
         public bool IsAlive => AllCellsFlattened.Any(c => c.IsAlive);
         public bool IsStale { get; private set; }
 
@@ -19,7 +19,7 @@ namespace GameOfLife
         public IReadOnlyList<Cell> AllCellsFlattened => CellGrid.Cast<Cell>().ToList();
 
         public Grid(byte rowCount, byte columnCount,
-                    IEnumerable<Coordinates> cellsToTurnOn)
+                    List<Coordinates> cellsToTurnOn)
         {
             CellGrid = new Cell[rowCount, columnCount];
 
@@ -58,9 +58,9 @@ namespace GameOfLife
             NeighborMap = GetCellNeighbors(this);
         }
 
-        private static Dictionary<Cell, IEnumerable<Cell>> GetCellNeighbors(Grid grid)
+        private static Dictionary<Cell, List<Cell>> GetCellNeighbors(Grid grid)
         {
-            var cellsWithNeighbors = new Dictionary<Cell, IEnumerable<Cell>>();
+            var cellsWithNeighbors = new Dictionary<Cell, List<Cell>>();
 
             foreach (var cell in grid.AllCellsFlattened)
             {
@@ -78,7 +78,7 @@ namespace GameOfLife
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="sourceCellCoordinates"></param>
-        private static IEnumerable<Coordinates> GetCellNeighborCoordinates(
+        private static List<Coordinates> GetCellNeighborCoordinates(
             Grid grid, Coordinates sourceCellCoordinates)
         {
             var potentialCoordinateValues = new List<(int Row, int Column)>();
@@ -104,29 +104,32 @@ namespace GameOfLife
                                                         v.Column < grid.ColumnCount);
 
             return validCoordinateValues.Select(v => new Coordinates((byte)v.Row,
-                                                                     (byte)v.Column));
+                                                                     (byte)v.Column))
+                                        .ToList();
         }
 
-        private static IEnumerable<Cell> GetCellsByCoordinates(Grid grid, IEnumerable<Coordinates> coordinates)
+        private static List<Cell> GetCellsByCoordinates(Grid grid, List<Coordinates> coordinates)
         {
-            return grid.AllCellsFlattened.Where(c => coordinates.Contains(c.Coordinates));
+            return grid.AllCellsFlattened.Where(c => coordinates.Contains(c.Coordinates)).ToList();
         }
 
         /// <summary>
         /// Updates the cells in the grid as needed.
         /// </summary>
-        public void UpdateForNextIteration()
+        public List<Cell> GetUpdatesForNextIteration()
         {
             var cellsToUpdate = Utilities.GetCellsToUpdateInParallel(this);
 
-            if (!cellsToUpdate.Any())
+            if (cellsToUpdate.Count == 0)
             {
                 IsStale = true;
-                return;
+                return new List<Cell>();
             }
 
             foreach (var cell in Utilities.GetCellsToUpdateInParallel(this))
                 cell.FlipStatus();
+
+            return cellsToUpdate;
         }
 
         public void Print(ushort delay = 0)
@@ -137,17 +140,50 @@ namespace GameOfLife
             {
                 for (byte column = 0; column < ColumnCount; column++)
                 {
-                    var isOn = CellGrid[row,column].IsAlive;
+                    var isAlive = CellGrid[row,column].IsAlive;
 
-                    ForegroundColor = isOn ? ConsoleColor.Green
-                                           : ConsoleColor.DarkGray;
+                    ForegroundColor = isAlive ? ConsoleColor.Green
+                                              : ConsoleColor.DarkGray;
 
                     SetCursorPosition(column, row);
 
-                    Write(GridChars[isOn]);
+                    Write(GridChars[isAlive]);
                 }
 
                 WriteLine();
+            }
+
+            ResetColor();
+
+            System.Threading.Thread.Sleep(delay);
+        }
+
+        public void PrintUpdates(List<Cell> cellsForUpdate, ushort delay = 0)
+        {
+            if (cellsForUpdate.Count == 0)
+            {
+                IsStale = false;
+                return;
+            }
+
+            try
+            {
+                foreach (var cell in cellsForUpdate)
+                {
+                    ForegroundColor = cell.IsAlive ? ConsoleColor.Green
+                                                   : ConsoleColor.DarkGray;
+
+                    SetCursorPosition(cell.Coordinates.Column, cell.Coordinates.Row);
+
+                    Write(GridChars[cell.IsAlive]);
+                }
+            }
+            catch (Exception ex)
+            {
+                Clear();
+                ResetColor();
+                WriteLine(ex.Message);
+                throw;
             }
 
             ResetColor();
