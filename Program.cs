@@ -30,7 +30,6 @@
             SetCursorPosition(0, iterationRow);
             Write($"{iterationLabel} {iteration}");
 
-            // TODO: Refactor for performance (Don't create new boards each time)
             do
             {
                 if (Console.KeyAvailable)
@@ -38,7 +37,7 @@
 
                 var startTime = DateTime.Now;
 
-                // Utilities.UpdateGridInParallel(grid); // TODO: Static method on class?
+                // Utilities.UpdateGridInParallel(grid);
                 grid.UpdateForNextIteration();
                 grid.Print();
 
@@ -49,7 +48,7 @@
                 WriteLine($"{iterationLabel} {++iteration} ({endTime.TotalMilliseconds:#,##0}ms)");
                 WriteLine("Please any key to quit.");
             }
-            while (grid.IsAlive); // TODO: Add an isStale property too
+            while (!grid.IsStale && grid.IsAlive); // TODO: Need to check for endless loops too.
         }
     }
 }

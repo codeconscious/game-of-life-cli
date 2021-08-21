@@ -7,6 +7,7 @@ namespace GameOfLife
         public byte ColumnCount => (byte) CellGrid.GetLength(1);
         public Dictionary<Cell, IEnumerable<Cell>> NeighborMap { get; init; }
         public bool IsAlive => AllCellsFlattened.Any(c => c.IsAlive);
+        public bool IsStale { get; private set; }
 
         public readonly Dictionary<bool, char> GridChars =
             new()
@@ -111,8 +112,19 @@ namespace GameOfLife
             return grid.AllCellsFlattened.Where(c => coordinates.Contains(c.Coordinates));
         }
 
+        /// <summary>
+        /// Updates the cells in the grid as needed.
+        /// </summary>
         public void UpdateForNextIteration()
         {
+            var cellsToUpdate = Utilities.GetCellsToUpdateInParallel(this);
+
+            if (!cellsToUpdate.Any())
+            {
+                IsStale = true;
+                return;
+            }
+
             foreach (var cell in Utilities.GetCellsToUpdateInParallel(this))
                 cell.FlipStatus();
         }
