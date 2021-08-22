@@ -7,6 +7,7 @@ I've created this project on my own, without referencing other implementations (
 This console project targets the latest .NET 6 preview version and uses some still-unreleased features in C# 10 that I simply wanted to use.
 
 TODO:
+- Combine grid statuses into an enum? (Alive, Loop/Stabilized, and Stale?)
 - Allow submitting seeds manually
 - Allow passing the iteration delay as an argument
 - Add application settings
