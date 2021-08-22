@@ -19,15 +19,7 @@ namespace GameOfLife
         /// </summary>
         public Dictionary<Cell, List<Cell>> NeighborMap { get; init; }
 
-        /// <summary>
-        /// True if there are any living cells in the grid.
-        /// </summary>
-        public bool IsAlive => AllCellsFlattened.Any(c => c.IsAlive);
-
-        /// <summary>
-        /// True if the grid is either stuck in a loop or will have no further visible changes.
-        /// </summary>
-        public bool IsStale { get; private set; }
+        public GridStatus Status { get; private set; } = GridStatus.Alive;
 
         /// <summary>
         /// A log of the last few cell updates made. Used for testing if the grid is stale.
@@ -149,7 +141,7 @@ namespace GameOfLife
 
             if (cellsToUpdate.Count == 0)
             {
-                IsStale = true;
+                this.Status = GridStatus.Stagnated;
                 return new List<Cell>();
             }
 
@@ -193,7 +185,7 @@ namespace GameOfLife
         {
             if (cellsForUpdate.Count == 0)
             {
-                IsStale = false;
+                this.Status = GridStatus.Stagnated;
                 return;
             }
 
@@ -235,7 +227,7 @@ namespace GameOfLife
             // If a identical update exists in the history, then the grid is repeating itself and is stale.
             if (ChangeHistory.Count != ChangeHistory.Distinct().Count())
             {
-                this.IsStale = true;
+                this.Status = GridStatus.Looping;
                 return;
             }
 

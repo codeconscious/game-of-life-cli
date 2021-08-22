@@ -68,7 +68,7 @@
             var duration = DateTime.Now - startTime;
             var outputRow = grid.RowCount + 1;
 
-            PrintStatusLine(iteration, duration, outputRow);
+            PrintStatus(iteration, duration, outputRow);
 
             // Process and print grid updates
             do
@@ -87,16 +87,33 @@
 
                 duration = DateTime.Now - startTime;
 
-                PrintStatusLine(iteration, duration, outputRow);
+                PrintStatus(iteration, duration, outputRow);
             }
-            while (!grid.IsStale && grid.IsAlive);
+            while (grid.Status == GridStatus.Alive);
+
+            PrintResults(grid.Status, iteration, outputRow);
         }
 
-        private static void PrintStatusLine(nuint iteration, TimeSpan duration, int outputRow)
+        private static void PrintStatus(nuint iteration, TimeSpan duration, int outputRow)
         {
             SetCursorPosition(0, outputRow);
             WriteLine($"Iteration {iteration:#,##0} ({duration.TotalMilliseconds:#,##0}ms)  ");
-            WriteLine("Press any key to quit."); // TODO: Move elsewhere
+            Write("Press any key to quit."); // TODO: Move elsewhere
+        }
+
+        private static void PrintResults(GridStatus finalStatus, nuint iterations, int outputRow)
+        {
+            var statusStatement = finalStatus switch
+            {
+                GridStatus.Dead => "All cells died",
+                GridStatus.Looping => "Infinite looping was reached",
+                GridStatus.Stagnated => "The grid stagnated",
+                _ => "An unexpected state was reached"
+            };
+
+            SetCursorPosition(0, outputRow);
+
+            WriteLine($"{statusStatement} after {iterations:#,##0} iterations.");
         }
     }
 }
