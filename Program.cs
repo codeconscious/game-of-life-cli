@@ -12,7 +12,7 @@
             if (args.Length == 1 && args[0] == "--debug")
             {
                 WriteLine("Proceeding with default settings.");
-                settings = new GridSettings(new[] {"30", "150", "50"});
+                settings = new GridSettings(new[] {"35", "150", "40"});
             }
             else
             {
