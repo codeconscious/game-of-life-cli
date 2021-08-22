@@ -3,7 +3,11 @@
     internal static class Program
     {
         private const string Instructions =
-            "Pass in three numbers: row count (3-128), column count (3-128), and activation percentage (1-100).";
+            "Run the Game of Life by supplying the following arguments:\n" +
+            "   - Row (3 to 256, inclusive)\n" +
+            "   - Column (3 to 256, inclusive)\n" +
+            "   - Chance of life (1 to 99, inclusive)\n" +
+            "   - (Optional) Delay between iterations in milliseconds";
 
         private static void Main(string[] args)
         {
@@ -12,7 +16,7 @@
             if (args.Length == 1 && args[0] == "--debug")
             {
                 WriteLine("Proceeding with default settings.");
-                settings = new GridSettings(new[] {"35", "150", "40"});
+                settings = new GridSettings(new[] { "35", "150", "40" });
             }
             else
             {
@@ -24,8 +28,8 @@
                 {
                     ForegroundColor = ConsoleColor.Yellow;
                     WriteLine(ex.Message);
-                    WriteLine(Instructions);
                     ResetColor();
+                    WriteLine(Instructions);
                     return;
                 }
             }
@@ -79,7 +83,7 @@
 
                 grid.UpdateAndCheckChangeHistory(cellsToUpdate);
 
-                grid.PrintUpdates(cellsToUpdate, 50); // TODO: Make the delay a setting or argument.
+                grid.PrintUpdates(cellsToUpdate, settings.IterationDelay);
 
                 duration = DateTime.Now - startTime;
 
