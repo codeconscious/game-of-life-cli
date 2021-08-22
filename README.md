@@ -9,7 +9,6 @@ This console project targets the latest .NET 6 preview version and uses some sti
 TODO:
 - Combine grid statuses into an enum? (Alive, Loop/Stabilized, and Stale?)
 - Allow submitting seeds manually
-- Allow passing the iteration delay as an argument
 - Add application settings
 
 # ライフ・ゲーム
