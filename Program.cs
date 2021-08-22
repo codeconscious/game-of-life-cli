@@ -4,25 +4,25 @@
     {
         private const string Instructions =
             "Run the Game of Life by supplying the following arguments:\n" +
-            "   - Row (3 to 256, inclusive)\n" +
-            "   - Column (3 to 256, inclusive)\n" +
-            "   - Chance of life (1 to 99, inclusive)\n" +
+            "   - Number of rows .......... 3 to 256 (inclusive) or else -1 to fit the console height\n" +
+            "   - Number of columns ....... 3 to 256 (inclusive) or else -1 to fit the console width\n" +
+            "   - Initial density (%) ..... 1 to 99 (inclusive, digits only) or else -1 to set randomly\n" +
             "   - (Optional) Delay between iterations in milliseconds";
 
         private static void Main(string[] args)
         {
             // Prepare the grid settings.
-            GridSettings settings;
+            Settings settings;
             if (args.Length == 1 && args[0] == "--debug")
             {
                 WriteLine("Proceeding with default settings.");
-                settings = new GridSettings(new[] { "35", "150", "40" });
+                settings = new Settings(new[] { "35", "150", "40" });
             }
             else
             {
                 try
                 {
-                    settings = new GridSettings(args);
+                    settings = new Settings(args);
                 }
                 catch (Exception ex)
                 {
@@ -56,7 +56,7 @@
         /// Generate the grid and run endlessly or until the grid is dead or stale.
         /// </summary>
         /// <param name="settings"></param>
-        private static void RunGame(GridSettings settings)
+        private static void RunGame(Settings settings)
         {
             nuint iteration = 1;
 

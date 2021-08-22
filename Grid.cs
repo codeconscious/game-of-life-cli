@@ -66,7 +66,7 @@ namespace GameOfLife
             WriteLine("End of ctor");
         }
 
-        public Grid(GridSettings gridSettings)
+        public Grid(Settings gridSettings)
         {
             CellGrid = new Cell[gridSettings.RowCount, gridSettings.ColumnCount];
 
@@ -77,7 +77,7 @@ namespace GameOfLife
             {
                 for (byte column = 0; column < gridSettings.ColumnCount; column++)
                 {
-                    var shouldTurnOn = random.Next(100) < gridSettings.LifeProbability;
+                    var shouldTurnOn = random.Next(100) < gridSettings.InitialPopulationRatio;
                     CellGrid[row,column] = new Cell(row, column, shouldTurnOn);
                 }
             }
