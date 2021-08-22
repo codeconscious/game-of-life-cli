@@ -34,7 +34,7 @@ namespace GameOfLife
         /// </summary>
         private Queue<string> ChangeHistory { get; } = new Queue<string>(ChangeHistoryMaxItems);
 
-        private const int ChangeHistoryMaxItems = 5;
+        private const int ChangeHistoryMaxItems = 7;
 
         public readonly Dictionary<bool, char> GridChars =
             new()
