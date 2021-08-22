@@ -2,9 +2,14 @@
 
 After reading the first part of [a blog post about Reddit interviews](https://alexgolec.dev/reddit-interview-problems-the-game-of-life/) by Alex Golec, I felt that creating my own iteration of the Game of Life in C# might be a fun exercise.
 
-I've created this project on my own, without referencing external sources (including the linked article) except for verifying the rules of the game.
+I've created this project on my own, without referencing other implementations (including within the linked article) except for verifying the rules of the game.
 
 This console project targets the latest .NET 6 preview version and uses some still-unreleased features in C# 10 that I simply wanted to use.
+
+TODO:
+- Allow submitting seeds manually
+- Allow passing the iteration delay as an argument
+- Add application settings
 
 # ライフ・ゲーム
 
