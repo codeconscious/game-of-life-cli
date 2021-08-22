@@ -48,6 +48,10 @@
             }
         }
 
+        /// <summary>
+        /// Generate the grid and run endlessly or until the grid is dead or stale.
+        /// </summary>
+        /// <param name="settings"></param>
         private static void RunGame(GridSettings settings)
         {
             nuint iteration = 1;
@@ -71,14 +75,17 @@
                 iteration++;
                 startTime = DateTime.Now;
 
-                var updates = grid.GetUpdatesForNextIteration();
-                grid.PrintUpdates(updates, 500); // TODO: Make the delay a setting.
+                var cellsToUpdate = grid.GetUpdatesForNextIteration();
+
+                grid.UpdateAndCheckChangeHistory(cellsToUpdate);
+
+                grid.PrintUpdates(cellsToUpdate, 50); // TODO: Make the delay a setting or argument.
 
                 duration = DateTime.Now - startTime;
 
                 PrintStatusLine(iteration, duration, outputRow);
             }
-            while (!grid.IsStale && grid.IsAlive); // TODO: Need to check for endless loops too.
+            while (!grid.IsStale && grid.IsAlive);
         }
 
         private static void PrintStatusLine(nuint iteration, TimeSpan duration, int outputRow)

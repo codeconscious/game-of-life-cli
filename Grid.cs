@@ -3,11 +3,38 @@ namespace GameOfLife
     public class Grid
     {
         public Cell[,] CellGrid { get; init; }
+
+        /// <summary>
+        /// The count of rows (counting vertically) in the grid.
+        /// </summary>
         public byte RowCount => (byte) CellGrid.GetLength(0);
+
+        /// <summary>
+        /// The count of columns (counting horizontally) in the grid.
+        /// </summary>
         public byte ColumnCount => (byte) CellGrid.GetLength(1);
+
+        /// <summary>
+        /// A dictionary that maps each cell (key) with its neighbor cells (values).
+        /// </summary>
         public Dictionary<Cell, List<Cell>> NeighborMap { get; init; }
+
+        /// <summary>
+        /// True if there are any living cells in the grid.
+        /// </summary>
         public bool IsAlive => AllCellsFlattened.Any(c => c.IsAlive);
+
+        /// <summary>
+        /// True if the grid is either stuck in a loop or will have no further visible changes.
+        /// </summary>
         public bool IsStale { get; private set; }
+
+        /// <summary>
+        /// A log of the last few cell updates made. Used for testing if the grid is stale.
+        /// </summary>
+        private Queue<string> ChangeHistory { get; } = new Queue<string>(ChangeHistoryMaxItems);
+
+        private const int ChangeHistoryMaxItems = 5;
 
         public readonly Dictionary<bool, char> GridChars =
             new()
@@ -71,19 +98,18 @@ namespace GameOfLife
             return cellsWithNeighbors;
         }
 
-        // TODO: Review this for performance.
         /// <summary>
         /// Returns all valid cell coordinates for a specific cells neighbors.
         /// Invalid coordinates (i.e., negative and those beyond the grid) are ignored.
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="sourceCellCoordinates"></param>
-        private static List<Coordinates> GetCellNeighborCoordinates(
-            Grid grid, Coordinates sourceCellCoordinates)
+        private static List<Coordinates> GetCellNeighborCoordinates(Grid grid,
+                                                                    Coordinates sourceCellCoordinates)
         {
             var potentialCoordinateValues = new List<(int Row, int Column)>();
 
-            // Gather all potential neighbors, including invalid ones.
+            // Gather all potential neighbor values, including invalid ones.
             for (var row = -1; row <= 1; row++)
             {
                 for (var column = -1; column <= 1; column++)
@@ -93,7 +119,7 @@ namespace GameOfLife
                 }
             }
 
-            // Remove the source cell coordinates, which were included above.
+            // Remove the source cell coordinates, which were automatically included above.
             potentialCoordinateValues.Remove((sourceCellCoordinates.Row,
                                               sourceCellCoordinates.Column));
 
@@ -110,7 +136,8 @@ namespace GameOfLife
 
         private static List<Cell> GetCellsByCoordinates(Grid grid, List<Coordinates> coordinates)
         {
-            return grid.AllCellsFlattened.Where(c => coordinates.Contains(c.Coordinates)).ToList();
+            return grid.AllCellsFlattened.Where(c => coordinates.Contains(c.Coordinates))
+                                         .ToList();
         }
 
         /// <summary>
@@ -132,6 +159,10 @@ namespace GameOfLife
             return cellsToUpdate;
         }
 
+        /// <summary>
+        /// Print the grid to the console.
+        /// </summary>
+        /// <param name="delay">The number of milliseconds to wait between iterations.</param>
         public void Print(ushort delay = 0)
         {
             Clear();
@@ -189,6 +220,28 @@ namespace GameOfLife
             ResetColor();
 
             System.Threading.Thread.Sleep(delay);
+        }
+
+        /// <summary>
+        /// Updates the change history, then uses it to check for grid staleness.
+        /// </summary>
+        /// <param name="cellsToUpdate"></param>
+        public void UpdateAndCheckChangeHistory(IList<Cell> cellsToUpdate)
+        {
+            var updateSignature = string.Join(";", cellsToUpdate.Select(c => $"{c.Coordinates.Row},{c.Coordinates.Column},{c.IsAlive}"));
+
+            ChangeHistory.Enqueue(updateSignature);
+
+            // If a identical update exists in the history, then the grid is repeating itself and is stale.
+            if (ChangeHistory.Count != ChangeHistory.Distinct().Count())
+            {
+                this.IsStale = true;
+                return;
+            }
+
+            // Remove the oldest history item to stay within the limit.
+            if (ChangeHistory.Count > ChangeHistoryMaxItems)
+                ChangeHistory.Dequeue();
         }
     }
 }
