@@ -92,7 +92,7 @@
         {
             SetCursorPosition(0, outputRow);
             WriteLine($"Iteration {iteration:#,##0} ({duration.TotalMilliseconds:#,##0}ms)  ");
-            WriteLine("Please any key to quit."); // TODO: Move elsewhere
+            WriteLine("Press any key to quit."); // TODO: Move elsewhere
         }
     }
 }
