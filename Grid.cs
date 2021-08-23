@@ -190,18 +190,18 @@ namespace GameOfLife
         }
 
         /// <summary>
-        /// Print the entire grid to the console.
-        /// Intended to be used at game start.
+        /// Print the entire grid to the console. Intended to be used at game start.
         /// </summary>
         public void Print()
         {
             Clear();
 
-            for (var row = 0; row < RowCount; row++)
+            // TODO: Confirm if this improves, or at does not impede, startup performance.
+            System.Threading.Tasks.Parallel.For(0, RowCount, row =>
             {
                 for (var column = 0; column < ColumnCount; column++)
                 {
-                    var isAlive = CellGrid[row,column].IsAlive;
+                    var isAlive = CellGrid[row, column].IsAlive;
 
                     ForegroundColor = isAlive ? ConsoleColor.Green
                                               : ConsoleColor.DarkGray;
@@ -210,9 +210,7 @@ namespace GameOfLife
 
                     Write(GridChars[isAlive]);
                 }
-
-                WriteLine();
-            }
+            });
 
             ResetColor();
         }
