@@ -72,8 +72,7 @@ namespace GameOfLife
                 IterationDelay = 50; // Default value in milliseconds
             }
 
-            WriteLine($"Rows:            {RowCount}");
-            WriteLine($"Columns:         {ColumnCount}");
+            WriteLine($"Grid:            {RowCount} rows x {ColumnCount} columns ({RowCount * ColumnCount:#,##0} cells)");
             WriteLine($"Population:      {InitialPopulationRatio}%");
             WriteLine($"Iteration delay: {IterationDelay}ms");
         }
