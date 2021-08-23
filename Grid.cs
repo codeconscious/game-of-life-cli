@@ -62,7 +62,7 @@ namespace GameOfLife
         {
             CellGrid = new Cell[gridSettings.RowCount, gridSettings.ColumnCount];
 
-            Random random = new();
+            var random = new Random();
 
             // Create the cells and populate the grid with them.
             for (var row = 0; row < gridSettings.RowCount; row++)
@@ -77,6 +77,10 @@ namespace GameOfLife
             NeighborMap = GetCellNeighbors(this);
         }
 
+        /// <summary>
+        /// Gets a dictionary that maps all cells in the given grid with their neighboring cells.
+        /// </summary>
+        /// <param name="grid"></param>
         private static Dictionary<Cell, List<Cell>> GetCellNeighbors(Grid grid)
         {
             var cellsWithNeighbors = new Dictionary<Cell, List<Cell>>();
@@ -84,6 +88,7 @@ namespace GameOfLife
             foreach (var cell in grid.AllCellsFlattened)
             {
                 var neighborCoordinates = GetCellNeighborCoordinates(grid, cell.Coordinates);
+
                 cellsWithNeighbors.Add(cell, GetCellsByCoordinates(grid, neighborCoordinates));
             }
 
@@ -154,6 +159,11 @@ namespace GameOfLife
                              .ToList();
         }
 
+        /// <summary>
+        /// Get a collection of cells from a collection of their respective coordinates.
+        /// </summary>
+        /// <param name="grid"></param>
+        /// <param name="coordinates"></param>
         private static List<Cell> GetCellsByCoordinates(Grid grid, List<CoordinatePair> coordinates)
         {
             return grid.AllCellsFlattened.Where(c => coordinates.Contains(c.Coordinates))
@@ -161,7 +171,7 @@ namespace GameOfLife
         }
 
         /// <summary>
-        /// Updates the cells in the grid as needed.
+        /// Updates the cells in the grid as needed, then returns the affected cells.
         /// </summary>
         public List<Cell> GetUpdatesForNextIteration()
         {
@@ -181,6 +191,7 @@ namespace GameOfLife
 
         /// <summary>
         /// Print the entire grid to the console.
+        /// Intended to be used at game start.
         /// </summary>
         public void Print()
         {
@@ -242,7 +253,7 @@ namespace GameOfLife
         }
 
         /// <summary>
-        /// Updates the change history, then uses it to check for grid staleness.
+        /// Updates the change history, then uses it to check grid status.
         /// </summary>
         /// <param name="cellsToUpdate"></param>
         public void UpdateAndCheckChangeHistory(IList<Cell> cellsToUpdate)
