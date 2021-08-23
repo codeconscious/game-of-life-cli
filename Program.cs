@@ -119,7 +119,7 @@
             var statusStatement = finalStatus switch
             {
                 GridStatus.Dead => "All cells died",
-                GridStatus.Looping => "Infinite loop reached",
+                GridStatus.Looping => "Infinite pattern loop reached",
                 GridStatus.Stagnated => "Stagnated",
                 GridStatus.Aborted => "Aborted",
                 _ => "Unexpectedly finished"
