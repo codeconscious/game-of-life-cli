@@ -7,12 +7,12 @@ namespace GameOfLife
         /// <summary>
         /// The count of rows (counting vertically) in the grid.
         /// </summary>
-        public byte RowCount => (byte) CellGrid.GetLength(0);
+        public int RowCount => CellGrid.GetLength(0);
 
         /// <summary>
         /// The count of columns (counting horizontally) in the grid.
         /// </summary>
-        public byte ColumnCount => (byte) CellGrid.GetLength(1);
+        public int ColumnCount => CellGrid.GetLength(1);
 
         /// <summary>
         /// A dictionary that maps each cell (key) with its neighbor cells (values).
@@ -26,7 +26,7 @@ namespace GameOfLife
         /// </summary>
         private Queue<string> ChangeHistory { get; } = new Queue<string>(ChangeHistoryMaxItems);
 
-        private const int ChangeHistoryMaxItems = 7;
+        private const ushort ChangeHistoryMaxItems = 7;
 
         public readonly Dictionary<bool, char> GridChars =
             new()
@@ -37,15 +37,15 @@ namespace GameOfLife
 
         public IReadOnlyList<Cell> AllCellsFlattened => CellGrid.Cast<Cell>().ToList();
 
-        public Grid(byte rowCount, byte columnCount,
+        public Grid(int rowCount, int columnCount,
                     List<Coordinates> cellsToTurnOn)
         {
             CellGrid = new Cell[rowCount, columnCount];
 
             // Create all cells and populate the grid with them.
-            for (byte row = 0; row < rowCount; row++)
+            for (var row = 0; row < rowCount; row++)
             {
-                for (byte column = 0; column < columnCount; column++)
+                for (var column = 0; column < columnCount; column++)
                 {
                     var coordinates = new Coordinates(row, column);
                     var shouldTurnOn = cellsToTurnOn.Contains(coordinates);
@@ -65,11 +65,11 @@ namespace GameOfLife
             Random random = new();
 
             // Create the cells and populate the grid with them.
-            for (byte row = 0; row < gridSettings.RowCount; row++)
+            for (var row = 0; row < gridSettings.RowCount; row++)
             {
-                for (byte column = 0; column < gridSettings.ColumnCount; column++)
+                for (var column = 0; column < gridSettings.ColumnCount; column++)
                 {
-                    var shouldTurnOn = random.Next(100) < gridSettings.InitialPopulationRatio;
+                    var shouldTurnOn = random.Next(100) <= gridSettings.InitialPopulationRatio;
                     CellGrid[row,column] = new Cell(row, column, shouldTurnOn);
                 }
             }
@@ -121,8 +121,7 @@ namespace GameOfLife
                                                         v.Row < grid.RowCount &&
                                                         v.Column < grid.ColumnCount);
 
-            return validCoordinateValues.Select(v => new Coordinates((byte)v.Row,
-                                                                     (byte)v.Column))
+            return validCoordinateValues.Select(v => new Coordinates(v.Row, v.Column))
                                         .ToList();
         }
 
@@ -158,9 +157,9 @@ namespace GameOfLife
         {
             Clear();
 
-            for (byte row = 0; row < RowCount; row++)
+            for (var row = 0; row < RowCount; row++)
             {
-                for (byte column = 0; column < ColumnCount; column++)
+                for (var column = 0; column < ColumnCount; column++)
                 {
                     var isAlive = CellGrid[row,column].IsAlive;
 

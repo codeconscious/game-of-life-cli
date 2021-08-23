@@ -1,4 +1,4 @@
 namespace GameOfLife
 {
-    public record struct Coordinates(byte Row, byte Column);
+    public record struct Coordinates(int Row, int Column);
 }

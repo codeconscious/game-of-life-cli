@@ -6,12 +6,12 @@ namespace GameOfLife
         public bool IsAlive { get; set; }
 
 
-        public Cell(byte row, byte column)
+        public Cell(int row, int column)
         {
             Coordinates = new Coordinates(row, column);
         }
 
-        public Cell(byte row, byte column, bool isOn = false)
+        public Cell(int row, int column, bool isOn = false)
         {
             Coordinates = new Coordinates(row, column);
             IsAlive = isOn;

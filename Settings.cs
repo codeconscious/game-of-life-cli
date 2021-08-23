@@ -3,13 +3,14 @@ namespace GameOfLife
     /// <summary>
     /// The settings used to create a grid and elsewhere.
     /// </summary>
-    public readonly record struct Settings
+    public record Settings
     {
         private const byte MinimumRowsColumns = 3;
-        public byte RowCount { get; init; }
-        public byte ColumnCount { get; init; }
-        public byte InitialPopulationRatio { get; init; }
+        public int RowCount { get; init; }
+        public int ColumnCount { get; init; }
+        public int InitialPopulationRatio { get; init; }
         public ushort IterationDelay { get; init; }
+        public const byte MaximumRandomPopulationRatio = 70;
 
         public Settings(string[] args)
         {
@@ -22,13 +23,11 @@ namespace GameOfLife
                 // Leave room for output and post-completion command line prompt.
                 const int bottomMargin = 5;
 
-                RowCount = Console.WindowHeight - bottomMargin > byte.MaxValue
-                                ? byte.MaxValue
-                                : (byte) (WindowHeight - bottomMargin);
+                RowCount = Console.WindowHeight - bottomMargin;
             }
             else
             {
-                if (!byte.TryParse(args[0], out var rowCount) || rowCount < MinimumRowsColumns)
+                if (!ushort.TryParse(args[0], out var rowCount) || rowCount < MinimumRowsColumns)
                     throw new ArgumentOutOfRangeException(nameof(rowCount));
 
                 RowCount = rowCount;
@@ -37,22 +36,20 @@ namespace GameOfLife
             // Verify the column arg
             if (args[1] == "-1")
             {
-                ColumnCount = Console.WindowWidth - 0 > byte.MaxValue
-                                ? byte.MaxValue
-                                : (byte) (WindowWidth - 0);
+                ColumnCount = Console.WindowWidth;
             }
             else
             {
-                if (!byte.TryParse(args[1], out var columnCount) || columnCount < MinimumRowsColumns)
+                if (!ushort.TryParse(args[1], out var columnCount) || columnCount < MinimumRowsColumns)
                     throw new ArgumentOutOfRangeException(nameof(columnCount));
 
                 ColumnCount = columnCount;
             }
 
-            // Verify the ratio arg
+            // Verify the population ratio arg
             if (args[2] == "-1")
             {
-                InitialPopulationRatio = (byte) new Random().Next(100);
+                InitialPopulationRatio = (byte) new Random().Next(MaximumRandomPopulationRatio);
             }
             else
             {
@@ -72,7 +69,7 @@ namespace GameOfLife
             }
             else
             {
-                IterationDelay = 50; // Milliseconds
+                IterationDelay = 50; // Default value in milliseconds
             }
 
             WriteLine($"Rows:            {RowCount}");

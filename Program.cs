@@ -8,7 +8,7 @@
             "   - Number of columns ....... 3 to 256 (inclusive) or else -1 to fit the console width\n" +
             "   - Initial density (%) ..... 1 to 99 (inclusive, digits only) or else -1 to set randomly\n" +
             "   - (Optional) Delay between iterations in milliseconds (Default is 50)\n" +
-            "Alternatively, supply only \"--default\" to use the default settings.";
+            "Alternatively, supply only \"--default\" to use the default settings (in which all values are -1).";
 
         private static void Main(string[] args)
         {
@@ -20,7 +20,7 @@
                 WriteLine("Using default settings.");
                 settings = new Settings(new[] { "-1", "-1", "-1" });
             }
-            else
+            else // Use individual args.
             {
                 try
                 {
@@ -66,6 +66,7 @@
 
             nuint iteration = 1;
 
+            WriteLine("Preparing the grid...");
             Grid grid = new(settings);
             grid.Print();
             Thread.Sleep(settings.IterationDelay);
@@ -118,7 +119,7 @@
             var statusStatement = finalStatus switch
             {
                 GridStatus.Dead => "All cells died",
-                GridStatus.Looping => "Infinite looping reached",
+                GridStatus.Looping => "Infinite loop reached",
                 GridStatus.Stagnated => "Stagnated",
                 GridStatus.Aborted => "Aborted",
                 _ => "Unexpectedly finished"
