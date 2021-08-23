@@ -31,7 +31,7 @@ namespace GameOfLife
         public readonly Dictionary<bool, char> GridChars =
             new()
             {
-                { true,  'X' }, // TODO: Convert into a setting.
+                { true, 'X' }, // Other candidates: █  // TODO: Convert into a setting.
                 { false, '·' }
             };
 
