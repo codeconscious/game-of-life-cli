@@ -19,7 +19,8 @@ namespace GameOfLife
             // Verify the row arg
             if (args[0] == "-1")
             {
-                const int bottomMargin = 4; // Leave room for the live output area.
+                // Leave room for output and post-completion command line prompt.
+                const int bottomMargin = 5;
 
                 RowCount = Console.WindowHeight - bottomMargin > byte.MaxValue
                                 ? byte.MaxValue
