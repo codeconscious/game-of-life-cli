@@ -61,20 +61,18 @@
         /// <param name="settings"></param>
         private static void RunGame(Settings settings)
         {
-            var gameStartTime = DateTime.Now;
-            var iterationStartTime = gameStartTime;
+            var gameStopwatch = new Stopwatch();
+            gameStopwatch.Start();
 
-            nuint iteration = 1;
+            uint iteration = 1;
 
             WriteLine("Preparing the grid...");
             Grid grid = new(settings);
             grid.Print();
             Thread.Sleep(settings.IterationDelay);
 
-            var iterationDuration = DateTime.Now - iterationStartTime;
             var outputRow = grid.RowCount + 1;
-
-            PrintIterationSummary(iteration, iterationDuration, outputRow);
+            var iterationStopwatch = new Stopwatch();
 
             // Process and print subsequent updates until an end state is reached.
             do
@@ -87,22 +85,18 @@
                 }
 
                 iteration++;
-                iterationStartTime = DateTime.Now;
+                iterationStopwatch.Restart();
 
                 var cellsToUpdate = grid.GetUpdatesForNextIteration();
                 grid.UpdateAndCheckChangeHistory(cellsToUpdate);
                 grid.PrintUpdates(cellsToUpdate);
                 Thread.Sleep(settings.IterationDelay);
 
-                iterationDuration = DateTime.Now - iterationStartTime;
-
-                PrintIterationSummary(iteration, iterationDuration, outputRow);
+                PrintIterationSummary(iteration, iterationStopwatch.Elapsed, outputRow);
             }
             while (grid.Status == GridStatus.Alive);
 
-            var gameDuration = DateTime.Now - gameStartTime;
-
-            PrintGameResults(grid.Status, iteration, gameDuration, outputRow);
+            PrintGameResults(grid.Status, iteration, gameStopwatch.Elapsed, outputRow);
         }
 
         private static void PrintIterationSummary(nuint iteration, TimeSpan duration, int outputRow)
