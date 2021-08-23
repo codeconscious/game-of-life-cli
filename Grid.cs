@@ -38,7 +38,7 @@ namespace GameOfLife
         public IReadOnlyList<Cell> AllCellsFlattened => CellGrid.Cast<Cell>().ToList();
 
         public Grid(int rowCount, int columnCount,
-                    List<Coordinates> cellsToTurnOn)
+                    List<CoordinatePair> cellsToTurnOn)
         {
             CellGrid = new Cell[rowCount, columnCount];
 
@@ -47,7 +47,7 @@ namespace GameOfLife
             {
                 for (var column = 0; column < columnCount; column++)
                 {
-                    var coordinates = new Coordinates(row, column);
+                    var coordinates = new CoordinatePair(row, column);
                     var shouldTurnOn = cellsToTurnOn.Contains(coordinates);
                     CellGrid[row,column] = new Cell(row, column, shouldTurnOn);
                 }
@@ -95,64 +95,66 @@ namespace GameOfLife
         /// Invalid coordinates (i.e., negative and those beyond the grid) are ignored.
         /// </summary>
         /// <param name="grid"></param>
-        /// <param name="sourceCellCoordinates"></param>
+        /// <param name="sourcePair"></param>
         /// <param name="shouldWrap">Determines whether cell calculations wrap around the grid</param>
-        private static List<Coordinates> GetCellNeighborCoordinates(Grid grid,
-                                                                    Coordinates sourceCellCoordinates,
-                                                                    bool shouldWrap = true)
+        private static List<CoordinatePair> GetCellNeighborCoordinates(Grid grid,
+                                                                       CoordinatePair sourcePair,
+                                                                       bool shouldWrap = true)
         {
-            var potentialCoordinates = new List<Coordinates>();
+            var generatedPairs = new List<CoordinatePair>();
 
             // Gather all potential neighbor values, including invalid ones.
             for (var row = -1; row <= 1; row++)
             {
                 for (var column = -1; column <= 1; column++)
                 {
-                    potentialCoordinates.Add(
-                        new Coordinates(sourceCellCoordinates.Row + row,
-                                        sourceCellCoordinates.Column + column));
+                    generatedPairs.Add(
+                        new CoordinatePair(sourcePair.Row + row,
+                                           sourcePair.Column + column));
                 }
             }
 
             // Remove the source cell coordinates, which were automatically included above.
-            potentialCoordinates.Remove(sourceCellCoordinates);
+            generatedPairs.Remove(sourcePair);
 
             // TODO: Relocate this.
-            var areValidCoordinates = new Func<Coordinates, bool>(v => v.Row >= 0 &&
-                                                                  v.Column >= 0 &&
-                                                                  v.Row < grid.RowCount &&
-                                                                  v.Column < grid.ColumnCount);
+            var areValidCoordinatePairs =
+                new Func<CoordinatePair, bool>(
+                    v => v.Row >= 0 &&
+                    v.Column >= 0 &&
+                    v.Row < grid.RowCount &&
+                    v.Column < grid.ColumnCount);
 
             if (shouldWrap)
             {
-                var correctedCoordinates = new List<Coordinates>();
+                var correctedPairs = new List<CoordinatePair>();
 
-                foreach (var invalidCoords in potentialCoordinates.Where(c => !areValidCoordinates(c)))
+                foreach (var invalidPair in generatedPairs.Where(c => !areValidCoordinatePairs(c)))
                 {
-                    var coords = invalidCoords;
+                    var workingPair = invalidPair;
 
-                    if (coords.Row < 0)
-                        coords = coords with { Row = grid.RowCount - 1 };
-                    if (coords.Row >= grid.RowCount)
-                        coords = coords with { Row = 0 };
-                    if (coords.Column < 0)
-                        coords = coords with { Column = grid.ColumnCount - 1 };
-                    if (coords.Column >= grid.ColumnCount)
-                        coords = coords with { Column = 0 };
+                    if (workingPair.Row < 0)
+                        workingPair = workingPair with { Row = grid.RowCount - 1 };
+                    if (workingPair.Row >= grid.RowCount)
+                        workingPair = workingPair with { Row = 0 };
+                    if (workingPair.Column < 0)
+                        workingPair = workingPair with { Column = grid.ColumnCount - 1 };
+                    if (workingPair.Column >= grid.ColumnCount)
+                        workingPair = workingPair with { Column = 0 };
 
-                    correctedCoordinates.Add(coords);
+                    correctedPairs.Add(workingPair);
                 }
 
-                potentialCoordinates.AddRange(correctedCoordinates);
+                generatedPairs.AddRange(correctedPairs);
             }
 
-            var validCoordinates = potentialCoordinates.Where(areValidCoordinates);
+            var validPairs = generatedPairs.Where(areValidCoordinatePairs);
 
-            return validCoordinates.Select(v => new Coordinates(v.Row, v.Column))
-                                   .ToList();
+            return validPairs.Select(v => new CoordinatePair(v.Row, v.Column))
+                             .ToList();
         }
 
-        private static List<Cell> GetCellsByCoordinates(Grid grid, List<Coordinates> coordinates)
+        private static List<Cell> GetCellsByCoordinates(Grid grid, List<CoordinatePair> coordinates)
         {
             return grid.AllCellsFlattened.Where(c => coordinates.Contains(c.Coordinates))
                                          .ToList();

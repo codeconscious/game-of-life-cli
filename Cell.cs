@@ -2,18 +2,18 @@ namespace GameOfLife
 {
     public class Cell
     {
-        public Coordinates Coordinates { get; init; }
+        public CoordinatePair Coordinates { get; init; }
         public bool IsAlive { get; set; }
 
 
         public Cell(int row, int column)
         {
-            Coordinates = new Coordinates(row, column);
+            Coordinates = new CoordinatePair(row, column);
         }
 
         public Cell(int row, int column, bool isOn = false)
         {
-            Coordinates = new Coordinates(row, column);
+            Coordinates = new CoordinatePair(row, column);
             IsAlive = isOn;
         }
 
