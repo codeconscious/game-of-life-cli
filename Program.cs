@@ -125,9 +125,20 @@
                 _ => "Unexpectedly finished"
             };
 
+            ForegroundColor = finalStatus switch
+            {
+                GridStatus.Dead => ConsoleColor.DarkRed,
+                GridStatus.Looping => ConsoleColor.Cyan,
+                GridStatus.Stagnated => ConsoleColor.Blue,
+                GridStatus.Aborted => ConsoleColor.DarkRed,
+                _ => ConsoleColor.Red
+            };
+
             SetCursorPosition(0, outputRow + 1);
 
             Write($"{statusStatement} after {iterations:#,##0} iterations in {duration.TotalSeconds:#,##0.##}s.");
+
+            ResetColor();
         }
     }
 }
