@@ -4,15 +4,14 @@
     {
         private const string Instructions =
             "Run the Game of Life by supplying the following arguments:\n" +
-            "   - Number of rows .......... 3 to 256 (inclusive) or else -1 to fit the console height\n" +
-            "   - Number of columns ....... 3 to 256 (inclusive) or else -1 to fit the console width\n" +
-            "   - Initial density (%) ..... 1 to 99 (inclusive, digits only) or else -1 to set randomly\n" +
+            "   - Number of rows .......... At least 3, or else -1 to fit the console height\n" +
+            "   - Number of columns ....... At least 3, or else -1 to fit the console width\n" +
+            "   - Initial density (%) ..... 1 to 99 (inclusive, digits only), or else -1 for random\n" +
             "   - (Optional) Delay between iterations in milliseconds (Default is 50)\n" +
             "Alternatively, supply only \"--default\" to use the default settings (in which all values are -1).";
 
         private static void Main(string[] args)
         {
-            // Prepare the settings from the given args.
             Settings settings;
 
             if (args.Length == 1 && args[0] == "--default")
@@ -20,7 +19,7 @@
                 WriteLine("Using default settings.");
                 settings = new Settings(new[] { "-1", "-1", "-1" });
             }
-            else // Use individual args.
+            else // Use the individual arg values.
             {
                 try
                 {
