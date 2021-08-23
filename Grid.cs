@@ -152,10 +152,9 @@ namespace GameOfLife
         }
 
         /// <summary>
-        /// Print the grid to the console.
+        /// Print the entire grid to the console.
         /// </summary>
-        /// <param name="delay">The number of milliseconds to wait between iterations.</param>
-        public void Print(ushort delay = 0)
+        public void Print()
         {
             Clear();
 
@@ -177,11 +176,13 @@ namespace GameOfLife
             }
 
             ResetColor();
-
-            System.Threading.Thread.Sleep(delay);
         }
 
-        public void PrintUpdates(List<Cell> cellsForUpdate, ushort delay = 0)
+        /// <summary>
+        /// Print only updated cells for the current iteration.
+        /// </summary>
+        /// <param name="cellsForUpdate"></param>
+        public void PrintUpdates(List<Cell> cellsForUpdate)
         {
             if (cellsForUpdate.Count == 0)
             {
@@ -210,8 +211,6 @@ namespace GameOfLife
             }
 
             ResetColor();
-
-            System.Threading.Thread.Sleep(delay);
         }
 
         /// <summary>
@@ -224,16 +223,18 @@ namespace GameOfLife
 
             ChangeHistory.Enqueue(updateSignature);
 
-            // If a identical update exists in the history, then the grid is repeating itself and is stale.
+            // If a identical update exists in the history, then the grid is repeating itself.
             if (ChangeHistory.Count != ChangeHistory.Distinct().Count())
             {
                 this.Status = GridStatus.Looping;
                 return;
             }
 
-            // Remove the oldest history item to stay within the limit.
+            // Otherwise, remove the oldest history item, if needed.
             if (ChangeHistory.Count > ChangeHistoryMaxItems)
                 ChangeHistory.Dequeue();
         }
+
+        public void Abort() => this.Status = GridStatus.Aborted;
     }
 }

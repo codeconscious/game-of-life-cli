@@ -56,43 +56,46 @@
         }
 
         /// <summary>
-        /// Generate the grid and run endlessly or until the grid enters a non-alive state.
+        /// Generate the grid and then continuously updates until it enters a non-living state.
         /// </summary>
         /// <param name="settings"></param>
         private static void RunGame(Settings settings)
         {
-            nuint iteration = 1;
-
             var gameStartTime = DateTime.Now;
             var iterationStartTime = gameStartTime;
 
+            nuint iteration = 1;
+
             Grid grid = new(settings);
             grid.Print();
+            Thread.Sleep(settings.IterationDelay);
 
-            var duration = DateTime.Now - iterationStartTime;
+            var iterationDuration = DateTime.Now - iterationStartTime;
             var outputRow = grid.RowCount + 1;
 
-            PrintIterationSummary(iteration, duration, outputRow);
+            PrintIterationSummary(iteration, iterationDuration, outputRow);
 
-            // Process and print grid updates
+            // Process and print subsequent updates until an end state is reached.
             do
             {
-                // Stop if the user pressed a key.
+                // Abort if the user pressed a key.
                 if (Console.KeyAvailable)
+                {
+                    grid.Abort();
                     break;
+                }
 
                 iteration++;
                 iterationStartTime = DateTime.Now;
 
                 var cellsToUpdate = grid.GetUpdatesForNextIteration();
-
                 grid.UpdateAndCheckChangeHistory(cellsToUpdate);
+                grid.PrintUpdates(cellsToUpdate);
+                Thread.Sleep(settings.IterationDelay);
 
-                grid.PrintUpdates(cellsToUpdate, settings.IterationDelay);
+                iterationDuration = DateTime.Now - iterationStartTime;
 
-                duration = DateTime.Now - iterationStartTime;
-
-                PrintIterationSummary(iteration, duration, outputRow);
+                PrintIterationSummary(iteration, iterationDuration, outputRow);
             }
             while (grid.Status == GridStatus.Alive);
 
@@ -104,6 +107,7 @@
         private static void PrintIterationSummary(nuint iteration, TimeSpan duration, int outputRow)
         {
             SetCursorPosition(0, outputRow);
+
             WriteLine($"Iteration {iteration:#,##0} ({duration.TotalMilliseconds:#,##0}ms)  ");
             Write("Press any key to quit.");
         }
@@ -114,9 +118,10 @@
             var statusStatement = finalStatus switch
             {
                 GridStatus.Dead => "All cells died",
-                GridStatus.Looping => "Infinite looping was reached",
-                GridStatus.Stagnated => "The grid stagnated",
-                _ => "An unexpected state was reached"
+                GridStatus.Looping => "Infinite looping reached",
+                GridStatus.Stagnated => "Stagnated",
+                GridStatus.Aborted => "Aborted",
+                _ => "Unexpectedly finished"
             };
 
             SetCursorPosition(0, outputRow + 1);
