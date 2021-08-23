@@ -96,33 +96,60 @@ namespace GameOfLife
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="sourceCellCoordinates"></param>
+        /// <param name="shouldWrap">Determines whether cell calculations wrap around the grid</param>
         private static List<Coordinates> GetCellNeighborCoordinates(Grid grid,
-                                                                    Coordinates sourceCellCoordinates)
+                                                                    Coordinates sourceCellCoordinates,
+                                                                    bool shouldWrap = true)
         {
-            var potentialCoordinateValues = new List<(int Row, int Column)>();
+            var potentialCoordinates = new List<Coordinates>();
 
             // Gather all potential neighbor values, including invalid ones.
             for (var row = -1; row <= 1; row++)
             {
                 for (var column = -1; column <= 1; column++)
                 {
-                    potentialCoordinateValues.Add((sourceCellCoordinates.Row + row,
-                                                   sourceCellCoordinates.Column + column));
+                    potentialCoordinates.Add(
+                        new Coordinates(sourceCellCoordinates.Row + row,
+                                        sourceCellCoordinates.Column + column));
                 }
             }
 
             // Remove the source cell coordinates, which were automatically included above.
-            potentialCoordinateValues.Remove((sourceCellCoordinates.Row,
-                                              sourceCellCoordinates.Column));
+            potentialCoordinates.Remove(sourceCellCoordinates);
 
-            var validCoordinateValues = potentialCoordinateValues
-                                            .Where(v => v.Row >= 0 &&
-                                                        v.Column >= 0 &&
-                                                        v.Row < grid.RowCount &&
-                                                        v.Column < grid.ColumnCount);
+            // TODO: Relocate this.
+            var areValidCoordinates = new Func<Coordinates, bool>(v => v.Row >= 0 &&
+                                                                  v.Column >= 0 &&
+                                                                  v.Row < grid.RowCount &&
+                                                                  v.Column < grid.ColumnCount);
 
-            return validCoordinateValues.Select(v => new Coordinates(v.Row, v.Column))
-                                        .ToList();
+            if (shouldWrap)
+            {
+                var correctedCoordinates = new List<Coordinates>();
+
+                foreach (var invalidCoords in potentialCoordinates.Where(c => !areValidCoordinates(c)))
+                {
+                    var coords = invalidCoords;
+
+                    if (coords.Row < 0)
+                        coords = coords with { Row = grid.RowCount - 1 };
+                    if (coords.Row >= grid.RowCount)
+                        coords = coords with { Row = 0 };
+                    if (coords.Column < 0)
+                        coords = coords with { Column = grid.ColumnCount - 1 };
+                    if (coords.Column >= grid.ColumnCount)
+                        coords = coords with { Column = 0 };
+
+                    correctedCoordinates.Add(coords);
+                }
+
+                potentialCoordinates.AddRange(correctedCoordinates);
+            }
+
+            var validCoordinates = potentialCoordinates.Where(areValidCoordinates);
+
+            return validCoordinates.Select(v => new Coordinates(v.Row, v.Column))
+                                   .ToList();
         }
 
         private static List<Cell> GetCellsByCoordinates(Grid grid, List<Coordinates> coordinates)
