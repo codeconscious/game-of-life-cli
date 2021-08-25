@@ -136,7 +136,9 @@
 
             SetCursorPosition(0, outputRow + 1);
 
-            Write($"{statusStatement} after {iterations:#,##0} iterations in {duration.TotalSeconds:#,##0.##}s.");
+            Write($"{statusStatement} after {iterations:#,##0} iterations in " +
+                  $"{duration.TotalSeconds:#,##0.##}s " +
+                  $"({iterations / duration.TotalSeconds:#,##0.##} iterations/s).");
 
             ResetColor();
         }
