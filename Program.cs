@@ -71,7 +71,7 @@
 
             Write("Preparing... ");
             Grid grid = new(settings);
-            WriteLine($"done in " + gameStopwatch.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
+            WriteLine("done in " + gameStopwatch.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
 
             grid.Print();
 
@@ -96,15 +96,22 @@
                 var cellsToUpdate = grid.GetUpdatesForNextIteration();
                 grid.UpdateAndCheckChangeHistory(cellsToUpdate);
                 grid.PrintUpdates(cellsToUpdate);
-                Thread.Sleep(settings.IterationDelay);
 
                 PrintIterationSummary(iteration, iterationStopwatch.Elapsed, outputRow);
+
+                Thread.Sleep(settings.IterationDelay);
             }
             while (grid.Status == GridStatus.Alive);
 
             PrintGameResults(grid.Status, iteration, gameStopwatch.Elapsed, outputRow);
         }
 
+        /// <summary>
+        /// Outputs a summary of the current iteration.
+        /// </summary>
+        /// <param name="iteration">The iteration number.</param>
+        /// <param name="duration">The duration of the iteration.</param>
+        /// <param name="outputRow">The row number on which the output should be placed.</param>
         private static void PrintIterationSummary(nuint iteration, TimeSpan duration, int outputRow)
         {
             SetCursorPosition(0, outputRow);
@@ -113,6 +120,13 @@
             Write("Press any key to quit.");
         }
 
+        /// <summary>
+        /// Outputs a summary of the entire game.
+        /// </summary>
+        /// <param name="finalStatus">The status of the grid at game end.</param>
+        /// <param name="iterations">The total number of iterations.</param>
+        /// <param name="duration">The duration of the entire game.</param>
+        /// <param name="outputRow">The row number on which the output should be placed.</param>
         private static void PrintGameResults(GridStatus finalStatus, nuint iterations,
                                              TimeSpan duration, int outputRow)
         {
@@ -136,6 +150,7 @@
 
             SetCursorPosition(0, outputRow + 1);
 
+            // Ex.: Infinite pattern loop reached after 3,589 iterations in 277.96s (12.91 iterations/s).
             Write($"{statusStatement} after {iterations:#,##0} iterations in " +
                   $"{duration.TotalSeconds:#,##0.##}s " +
                   $"({iterations / duration.TotalSeconds:#,##0.##} iterations/s).");
