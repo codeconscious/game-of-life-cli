@@ -7,17 +7,19 @@ namespace GameOfLife
         /// <summary>
         /// The count of rows (counting vertically) in the grid.
         /// </summary>
-        public int RowCount;
+        public int RowCount { get; init; }
 
         /// <summary>
         /// The count of columns (counting horizontally) in the grid.
         /// </summary>
-        public int ColumnCount;
+        public int ColumnCount { get; init; }
 
         /// <summary>
         /// A dictionary that maps each cell (key) with its neighbor cells (values).
         /// </summary>
         public IDictionary<Cell, List<Cell>> NeighborMap { get; init; }
+
+        public List<Cell> AllCellsFlattened { get; init; }
 
         public GridStatus Status { get; private set; } = GridStatus.Alive;
 
@@ -26,7 +28,7 @@ namespace GameOfLife
         /// </summary>
         private Queue<string> ChangeHistory { get; } = new Queue<string>(ChangeHistoryMaxItems);
 
-        private const ushort ChangeHistoryMaxItems = 7;
+        private const ushort ChangeHistoryMaxItems = 7; // TODO: Make a setting
 
         public readonly Dictionary<bool, char> GridChars =
             new()
@@ -35,10 +37,8 @@ namespace GameOfLife
                 { false, '·' }
             };
 
-        public List<Cell> AllCellsFlattened;
-
         public Grid(int rowCount, int columnCount,
-                    List<CoordinatePair> cellsToTurnOn)
+                    List<CoordinatePair> startAliveCells)
         {
             CellGrid = new Cell[rowCount, columnCount];
 
@@ -51,8 +51,8 @@ namespace GameOfLife
                 for (var column = 0; column < columnCount; column++)
                 {
                     var coordinates = new CoordinatePair(row, column);
-                    var shouldTurnOn = cellsToTurnOn.Contains(coordinates);
-                    CellGrid[row,column] = new Cell(row, column, shouldTurnOn);
+                    var startAlive = startAliveCells.Contains(coordinates);
+                    CellGrid[row,column] = new Cell(row, column, startAlive);
                 }
             }
 
@@ -75,8 +75,8 @@ namespace GameOfLife
             {
                 for (var column = 0; column < gridSettings.ColumnCount; column++)
                 {
-                    var shouldTurnOn = random.Next(100) <= gridSettings.InitialPopulationRatio;
-                    CellGrid[row,column] = new Cell(row, column, shouldTurnOn);
+                    var startAlive = random.Next(100) <= gridSettings.InitialPopulationRatio;
+                    CellGrid[row,column] = new Cell(row, column, startAlive);
                 }
             }
 
