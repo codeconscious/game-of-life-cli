@@ -23,7 +23,9 @@ namespace GameOfLife
                 // Leave room for output and post-completion command line prompt.
                 const int bottomMargin = 5;
 
-                RowCount = Console.WindowHeight - bottomMargin;
+                RowCount = Console.WindowHeight == 0
+                    ? 30 // Debugging value
+                    : Console.WindowHeight - bottomMargin;
             }
             else
             {
@@ -36,7 +38,9 @@ namespace GameOfLife
             // Verify the column arg
             if (args[1] == "-1")
             {
-                ColumnCount = Console.WindowWidth;
+                ColumnCount = Console.WindowWidth == 0
+                    ? 200 // Debugging value
+                    : Console.WindowWidth;
             }
             else
             {
