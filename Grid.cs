@@ -295,6 +295,8 @@ namespace GameOfLife
 
                     Write(GridChars[cell.IsAlive]);
                 }
+
+                ResetColor();
             }
             catch (Exception ex)
             {
@@ -303,8 +305,6 @@ namespace GameOfLife
                 WriteLine(ex.Message);
                 throw;
             }
-
-            ResetColor();
         }
 
         /// <summary>
