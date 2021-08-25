@@ -12,6 +12,10 @@
 
         private static void Main(string[] args)
         {
+#if DEBUG
+            WriteLine("Debugging");
+#endif
+
             Settings settings;
 
             if (args.Length == 1 && args[0] == "--default")
@@ -19,7 +23,7 @@
                 WriteLine("Using default settings.");
                 settings = new Settings(new[] { "-1", "-1", "-1" });
             }
-            else // Use the individual arg values.
+            else // Create settings from the individual args.
             {
                 try
                 {
@@ -65,9 +69,12 @@
 
             uint iteration = 1;
 
-            WriteLine("Preparing the grid...");
+            Write("Preparing... ");
             Grid grid = new(settings);
+            WriteLine($"done in " + gameStopwatch.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
+
             grid.Print();
+
             Thread.Sleep(settings.IterationDelay);
 
             var outputRow = grid.RowCount + 1;
