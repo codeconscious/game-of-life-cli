@@ -35,7 +35,7 @@ namespace GameOfLife
                 { false, '·' }
             };
 
-        public IReadOnlyList<Cell> AllCellsFlattened => CellGrid.Cast<Cell>().ToList();
+        public List<Cell> AllCellsFlattened;
 
         public Grid(int rowCount, int columnCount,
                     List<CoordinatePair> cellsToTurnOn)
@@ -52,6 +52,8 @@ namespace GameOfLife
                     CellGrid[row,column] = new Cell(row, column, shouldTurnOn);
                 }
             }
+
+            AllCellsFlattened = CellGrid.Cast<Cell>().ToList();
 
             NeighborMap = GetCellNeighbors(this);
         }
@@ -71,6 +73,8 @@ namespace GameOfLife
                     CellGrid[row,column] = new Cell(row, column, shouldTurnOn);
                 }
             }
+
+            AllCellsFlattened = CellGrid.Cast<Cell>().ToList();
 
             NeighborMap = GetCellNeighbors(this);
         }
@@ -313,11 +317,11 @@ namespace GameOfLife
         /// <param name="cellsToUpdate"></param>
         public void UpdateAndCheckChangeHistory(IList<Cell> cellsToUpdate)
         {
-            var updateSignature = string.Join(";", cellsToUpdate.Select(c => $"{c.Coordinates.Row},{c.Coordinates.Column},{c.IsAlive}"));
+            var updateSignature = string.Join("", cellsToUpdate.Select(c => $"{c.Coordinates.Row},{c.Coordinates.Column},{c.IsAlive}"));
 
             ChangeHistory.Enqueue(updateSignature);
 
-            // If a identical update exists in the history, then the grid is repeating itself.
+            // If an identical update exists in the history, then the grid is repeating itself.
             if (ChangeHistory.Count != ChangeHistory.Distinct().Count())
             {
                 this.Status = GridStatus.Looping;
