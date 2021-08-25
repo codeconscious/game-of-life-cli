@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace GameOfLife
 {
     public static class Utilities
