@@ -7,12 +7,12 @@ namespace GameOfLife
         /// <summary>
         /// The count of rows (counting vertically) in the grid.
         /// </summary>
-        public int RowCount => CellGrid.GetLength(0);
+        public int RowCount;
 
         /// <summary>
         /// The count of columns (counting horizontally) in the grid.
         /// </summary>
-        public int ColumnCount => CellGrid.GetLength(1);
+        public int ColumnCount;
 
         /// <summary>
         /// A dictionary that maps each cell (key) with its neighbor cells (values).
@@ -42,6 +42,9 @@ namespace GameOfLife
         {
             CellGrid = new Cell[rowCount, columnCount];
 
+            RowCount = CellGrid.GetLength(0);
+            ColumnCount = CellGrid.GetLength(1);
+
             // Create all cells and populate the grid with them.
             for (var row = 0; row < rowCount; row++)
             {
@@ -61,6 +64,9 @@ namespace GameOfLife
         public Grid(Settings gridSettings)
         {
             CellGrid = new Cell[gridSettings.RowCount, gridSettings.ColumnCount];
+
+            RowCount = CellGrid.GetLength(0);
+            ColumnCount = CellGrid.GetLength(1);
 
             var random = new Random();
 
