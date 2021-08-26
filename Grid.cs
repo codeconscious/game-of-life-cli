@@ -7,24 +7,24 @@ namespace GameOfLife
         /// <summary>
         /// The count of rows (counting vertically) in the grid.
         /// </summary>
-        public int RowCount { get; init; }
+        public int RowCount { get; private init; }
 
         /// <summary>
         /// The count of columns (counting horizontally) in the grid.
         /// </summary>
-        public int ColumnCount { get; init; }
+        public int ColumnCount { get; private init; }
 
         /// <summary>
         /// A dictionary that maps each cell (key) with its neighbor cells (values).
         /// </summary>
-        public IDictionary<Cell, List<Cell>> NeighborMap { get; init; }
+        public IDictionary<Cell, List<Cell>> NeighborMap { get; private init; }
 
-        public List<Cell> AllCellsFlattened { get; init; }
+        public List<Cell> AllCellsFlattened { get; private init; }
 
         public GridStatus Status { get; private set; } = GridStatus.Alive;
 
         /// <summary>
-        /// A log of the last few cell updates made. Used for testing if the grid is stale.
+        /// A log of the last few cell updates made. Used for testing for certain grid statuses.
         /// </summary>
         private Queue<string> ChangeHistory { get; } = new Queue<string>(ChangeHistoryMaxItems);
 
@@ -39,7 +39,7 @@ namespace GameOfLife
 
         public nuint CurrentIteration { get; private set; } = 0;
         public int OutputRow => RowCount + 1;
-        public Stopwatch Stopwatch { get; init; } = new();
+        public Stopwatch Stopwatch { get; private init; } = new();
 
         /// <summary>
         /// Constructor that start the game using a specific collection of cells
