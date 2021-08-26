@@ -57,8 +57,11 @@ namespace GameOfLife
             }
             else
             {
-                if (!byte.TryParse(args[2], out var lifeProbability) || lifeProbability > 100)
+                if (!byte.TryParse(args[2], out var lifeProbability) ||
+                    lifeProbability > 100 || lifeProbability < 1)
+                {
                     throw new ArgumentOutOfRangeException(nameof(lifeProbability));
+                }
 
                 InitialPopulationRatio = lifeProbability;
             }
