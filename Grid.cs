@@ -323,7 +323,7 @@ namespace GameOfLife
         /// <param name="cellsToUpdate"></param>
         public void UpdateAndCheckChangeHistory(IList<Cell> cellsToUpdate)
         {
-            var updateSignature = string.Join("", cellsToUpdate.Select(c => $"{c.Coordinates.Row},{c.Coordinates.Column},{c.IsAlive}"));
+            var updateSignature = string.Concat(cellsToUpdate.Select(c => $"{c.Coordinates.Row},{c.Coordinates.Column},{c.IsAlive}"));
 
             ChangeHistory.Enqueue(updateSignature);
 
