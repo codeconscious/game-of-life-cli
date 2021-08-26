@@ -67,8 +67,6 @@
             var gameStopwatch = new Stopwatch();
             gameStopwatch.Start();
 
-            uint iteration = 1;
-
             Write("Preparing... ");
             Grid grid = new(settings);
             WriteLine("done in " + gameStopwatch.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
@@ -77,7 +75,6 @@
 
             Thread.Sleep(settings.IterationDelayMs);
 
-            var outputRow = grid.RowCount + 1;
             var iterationStopwatch = new Stopwatch();
 
             // Process and print subsequent updates until an end state is reached.
@@ -86,76 +83,24 @@
                 // Abort if the user pressed a key.
                 if (Console.KeyAvailable)
                 {
-                    grid.Abort();
+                    grid.UpdateStatus(GridStatus.Aborted);
                     break;
                 }
 
-                iteration++;
                 iterationStopwatch.Restart();
 
                 var cellsToUpdate = grid.GetUpdatesForNextIteration();
                 grid.UpdateAndCheckChangeHistory(cellsToUpdate);
                 grid.PrintUpdates(cellsToUpdate);
 
-                PrintIterationSummary(iteration, iterationStopwatch.Elapsed, outputRow);
+                Printer.PrintIterationSummary(grid, iterationStopwatch.Elapsed);
 
                 Thread.Sleep(settings.IterationDelayMs);
             }
-            while (grid.Status == GridStatus.Alive);
+            while (grid.Status == GridStatus.Alive || grid.Status == GridStatus.Looping);
 
-            PrintGameResults(grid.Status, iteration, gameStopwatch.Elapsed, outputRow);
-        }
-
-        /// <summary>
-        /// Outputs a summary of the current iteration.
-        /// </summary>
-        /// <param name="iteration">The iteration number.</param>
-        /// <param name="duration">The duration of the iteration.</param>
-        /// <param name="outputRow">The row number on which the output should be placed.</param>
-        private static void PrintIterationSummary(nuint iteration, TimeSpan duration, int outputRow)
-        {
-            SetCursorPosition(0, outputRow);
-
-            WriteLine($"Iteration {iteration:#,##0} ({duration.TotalMilliseconds:#,##0}ms)  ");
-            Write("Press any key to quit.");
-        }
-
-        /// <summary>
-        /// Outputs a summary of the entire game.
-        /// </summary>
-        /// <param name="finalStatus">The status of the grid at game end.</param>
-        /// <param name="iterations">The total number of iterations.</param>
-        /// <param name="duration">The duration of the entire game.</param>
-        /// <param name="outputRow">The row number on which the output should be placed.</param>
-        private static void PrintGameResults(GridStatus finalStatus, nuint iterations,
-                                             TimeSpan duration, int outputRow)
-        {
-            var statusStatement = finalStatus switch
-            {
-                GridStatus.Dead => "All cells died",
-                GridStatus.Looping => "Infinite pattern loop reached",
-                GridStatus.Stagnated => "Stagnated",
-                GridStatus.Aborted => "Aborted",
-                _ => "Unexpectedly finished"
-            };
-
-            ForegroundColor = finalStatus switch
-            {
-                GridStatus.Dead => ConsoleColor.DarkRed,
-                GridStatus.Looping => ConsoleColor.Cyan,
-                GridStatus.Stagnated => ConsoleColor.Blue,
-                GridStatus.Aborted => ConsoleColor.DarkRed,
-                _ => ConsoleColor.Red
-            };
-
-            SetCursorPosition(0, outputRow + 1);
-
-            // Ex.: Infinite pattern loop reached after 3,589 iterations in 277.96s (12.91 iterations/s).
-            Write($"{statusStatement} after {iterations:#,##0} iterations in " +
-                  $"{duration.TotalSeconds:#,##0.##}s " +
-                  $"({iterations / duration.TotalSeconds:#,##0.##} iterations/s).");
-
-            ResetColor();
+            // Printer.PrintGameResults(grid);
+            SetCursorPosition(0, grid.OutputRow + 1);
         }
     }
 }

@@ -37,6 +37,17 @@ namespace GameOfLife
                 { false, '·' }
             };
 
+        public nuint CurrentIteration { get; private set; } = 0;
+        public int OutputRow => RowCount + 1;
+        public Stopwatch Stopwatch { get; init; } = new();
+
+        /// <summary>
+        /// Constructor that start the game using a specific collection of cells
+        /// to initially be given life.
+        /// </summary>
+        /// <param name="rowCount"></param>
+        /// <param name="columnCount"></param>
+        /// <param name="startAliveCells">Cells to begin the game alive.</param>
         public Grid(int rowCount, int columnCount,
                     List<CoordinatePair> startAliveCells)
         {
@@ -59,8 +70,14 @@ namespace GameOfLife
             AllCellsFlattened = CellGrid.Cast<Cell>().ToList();
 
             NeighborMap = GetCellNeighbors(this);
+
+            Stopwatch.Start();
         }
 
+        /// <summary>
+        /// Constructor that start the game using specified settings.
+        /// </summary>
+        /// <param name="gridSettings"></param>
         public Grid(Settings gridSettings)
         {
             CellGrid = new Cell[gridSettings.RowCount, gridSettings.ColumnCount];
@@ -83,39 +100,9 @@ namespace GameOfLife
             AllCellsFlattened = CellGrid.Cast<Cell>().ToList();
 
             NeighborMap = GetCellNeighbors(this);
+
+            Stopwatch.Start();
         }
-
-        /*
-        // New performance test version in which life assignments are moved to a separate step.
-        public Grid(Settings gridSettings)
-        {
-            CellGrid = new Cell[gridSettings.RowCount, gridSettings.ColumnCount];
-
-            // Create the cells and populate the grid with them.
-            for (var row = 0; row < gridSettings.RowCount; row++)
-            {
-                for (var column = 0; column < gridSettings.ColumnCount; column++)
-                {
-                    // var shouldTurnOn = random.Next(100) <= gridSettings.InitialPopulationRatio;
-                    CellGrid[row,column] = new Cell(row, column);
-                }
-            }
-
-            // Select the given percentage of cells, and bestow those chosen with life.
-            var updateCellCount = (int) Math.Ceiling(
-                AllCellsFlattened.Count * (gridSettings.InitialPopulationRatio / 100f));
-            var updateCells = AllCellsFlattened.Shuffle().Take(updateCellCount).ToList();
-            updateCells.ForEach(cell => cell.FlipStatus());
-
-            // TODO: Move higher?
-            Write("Creating neighbor map: ");
-            var sw = new Stopwatch();
-            sw.Start();
-            NeighborMap = GetCellNeighbors(this);
-            WriteLine(sw.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
-            Beep();
-        }
-        */
 
         /// <summary>
         /// Gets a dictionary that maps all cells in the given grid with their neighboring cells.
@@ -123,19 +110,15 @@ namespace GameOfLife
         /// <param name="grid"></param>
         private static IDictionary<Cell, List<Cell>> GetCellNeighbors(Grid grid)
         {
-            // var cellsWithNeighbors = new Dictionary<Cell, List<Cell>>();
             var cellsWithNeighbors = new ConcurrentDictionary<Cell, List<Cell>>();
 
-            // foreach (var cell in grid.AllCellsFlattened)
             System.Threading.Tasks.Parallel.ForEach(grid.AllCellsFlattened, cell =>
             {
                 var neighborCoordinates = GetCellNeighborCoordinates(grid, cell.Coordinates);
 
-                // cellsWithNeighbors.Add(cell, GetCellsByCoordinates(grid, neighborCoordinates));
                 cellsWithNeighbors.TryAdd(cell, GetCellsByCoordinates(grid, neighborCoordinates));
             });
 
-            // return cellsWithNeighbors.ToDictionary(d => d.Key, d => d.Value);
             return cellsWithNeighbors;
         }
 
@@ -171,23 +154,6 @@ namespace GameOfLife
                     generatedPairs.Add(
                         new CoordinatePair(sourcePair.Row + row,
                                            sourcePair.Column + column));
-
-                    // A more manual version for performance testing:
-                    // if (row == 0 && column == 0)
-                    //     continue;
-
-                    // var testRow = sourcePair.Row + row;
-                    // var testColumn = sourcePair.Column + column;
-
-                    // if (testRow >= 0 &&
-                    //     testColumn >= 0 &&
-                    //     testRow < grid.RowCount && // Make into a variable?
-                    //     testColumn < grid.ColumnCount)
-                    // {
-                    //     generatedPairs.Add(
-                    //         new CoordinatePair(sourcePair.Row + row,
-                    //                         sourcePair.Column + column));
-                    // }
                 }
             }
 
@@ -247,7 +213,7 @@ namespace GameOfLife
 
             if (cellsToUpdate.Count == 0)
             {
-                this.Status = GridStatus.Stagnated;
+                UpdateStatus(GridStatus.Stagnated);
                 return new List<Cell>();
             }
 
@@ -288,14 +254,10 @@ namespace GameOfLife
         /// <param name="cellsForUpdate"></param>
         public void PrintUpdates(List<Cell> cellsForUpdate)
         {
-            if (cellsForUpdate.Count == 0)
-            {
-                this.Status = GridStatus.Stagnated;
-                return;
-            }
-
             try
             {
+                CurrentIteration++;
+
                 foreach (var cell in cellsForUpdate)
                 {
                     ForegroundColor = cell.IsAlive ? ConsoleColor.Green
@@ -328,9 +290,10 @@ namespace GameOfLife
             ChangeHistory.Enqueue(updateSignature);
 
             // If an identical update exists in the history, then the grid is repeating itself.
-            if (ChangeHistory.Count != ChangeHistory.Distinct().Count())
+            if (this.Status != GridStatus.Looping &&
+                ChangeHistory.Count != ChangeHistory.Distinct().Count())
             {
-                this.Status = GridStatus.Looping;
+                UpdateStatus(GridStatus.Looping);
                 return;
             }
 
@@ -339,6 +302,14 @@ namespace GameOfLife
                 ChangeHistory.Dequeue();
         }
 
-        public void Abort() => this.Status = GridStatus.Aborted;
+        public void UpdateStatus(GridStatus newStatus)
+        {
+            var shouldPrintResults = Status == GridStatus.Alive;
+
+            Status = newStatus;
+
+            if (shouldPrintResults)
+                Printer.PrintGameResults(this);
+        }
     }
 }
