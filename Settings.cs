@@ -1,7 +1,7 @@
 namespace GameOfLife
 {
     /// <summary>
-    /// The settings used to create a grid and elsewhere.
+    /// The settings used to create a grid and affect elements of the game elsewhere.
     /// </summary>
     public record Settings
     {
@@ -9,9 +9,23 @@ namespace GameOfLife
         public int RowCount { get; init; }
         public int ColumnCount { get; init; }
         public int InitialPopulationRatio { get; init; }
-        public ushort IterationDelay { get; init; }
+
+        /// <summary>
+        /// The delay in milliseconds between two consecutive iterations (turns).
+        /// </summary>
+        /// <value></value>
+        public ushort IterationDelayMs { get; init; }
+
+        /// <summary>
+        /// The maximum population percentage allowed when setting it randomly.
+        /// If it's too high, then the game will likely end very quickly.
+        /// </summary>
         public const byte MaximumRandomPopulationRatio = 70;
 
+        /// <summary>
+        /// Constructor that is expected to take in arguments from the user.
+        /// </summary>
+        /// <param name="args"></param>
         public Settings(string[] args)
         {
             if (args.Length != 3 && args.Length != 4)
@@ -20,10 +34,10 @@ namespace GameOfLife
             // Verify the row arg
             if (args[0] == "-1")
             {
-                // Leave room for output and post-completion command line prompt.
+                // Leave room at the bottom of the screen for output (during and after the game).
                 const int bottomMargin = 5;
 
-                RowCount = Console.WindowHeight == 0
+                RowCount = Console.WindowHeight == 0 // This can occur when debugging.
                     ? 30 // Debugging value
                     : Console.WindowHeight - bottomMargin;
             }
@@ -38,7 +52,7 @@ namespace GameOfLife
             // Verify the column arg
             if (args[1] == "-1")
             {
-                ColumnCount = Console.WindowWidth == 0
+                ColumnCount = Console.WindowWidth == 0 // This can occur when debugging.
                     ? 200 // Debugging value
                     : Console.WindowWidth;
             }
@@ -53,7 +67,7 @@ namespace GameOfLife
             // Verify the population ratio arg
             if (args[2] == "-1")
             {
-                InitialPopulationRatio = (byte) new Random().Next(MaximumRandomPopulationRatio);
+                InitialPopulationRatio = new Random().Next(MaximumRandomPopulationRatio);
             }
             else
             {
@@ -72,16 +86,16 @@ namespace GameOfLife
                 if (!ushort.TryParse(args[3], out var iterationDelay))
                     throw new ArgumentOutOfRangeException(nameof(iterationDelay));
 
-                IterationDelay = iterationDelay;
+                IterationDelayMs = iterationDelay;
             }
             else
             {
-                IterationDelay = 50; // Default value in milliseconds
+                IterationDelayMs = 50; // Default value in milliseconds
             }
 
             WriteLine($"Grid:            {RowCount} rows x {ColumnCount} columns ({RowCount * ColumnCount:#,##0} cells)");
             WriteLine($"Population:      {InitialPopulationRatio}%");
-            WriteLine($"Iteration delay: {IterationDelay}ms");
+            WriteLine($"Iteration delay: {IterationDelayMs}ms");
         }
     }
 }

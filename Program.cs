@@ -75,7 +75,7 @@
 
             grid.Print();
 
-            Thread.Sleep(settings.IterationDelay);
+            Thread.Sleep(settings.IterationDelayMs);
 
             var outputRow = grid.RowCount + 1;
             var iterationStopwatch = new Stopwatch();
@@ -99,7 +99,7 @@
 
                 PrintIterationSummary(iteration, iterationStopwatch.Elapsed, outputRow);
 
-                Thread.Sleep(settings.IterationDelay);
+                Thread.Sleep(settings.IterationDelayMs);
             }
             while (grid.Status == GridStatus.Alive);
 
