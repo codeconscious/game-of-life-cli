@@ -3,7 +3,7 @@ namespace GameOfLife
     /// <summary>
     /// The settings used to create a grid and affect elements of the game elsewhere.
     /// </summary>
-    public record Settings
+    public class Settings
     {
         private const byte MinimumRowsColumns = 3;
         public int RowCount { get; init; }
