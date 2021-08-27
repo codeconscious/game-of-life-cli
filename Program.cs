@@ -92,8 +92,7 @@
                 var cellsToUpdate = grid.GetUpdatesForNextIteration();
                 grid.UpdateAndCheckChangeHistory(cellsToUpdate);
                 grid.PrintUpdates(cellsToUpdate);
-
-                Printer.PrintIterationSummary(grid, iterationStopwatch.Elapsed);
+                grid.PrintIterationSummary(iterationStopwatch.Elapsed);
 
                 Thread.Sleep(settings.IterationDelayMs);
             }

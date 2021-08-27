@@ -1,13 +1,67 @@
 namespace GameOfLife
 {
-    public static class Printer
+    public static class GridPrintExtensionMethods
     {
         /// <summary>
-        /// Outputs a summary of the current iteration.
+        /// Outputs the entire grid to the console. Intended to be used at game start.
+        /// </summary>
+        public static void Print(this Grid grid)
+        {
+            Clear();
+
+            for (var row = 0; row < grid.RowCount; row++)
+            {
+                for (var column = 0; column < grid.ColumnCount; column++)
+                {
+                    var isAlive = grid.CellGrid[row, column].IsAlive;
+
+                    ForegroundColor = isAlive ? ConsoleColor.Green
+                                              : ConsoleColor.DarkGray;
+
+                    SetCursorPosition(column, row);
+
+                    Write(grid.GridChars[isAlive]);
+                }
+            }
+
+            ResetColor();
+        }
+
+        /// <summary>
+        /// Outputs only updated cells for the current iteration.
+        /// </summary>
+        /// <param name="cellsForUpdate"></param>
+        public static void PrintUpdates(this Grid grid, List<Cell> cellsForUpdate)
+        {
+            try
+            {
+                foreach (var cell in cellsForUpdate)
+                {
+                    ForegroundColor = cell.IsAlive ? ConsoleColor.Green
+                                                   : ConsoleColor.DarkGray;
+
+                    SetCursorPosition(cell.Coordinates.Column, cell.Coordinates.Row);
+
+                    Write(grid.GridChars[cell.IsAlive]);
+                }
+
+                ResetColor();
+            }
+            catch (Exception ex)
+            {
+                Clear();
+                ResetColor();
+                WriteLine(ex.Message);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Outputs a single-line summary of the current iteration.
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="duration">An optional iteration time duration.</param>
-        public static void PrintIterationSummary(Grid grid, TimeSpan? duration = null)
+        public static void PrintIterationSummary(this Grid grid, TimeSpan? duration = null)
         {
             SetCursorPosition(0, grid.OutputRow);
 
@@ -19,10 +73,11 @@ namespace GameOfLife
         }
 
         /// <summary>
-        /// Outputs a summary of the entire game. Intended to be used at grid status updates.
+        /// Outputs a single-line summary of the entire game.
+        /// Intended to be used for entire-grid status changes.
         /// </summary>
         /// <param name="grid"></param>
-        public static void PrintGameResults(Grid grid)
+        public static void PrintGameStatus(this Grid grid)
         {
             var statusStatement = grid.Status switch
             {

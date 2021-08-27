@@ -224,68 +224,15 @@ namespace GameOfLife
         }
 
         /// <summary>
-        /// Print the entire grid to the console. Intended to be used at game start.
-        /// </summary>
-        public void Print()
-        {
-            Clear();
-
-            for (var row = 0; row < RowCount; row++)
-            {
-                for (var column = 0; column < ColumnCount; column++)
-                {
-                    var isAlive = CellGrid[row, column].IsAlive;
-
-                    ForegroundColor = isAlive ? ConsoleColor.Green
-                                              : ConsoleColor.DarkGray;
-
-                    SetCursorPosition(column, row);
-
-                    Write(GridChars[isAlive]);
-                }
-            }
-
-            ResetColor();
-        }
-
-        /// <summary>
-        /// Print only updated cells for the current iteration.
-        /// </summary>
-        /// <param name="cellsForUpdate"></param>
-        public void PrintUpdates(List<Cell> cellsForUpdate)
-        {
-            try
-            {
-                CurrentIteration++;
-
-                foreach (var cell in cellsForUpdate)
-                {
-                    ForegroundColor = cell.IsAlive ? ConsoleColor.Green
-                                                   : ConsoleColor.DarkGray;
-
-                    SetCursorPosition(cell.Coordinates.Column, cell.Coordinates.Row);
-
-                    Write(GridChars[cell.IsAlive]);
-                }
-
-                ResetColor();
-            }
-            catch (Exception ex)
-            {
-                Clear();
-                ResetColor();
-                WriteLine(ex.Message);
-                throw;
-            }
-        }
-
-        /// <summary>
         /// Updates the change history, then uses it to check grid status.
         /// </summary>
         /// <param name="cellsToUpdate"></param>
         public void UpdateAndCheckChangeHistory(IList<Cell> cellsToUpdate)
         {
-            var updateSignature = string.Concat(cellsToUpdate.Select(c => $"{c.Coordinates.Row},{c.Coordinates.Column},{c.IsAlive}"));
+            CurrentIteration++;
+
+            var updateSignature = string.Concat(
+                cellsToUpdate.Select(c => $"{c.Coordinates.Row},{c.Coordinates.Column},{c.IsAlive}"));
 
             ChangeHistory.Enqueue(updateSignature);
 
@@ -302,6 +249,10 @@ namespace GameOfLife
                 ChangeHistory.Dequeue();
         }
 
+        /// <summary>
+        /// Update the grid status, then also print the game status if needed.
+        /// </summary>
+        /// <param name="newStatus"></param>
         public void UpdateStatus(GridStatus newStatus)
         {
             var shouldPrintResults = Status == GridStatus.Alive;
@@ -309,7 +260,7 @@ namespace GameOfLife
             Status = newStatus;
 
             if (shouldPrintResults)
-                Printer.PrintGameResults(this);
+                this.PrintGameStatus();
         }
     }
 }
