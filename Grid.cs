@@ -122,16 +122,6 @@ namespace GameOfLife
             return cellsWithNeighbors;
         }
 
-        // TODO: Make static and relocate.
-        private bool IsValidCoordinatePair(CoordinatePair pair)
-        {
-            return
-                pair.Row >= 0 &&
-                pair.Column >= 0 &&
-                pair.Row < this.RowCount &&
-                pair.Column < this.ColumnCount;
-        }
-
         /// <summary>
         /// Returns all valid cell coordinates for a specific cells neighbors.
         /// Invalid coordinates (i.e., negative and those beyond the grid) are ignored.
@@ -144,7 +134,7 @@ namespace GameOfLife
                                                                        bool shouldWrap = true)
         {
             // The most variations likely to be held is 14 (9 - 1 + 5 possible corrections).
-            var generatedPairs = new List<CoordinatePair>(13);
+            var generatedPairs = new List<CoordinatePair>(14);
 
             // Gather all potential neighbor values, including invalid ones.
             for (var row = -1; row <= 1; row++)
@@ -164,7 +154,7 @@ namespace GameOfLife
             {
                 var correctedPairs = new List<CoordinatePair>();
 
-                foreach (var invalidPair in generatedPairs.Where(c => !grid.IsValidCoordinatePair(c)))
+                foreach (var invalidPair in generatedPairs.Where(p => !p.IsValid(grid.RowCount, grid.ColumnCount)))
                 {
                     var workingPair = invalidPair;
 
@@ -183,7 +173,7 @@ namespace GameOfLife
                 generatedPairs.AddRange(correctedPairs);
             }
 
-            var validPairs = generatedPairs.Where(grid.IsValidCoordinatePair);
+            var validPairs = generatedPairs.Where(p => p.IsValid(grid.RowCount, grid.ColumnCount));
 
             return validPairs.Select(v => new CoordinatePair(v.Row, v.Column))
                              .ToList();
@@ -209,7 +199,7 @@ namespace GameOfLife
         /// </summary>
         public List<Cell> GetUpdatesForNextIteration()
         {
-            var cellsToUpdate = Utilities.GetCellsToUpdate(this);
+            var cellsToUpdate = GetCellsToFlip(this);
 
             if (cellsToUpdate.Count == 0)
             {
@@ -221,6 +211,27 @@ namespace GameOfLife
                 cell.FlipStatus();
 
             return cellsToUpdate;
+        }
+
+        /// <summary>
+        /// Get a list of grid cells whose statuses should be flipped (reversed).
+        /// </summary>
+        /// <param name="grid"></param>
+        public static List<Cell> GetCellsToFlip(Grid grid)
+        {
+            var cellsToFlip = new List<Cell>();
+
+            foreach (var cell in grid.AllCellsFlattened)
+            {
+                var livingNeighborCount = grid.NeighborMap[cell].Count(c => c.IsAlive);
+
+                var willCellBeAlive = cell.WillCellBeAliveNextIteration(livingNeighborCount);
+
+                if (cell.IsAlive != willCellBeAlive)
+                    cellsToFlip.Add(cell);
+            }
+
+            return cellsToFlip;
         }
 
         /// <summary>
