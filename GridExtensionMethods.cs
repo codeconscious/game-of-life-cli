@@ -1,8 +1,8 @@
 namespace GameOfLife
 {
-    public static class GridPrintExtensionMethods
+    public static class GridExtensionMethods
     {
-        private static readonly Dictionary<GridStatus, ConsoleColor> Colors
+        private static readonly Dictionary<GridStatus, ConsoleColor> StatusColors
             = new()
             {
                 { GridStatus.Alive, ConsoleColor.Green },
@@ -25,7 +25,7 @@ namespace GameOfLife
                 {
                     var isAlive = grid.CellGrid[row, column].IsAlive;
 
-                    ForegroundColor = isAlive ? Colors[grid.Status]
+                    ForegroundColor = isAlive ? StatusColors[grid.Status]
                                               : ConsoleColor.DarkGray;
 
                     SetCursorPosition(column, row);
@@ -47,7 +47,7 @@ namespace GameOfLife
             {
                 foreach (var cell in cellsForUpdate)
                 {
-                    ForegroundColor = cell.IsAlive ? Colors[grid.Status]
+                    ForegroundColor = cell.IsAlive ? StatusColors[grid.Status]
                                                    : ConsoleColor.DarkGray;
 
                     SetCursorPosition(cell.Coordinates.Column, cell.Coordinates.Row);
@@ -98,9 +98,12 @@ namespace GameOfLife
                 _ => "Unexpectedly finished"
             };
 
-            ForegroundColor = Colors[grid.Status];
+            ForegroundColor = StatusColors[grid.Status];
 
             SetCursorPosition(0, grid.OutputRow + 1);
+
+            // Clear the line, then return to the beginning. (This might not work when debugging.)
+            Write(new string(' ', WindowWidth - 1) + "\r");
 
             // Ex.: Infinite loop reached after 3,589 iterations in 277.96s (12.91 iterations/s).
             Write($"{statusStatement} after {grid.CurrentIteration:#,##0} iterations in " +
