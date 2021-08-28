@@ -238,9 +238,16 @@ namespace GameOfLife
         /// Updates the change history, then uses it to check grid status.
         /// </summary>
         /// <param name="cellsToUpdate"></param>
-        public void UpdateAndCheckChangeHistory(IList<Cell> cellsToUpdate)
+        public void CheckGridStatus(IList<Cell> cellsToUpdate)
         {
             CurrentIteration++;
+
+            // No living cell means grid death.
+            if (!AllCellsFlattened.Any(c => c.IsAlive))
+            {
+                UpdateStatus(GridStatus.Dead);
+                return;
+            }
 
             // No updates means stagnation.
             if (!cellsToUpdate.Any())
