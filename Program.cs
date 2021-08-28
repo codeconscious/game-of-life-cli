@@ -98,7 +98,9 @@
             }
             while (grid.Status == GridStatus.Alive || grid.Status == GridStatus.Looping);
 
-            // Printer.PrintGameResults(grid);
+            grid.PrintGameStatus();
+
+            // Ensure the cursor is placed after the program output.
             SetCursorPosition(0, grid.OutputRow + 1);
         }
     }

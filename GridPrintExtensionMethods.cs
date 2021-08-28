@@ -2,6 +2,16 @@ namespace GameOfLife
 {
     public static class GridPrintExtensionMethods
     {
+        private static readonly Dictionary<GridStatus, ConsoleColor> Colors
+            = new()
+            {
+                { GridStatus.Alive, ConsoleColor.Green },
+                { GridStatus.Dead, ConsoleColor.DarkRed },
+                { GridStatus.Looping, ConsoleColor.Cyan },
+                { GridStatus.Stagnated, ConsoleColor.Blue },
+                { GridStatus.Aborted, ConsoleColor.DarkRed },
+            };
+
         /// <summary>
         /// Outputs the entire grid to the console. Intended to be used at game start.
         /// </summary>
@@ -15,7 +25,7 @@ namespace GameOfLife
                 {
                     var isAlive = grid.CellGrid[row, column].IsAlive;
 
-                    ForegroundColor = isAlive ? ConsoleColor.Green
+                    ForegroundColor = isAlive ? Colors[grid.Status]
                                               : ConsoleColor.DarkGray;
 
                     SetCursorPosition(column, row);
@@ -37,7 +47,7 @@ namespace GameOfLife
             {
                 foreach (var cell in cellsForUpdate)
                 {
-                    ForegroundColor = cell.IsAlive ? ConsoleColor.Green
+                    ForegroundColor = cell.IsAlive ? Colors[grid.Status]
                                                    : ConsoleColor.DarkGray;
 
                     SetCursorPosition(cell.Coordinates.Column, cell.Coordinates.Row);
@@ -88,14 +98,7 @@ namespace GameOfLife
                 _ => "Unexpectedly finished"
             };
 
-            ForegroundColor = grid.Status switch
-            {
-                GridStatus.Dead => ConsoleColor.DarkRed,
-                GridStatus.Looping => ConsoleColor.Cyan,
-                GridStatus.Stagnated => ConsoleColor.Blue,
-                GridStatus.Aborted => ConsoleColor.DarkRed,
-                _ => ConsoleColor.Red
-            };
+            ForegroundColor = Colors[grid.Status];
 
             SetCursorPosition(0, grid.OutputRow + 1);
 

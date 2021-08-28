@@ -112,7 +112,7 @@ namespace GameOfLife
         {
             var cellsWithNeighbors = new ConcurrentDictionary<Cell, List<Cell>>();
 
-            System.Threading.Tasks.Parallel.ForEach(grid.AllCellsFlattened, cell =>
+            Parallel.ForEach(grid.AllCellsFlattened, cell =>
             {
                 var neighborCoordinates = GetCellNeighborCoordinates(grid, cell.Coordinates);
 
@@ -203,7 +203,7 @@ namespace GameOfLife
 
             if (cellsToUpdate.Count == 0)
             {
-                UpdateStatus(GridStatus.Stagnated);
+                //UpdateStatus(GridStatus.Stagnated);
                 return new List<Cell>();
             }
 
@@ -242,12 +242,19 @@ namespace GameOfLife
         {
             CurrentIteration++;
 
+            // No updates means stagnation.
+            if (!cellsToUpdate.Any())
+            {
+                UpdateStatus(GridStatus.Stagnated);
+                return;
+            }
+
             var updateSignature = string.Concat(
                 cellsToUpdate.Select(c => $"{c.Coordinates.Row},{c.Coordinates.Column},{c.IsAlive}"));
 
             ChangeHistory.Enqueue(updateSignature);
 
-            // If an identical update exists in the history, then the grid is repeating itself.
+            // Identical updates in the history indicate that the grid is looping.
             if (this.Status != GridStatus.Looping &&
                 ChangeHistory.Count != ChangeHistory.Distinct().Count())
             {
@@ -255,7 +262,7 @@ namespace GameOfLife
                 return;
             }
 
-            // Otherwise, remove the oldest history item, if needed.
+            // Otherwise, just remove the oldest history item, if needed.
             if (ChangeHistory.Count > ChangeHistoryMaxItems)
                 ChangeHistory.Dequeue();
         }
