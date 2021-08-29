@@ -91,8 +91,8 @@ namespace GameOfLife
         {
             var statusStatement = grid.Status switch
             {
-                GridStatus.Dead => "All cells died",
-                GridStatus.Looping => "Infinite loop reached",
+                GridStatus.Dead => "Extinction occurred",
+                GridStatus.Looping => "Endless loop reached",
                 GridStatus.Stagnated => "Stagnated",
                 GridStatus.Aborted => "Aborted",
                 _ => "Unexpectedly finished"
@@ -102,13 +102,14 @@ namespace GameOfLife
 
             SetCursorPosition(0, grid.OutputRow + 1);
 
-            // Clear the line, then return to the beginning. (This might not work when debugging.)
+            // Clear the line, then return to its start.
+            // (This might not work when debugging since WindowWidth might equal 0.)
             Write(new string(' ', WindowWidth - 1) + "\r");
 
             // Ex.: Infinite loop reached after 3,589 iterations in 277.96s (12.91 iterations/s).
             Write($"{statusStatement} after {grid.CurrentIteration:#,##0} iterations in " +
-                  $"{grid.Stopwatch.Elapsed.TotalSeconds:#,##0.##}s " +
-                  $"({grid.CurrentIteration / grid.Stopwatch.Elapsed.TotalSeconds:#,##0.##} iterations/s).");
+                  $"{grid.Stopwatch.Elapsed.TotalSeconds:#,##0.###}s " +
+                  $"({grid.CurrentIteration / grid.Stopwatch.Elapsed.TotalSeconds:#,##0.###} iterations/s).");
 
             ResetColor();
         }
