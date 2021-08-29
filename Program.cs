@@ -99,11 +99,7 @@
                 }
 
                 iterationStopwatch.Restart();
-
-                var cellsToFlip = grid.GetCellsToFlip();
-                Cell.FlipStatuses(cellsToFlip);
-                grid.UpdateHistoryAndGameStatus(cellsToFlip);
-                grid.PrintUpdates(cellsToFlip);
+                grid.Iterate();
                 grid.PrintIterationSummary(iterationStopwatch.Elapsed);
 
                 Thread.Sleep(settings.IterationDelayMs);

@@ -199,10 +199,21 @@ namespace GameOfLife
         #endregion
 
         /// <summary>
+        /// Iterate (advance) the grid to its next state.
+        /// </summary>
+        public void Iterate()
+        {
+            var cellsToFlip = GetCellsToFlip();
+            Cell.FlipStatuses(cellsToFlip);
+            UpdateHistoryAndGameStatus(cellsToFlip);
+            this.PrintUpdates(cellsToFlip);
+        }
+
+        /// <summary>
         /// Get a list of grid cells whose statuses should be flipped (reversed) this iteration.
         /// </summary>
         /// <param name="grid"></param>
-        public List<Cell> GetCellsToFlip()
+        private List<Cell> GetCellsToFlip()
         {
             var cellsToFlip = new List<Cell>();
 
@@ -223,7 +234,7 @@ namespace GameOfLife
         /// Updates the grid change history, then uses it to check grid status.
         /// </summary>
         /// <param name="recentlyFlippedCells"></param>
-        public void UpdateHistoryAndGameStatus(IList<Cell> recentlyFlippedCells)
+        private void UpdateHistoryAndGameStatus(IList<Cell> recentlyFlippedCells)
         {
             IterationNumber++;
 
