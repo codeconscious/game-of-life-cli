@@ -73,6 +73,7 @@
 
             grid.Print();
             Thread.Sleep(settings.IterationDelayMs);
+
             grid.PrintIterationSummary(iterationStopwatch.Elapsed);
 
             // Process and print subsequent updates until an end state is reached.
@@ -99,10 +100,11 @@
                 }
 
                 iterationStopwatch.Restart();
-                grid.Iterate();
-                grid.PrintIterationSummary(iterationStopwatch.Elapsed);
 
+                grid.Iterate();
                 Thread.Sleep(settings.IterationDelayMs);
+
+                grid.PrintIterationSummary(iterationStopwatch.Elapsed);
             }
             while (grid.Status == GridStatus.Alive || grid.Status == GridStatus.Looping);
 
