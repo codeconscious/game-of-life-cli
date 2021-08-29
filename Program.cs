@@ -7,8 +7,9 @@
             "   - Number of rows .......... At least 3, or else -1 to fit the console height\n" +
             "   - Number of columns ....... At least 3, or else -1 to fit the console width\n" +
             "   - Initial density (%) ..... 1 to 99 (inclusive, digits only), or else -1 for random\n" +
-            "   - (Optional) Delay between iterations in milliseconds (Default is 50)\n" +
-            "Alternatively, supply only \"--default\" to use the default settings (in which all values are -1).";
+            "   - (Optional) Delay between iterations in milliseconds (Otherwise, defaults to 50)\n" +
+            "Alternatively, supply only \"--default\" to use the default settings (in which all values are -1).\n" +
+            "During the simulation, you can press the left and right arrow keys to adjust the iteration speed.";
 
         private static void Main(string[] args)
         {
