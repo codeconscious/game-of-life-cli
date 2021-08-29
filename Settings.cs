@@ -14,7 +14,7 @@ namespace GameOfLife
         /// The delay in milliseconds between two consecutive iterations (turns).
         /// </summary>
         /// <value></value>
-        public ushort IterationDelayMs { get; init; }
+        public ushort IterationDelayMs { get; private set; }
 
         /// <summary>
         /// The maximum population percentage allowed when setting it randomly.
@@ -96,6 +96,21 @@ namespace GameOfLife
             WriteLine($"Grid:            {RowCount} rows x {ColumnCount} columns ({RowCount * ColumnCount:#,##0} cells)");
             WriteLine($"Population:      {InitialPopulationRatio}%");
             WriteLine($"Iteration delay: {IterationDelayMs}ms");
+        }
+
+        /// <summary>
+        /// Adjust the iteration delay within the extent of valid values.
+        /// </summary>
+        /// <param name="adjustMs">The number of milliseconds (negative or positive) to adjust by.</param>
+        public void AdjustIterationDelayBy(short adjustMs)
+        {
+            var proposedDelay = IterationDelayMs + adjustMs;
+
+            if (proposedDelay >= ushort.MinValue &&
+                proposedDelay < ushort.MaxValue)
+            {
+                IterationDelayMs = (ushort) proposedDelay;
+            }
         }
     }
 }

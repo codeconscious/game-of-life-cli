@@ -78,11 +78,24 @@
             // Process and print subsequent updates until an end state is reached.
             do
             {
-                // Abort if the user pressed a key.
+                // Handle user key presses
                 if (Console.KeyAvailable)
                 {
-                    grid.AbortGame();
-                    break;
+                    var key = Console.ReadKey(false).Key;
+
+                    if (key == ConsoleKey.LeftArrow) // Make slower
+                    {
+                        settings.AdjustIterationDelayBy(100);
+                    }
+                    else if (key == ConsoleKey.RightArrow) // Make faster
+                    {
+                        settings.AdjustIterationDelayBy(-100);
+                    }
+                    else // Any other key
+                    {
+                        grid.AbortGame();
+                        break;
+                    }
                 }
 
                 iterationStopwatch.Restart();
