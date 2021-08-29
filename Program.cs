@@ -86,11 +86,11 @@
 
                     if (key == ConsoleKey.LeftArrow) // Make slower
                     {
-                        settings.AdjustIterationDelayBy(100);
+                        settings.AdjustIterationDelayBy(50);
                     }
                     else if (key == ConsoleKey.RightArrow) // Make faster
                     {
-                        settings.AdjustIterationDelayBy(-100);
+                        settings.AdjustIterationDelayBy(-50);
                     }
                     else // Any other key
                     {
