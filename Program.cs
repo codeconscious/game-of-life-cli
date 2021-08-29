@@ -82,7 +82,7 @@
                 // Handle user key presses
                 if (Console.KeyAvailable)
                 {
-                    var key = Console.ReadKey(false).Key;
+                    var key = Console.ReadKey(true).Key;
 
                     if (key == ConsoleKey.LeftArrow) // Make slower
                     {
