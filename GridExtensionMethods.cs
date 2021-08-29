@@ -79,7 +79,7 @@ namespace GameOfLife
                 ? ""
                 : $"({duration.Value.TotalMilliseconds:#,##0}ms)";
 
-            Write($"<Press any key to quit>  Iteration {grid.CurrentIteration:#,##0} {durationText}  ");
+            Write($"<Press any key to quit>  Iteration {grid.IterationNumber:#,##0} {durationText}  ");
         }
 
         /// <summary>
@@ -107,9 +107,9 @@ namespace GameOfLife
             Write(new string(' ', WindowWidth - 1) + "\r");
 
             // Ex.: Infinite loop reached after 3,589 iterations in 277.96s (12.91 iterations/s).
-            Write($"{statusStatement} after {grid.CurrentIteration:#,##0} iterations in " +
-                  $"{grid.Stopwatch.Elapsed.TotalSeconds:#,##0.###}s " +
-                  $"({grid.CurrentIteration / grid.Stopwatch.Elapsed.TotalSeconds:#,##0.###} iterations/s).");
+            Write($"{statusStatement} after {grid.IterationNumber:#,##0} iterations in " +
+                  $"{grid.GameStopwatch.Elapsed.TotalSeconds:#,##0.###}s " +
+                  $"({grid.IterationNumber / grid.GameStopwatch.Elapsed.TotalSeconds:#,##0.###} iterations/s).");
 
             ResetColor();
         }

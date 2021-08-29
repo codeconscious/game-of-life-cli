@@ -44,7 +44,7 @@
             try
             {
                 CursorVisible = false;
-                RunGame(settings);
+                StartGame(settings);
             }
             catch (Exception ex)
             {
@@ -62,20 +62,18 @@
         /// Generate the grid and then continuously updates until it enters a non-living state.
         /// </summary>
         /// <param name="settings"></param>
-        private static void RunGame(Settings settings)
+        private static void StartGame(Settings settings)
         {
-            var gameStopwatch = new Stopwatch();
-            gameStopwatch.Start();
+            var iterationStopwatch = new Stopwatch();
+            iterationStopwatch.Start();
 
             Write("Preparing... ");
             Grid grid = new(settings);
-            WriteLine("done in " + gameStopwatch.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
+            WriteLine("done in " + grid.GameStopwatch.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
 
             grid.Print();
-
             Thread.Sleep(settings.IterationDelayMs);
-
-            var iterationStopwatch = new Stopwatch();
+            grid.PrintIterationSummary(iterationStopwatch.Elapsed);
 
             // Process and print subsequent updates until an end state is reached.
             do
@@ -83,15 +81,16 @@
                 // Abort if the user pressed a key.
                 if (Console.KeyAvailable)
                 {
-                    grid.UpdateStatus(GridStatus.Aborted);
+                    grid.AbortGame();
                     break;
                 }
 
                 iterationStopwatch.Restart();
 
-                var cellsToUpdate = grid.GetUpdatesForNextIteration();
-                grid.CheckGridStatus(cellsToUpdate);
-                grid.PrintUpdates(cellsToUpdate);
+                var cellsToFlip = grid.GetCellsToFlip();
+                Cell.FlipStatuses(cellsToFlip);
+                grid.UpdateHistoryAndGameStatus(cellsToFlip);
+                grid.PrintUpdates(cellsToFlip);
                 grid.PrintIterationSummary(iterationStopwatch.Elapsed);
 
                 Thread.Sleep(settings.IterationDelayMs);
@@ -100,7 +99,7 @@
 
             grid.PrintGameStatus();
 
-            // Ensure the cursor is placed after the program output.
+            // Place the cursor after the program output.
             SetCursorPosition(0, grid.OutputRow + 1);
         }
     }

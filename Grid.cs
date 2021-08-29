@@ -28,7 +28,7 @@ namespace GameOfLife
         /// </summary>
         private Queue<string> ChangeHistory { get; } = new Queue<string>(ChangeHistoryMaxItems);
 
-        private const ushort ChangeHistoryMaxItems = 7; // TODO: Make a setting
+        private const ushort ChangeHistoryMaxItems = 7; // TODO: Convert into a setting.
 
         public readonly Dictionary<bool, char> GridChars =
             new()
@@ -37,9 +37,11 @@ namespace GameOfLife
                 { false, '·' }
             };
 
-        public nuint CurrentIteration { get; private set; } = 0;
+        public nuint IterationNumber { get; private set; } = 0;
         public int OutputRow => RowCount + 1;
-        public Stopwatch Stopwatch { get; private init; } = new();
+        public Stopwatch GameStopwatch { get; private init; } = new();
+
+        #region Setup
 
         /// <summary>
         /// Constructor that start the game using a specific collection of cells
@@ -71,7 +73,7 @@ namespace GameOfLife
 
             NeighborMap = GetCellNeighbors(this);
 
-            Stopwatch.Start();
+            GameStopwatch.Start();
         }
 
         /// <summary>
@@ -101,7 +103,7 @@ namespace GameOfLife
 
             NeighborMap = GetCellNeighbors(this);
 
-            Stopwatch.Start();
+            GameStopwatch.Start();
         }
 
         /// <summary>
@@ -194,36 +196,19 @@ namespace GameOfLife
             return output;
         }
 
-        /// <summary>
-        /// Updates the cells in the grid as needed, then returns the affected cells.
-        /// </summary>
-        public List<Cell> GetUpdatesForNextIteration()
-        {
-            var cellsToUpdate = GetCellsToFlip(this);
-
-            if (cellsToUpdate.Count == 0)
-            {
-                //UpdateStatus(GridStatus.Stagnated);
-                return new List<Cell>();
-            }
-
-            foreach (var cell in cellsToUpdate)
-                cell.FlipStatus();
-
-            return cellsToUpdate;
-        }
+        #endregion
 
         /// <summary>
-        /// Get a list of grid cells whose statuses should be flipped (reversed).
+        /// Get a list of grid cells whose statuses should be flipped (reversed) this iteration.
         /// </summary>
         /// <param name="grid"></param>
-        public static List<Cell> GetCellsToFlip(Grid grid)
+        public List<Cell> GetCellsToFlip()
         {
             var cellsToFlip = new List<Cell>();
 
-            foreach (var cell in grid.AllCellsFlattened)
+            foreach (var cell in this.AllCellsFlattened)
             {
-                var livingNeighborCount = grid.NeighborMap[cell].Count(c => c.IsAlive);
+                var livingNeighborCount = this.NeighborMap[cell].Count(c => c.IsAlive);
 
                 var willCellBeAlive = cell.WillCellBeAliveNextIteration(livingNeighborCount);
 
@@ -235,12 +220,12 @@ namespace GameOfLife
         }
 
         /// <summary>
-        /// Updates the change history, then uses it to check grid status.
+        /// Updates the grid change history, then uses it to check grid status.
         /// </summary>
-        /// <param name="cellsToUpdate"></param>
-        public void CheckGridStatus(IList<Cell> cellsToUpdate)
+        /// <param name="recentlyFlippedCells"></param>
+        public void UpdateHistoryAndGameStatus(IList<Cell> recentlyFlippedCells)
         {
-            CurrentIteration++;
+            IterationNumber++;
 
             // No living cell means grid death.
             if (!AllCellsFlattened.Any(c => c.IsAlive))
@@ -250,14 +235,14 @@ namespace GameOfLife
             }
 
             // No updates means stagnation.
-            if (!cellsToUpdate.Any())
+            if (!recentlyFlippedCells.Any())
             {
                 UpdateStatus(GridStatus.Stagnated);
                 return;
             }
 
             var updateSignature = string.Concat(
-                cellsToUpdate.Select(c => $"{c.Coordinates.Row},{c.Coordinates.Column},{c.IsAlive}"));
+                recentlyFlippedCells.Select(c => $"{c.Coordinates.Row},{c.Coordinates.Column},{c.IsAlive}"));
 
             ChangeHistory.Enqueue(updateSignature);
 
@@ -278,7 +263,7 @@ namespace GameOfLife
         /// Update the grid status, then also print the game status if needed.
         /// </summary>
         /// <param name="newStatus"></param>
-        public void UpdateStatus(GridStatus newStatus)
+        private void UpdateStatus(GridStatus newStatus)
         {
             var shouldPrintResults = Status == GridStatus.Alive;
 
@@ -287,5 +272,7 @@ namespace GameOfLife
             if (shouldPrintResults)
                 this.PrintGameStatus();
         }
+
+        public void AbortGame() => UpdateStatus(GridStatus.Aborted);
     }
 }
