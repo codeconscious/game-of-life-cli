@@ -19,14 +19,16 @@ namespace GameOfLife
         {
             Clear();
 
+            ForegroundColor = StatusColors[grid.Status];
+
             for (var row = 0; row < grid.RowCount; row++)
             {
                 for (var column = 0; column < grid.ColumnCount; column++)
                 {
                     var isAlive = grid.CellGrid[row, column].IsAlive;
 
-                    ForegroundColor = isAlive ? StatusColors[grid.Status]
-                                              : ConsoleColor.DarkGray;
+                    // ForegroundColor = isAlive ? StatusColors[grid.Status]
+                    //                           : ConsoleColor.DarkGray;
 
                     SetCursorPosition(column, row);
 
@@ -34,7 +36,7 @@ namespace GameOfLife
                 }
             }
 
-            ResetColor();
+            // ResetColor();
         }
 
         /// <summary>
@@ -43,23 +45,25 @@ namespace GameOfLife
         /// <param name="cellsForUpdate"></param>
         public static void PrintUpdates(this Grid grid, List<Cell> cellsForUpdate)
         {
+            ForegroundColor = StatusColors[grid.Status];
+
             try
             {
                 foreach (var cell in cellsForUpdate)
                 {
-                    ForegroundColor = cell.IsAlive ? StatusColors[grid.Status]
-                                                   : ConsoleColor.DarkGray;
+                    // ForegroundColor = cell.IsAlive ? StatusColors[grid.Status]
+                    //                                : ConsoleColor.DarkGray;
 
                     SetCursorPosition(cell.Coordinates.Column, cell.Coordinates.Row);
 
                     Write(grid.GridChars[cell.IsAlive]);
                 }
 
-                ResetColor();
+                // ResetColor();
             }
             catch (Exception ex)
             {
-                Clear();
+                // Clear();
                 ResetColor();
                 WriteLine(ex.Message);
                 throw;
@@ -73,6 +77,8 @@ namespace GameOfLife
         /// <param name="duration">An optional iteration time duration.</param>
         public static void PrintIterationSummary(this Grid grid, TimeSpan? duration = null)
         {
+            ResetColor();
+
             SetCursorPosition(0, grid.OutputRow);
 
             var durationText = duration == null

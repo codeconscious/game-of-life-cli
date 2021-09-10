@@ -34,7 +34,7 @@ namespace GameOfLife
             new()
             {
                 { true, 'X' }, // Other candidates: █  // TODO: Convert into a setting.
-                { false, '·' }
+                { false, ' ' } // Other candidate: ·
             };
 
         public nuint IterationNumber { get; private set; } = 0;
