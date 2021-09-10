@@ -15,9 +15,12 @@ namespace GameOfLife
         /// <summary>
         /// Outputs the entire grid to the console. Intended to be used at game start.
         /// </summary>
-        public static void Print(this Grid grid)
+        /// <param name="grid"></param>
+        /// <param name="shouldClear">Should the screen be cleared?</param>
+        public static void PrintEntire(this Grid grid, bool shouldClear)
         {
-            Clear();
+            if (shouldClear)
+                Clear();
 
             ForegroundColor = StatusColors[grid.Status];
 
@@ -25,18 +28,10 @@ namespace GameOfLife
             {
                 for (var column = 0; column < grid.ColumnCount; column++)
                 {
-                    var isAlive = grid.CellGrid[row, column].IsAlive;
-
-                    // ForegroundColor = isAlive ? StatusColors[grid.Status]
-                    //                           : ConsoleColor.DarkGray;
-
                     SetCursorPosition(column, row);
-
-                    Write(grid.GridChars[isAlive]);
+                    Write(grid.GridChars[grid.CellGrid[row, column].IsAlive]);
                 }
             }
-
-            // ResetColor();
         }
 
         /// <summary>
@@ -51,21 +46,14 @@ namespace GameOfLife
             {
                 foreach (var cell in cellsForUpdate)
                 {
-                    // ForegroundColor = cell.IsAlive ? StatusColors[grid.Status]
-                    //                                : ConsoleColor.DarkGray;
-
                     SetCursorPosition(cell.Coordinates.Column, cell.Coordinates.Row);
-
                     Write(grid.GridChars[cell.IsAlive]);
                 }
-
-                // ResetColor();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // Clear();
+                Clear();
                 ResetColor();
-                WriteLine(ex.Message);
                 throw;
             }
         }

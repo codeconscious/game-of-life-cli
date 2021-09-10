@@ -3,7 +3,8 @@
     internal static class Program
     {
         private const string Instructions =
-            "Run the Game of Life by supplying the following arguments:\n" +
+            "Run Conway's Game of Life in your terminal!\n" +
+            "Supply the following arguments:\n" +
             "   - Number of rows .......... At least 3, or else -1 to fit the console height\n" +
             "   - Number of columns ....... At least 3, or else -1 to fit the console width\n" +
             "   - Initial density (%) ..... 1 to 99 (inclusive, digits only), or else -1 for random\n" +
@@ -33,7 +34,7 @@
                 catch (Exception ex)
                 {
                     ForegroundColor = ConsoleColor.Yellow;
-                    WriteLine(ex.Message);
+                    WriteLine("ERROR: " + ex.Message);
                     ResetColor();
 
                     WriteLine(Instructions);
@@ -68,11 +69,12 @@
             var iterationStopwatch = new Stopwatch();
             iterationStopwatch.Start();
 
+            // TODO: Pre-game output can't be seen post-game on the Windows command line, so also add post-game.
             Write("Preparing... ");
             Grid grid = new(settings);
             WriteLine("done in " + grid.GameStopwatch.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
 
-            grid.Print();
+            grid.PrintEntire(shouldClear: true);
             Thread.Sleep(settings.IterationDelayMs);
 
             grid.PrintIterationSummary(iterationStopwatch.Elapsed);
