@@ -2,16 +2,6 @@ namespace GameOfLife
 {
     public static class GridExtensionMethods
     {
-        private static readonly Dictionary<GridStatus, ConsoleColor> StatusColors
-            = new()
-            {
-                { GridStatus.Alive, ConsoleColor.Green },
-                { GridStatus.Dead, ConsoleColor.DarkRed },
-                { GridStatus.Looping, ConsoleColor.Cyan },
-                { GridStatus.Stagnated, ConsoleColor.Blue },
-                { GridStatus.Aborted, ConsoleColor.DarkRed },
-            };
-
         /// <summary>
         /// Outputs the entire grid to the console. Intended to be used at game start.
         /// </summary>
@@ -22,7 +12,7 @@ namespace GameOfLife
             if (shouldClear)
                 Clear();
 
-            ForegroundColor = StatusColors[grid.Status];
+            ForegroundColor = Colors.StatusColors[grid.Status];
 
             for (var row = 0; row < grid.RowCount; row++)
             {
@@ -40,7 +30,7 @@ namespace GameOfLife
         /// <param name="cellsForUpdate"></param>
         public static void PrintUpdates(this Grid grid, List<Cell> cellsForUpdate)
         {
-            ForegroundColor = StatusColors[grid.Status];
+            ForegroundColor = Colors.StatusColors[grid.Status];
 
             try
             {
@@ -92,7 +82,7 @@ namespace GameOfLife
                 _ => "Unexpectedly finished"
             };
 
-            ForegroundColor = StatusColors[grid.Status];
+            ForegroundColor = Colors.StatusColors[grid.Status];
 
             SetCursorPosition(0, grid.OutputRow + 1);
 
