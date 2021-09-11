@@ -57,7 +57,7 @@ namespace GameOfLife
         {
             ResetColor();
 
-            SetCursorPosition(0, grid.OutputRow);
+            SetCursorPosition(0, grid.FirstOutputRow);
 
             var durationText = duration == null
                 ? ""
@@ -82,16 +82,20 @@ namespace GameOfLife
                 _ => "Unexpectedly finished"
             };
 
+            var iterationStatement = grid.LastLivingIteration == null
+                ? $"{grid.IterationNumber:#,##0} iterations"
+                : $"{grid.IterationNumber:#,##0} iterations (alive for {grid.LastLivingIteration:#,##0})";
+
             ForegroundColor = Colors.StatusColors[grid.Status];
 
-            SetCursorPosition(0, grid.OutputRow + 1);
+            SetCursorPosition(0, grid.FirstOutputRow + 1);
 
             // Clear the line, then return to its start.
             // (This might not work when debugging since WindowWidth might equal 0.)
             Write(new string(' ', WindowWidth - 1) + "\r");
 
             // Ex.: Infinite loop reached after 3,589 iterations in 277.96s (12.91 iterations/s).
-            Write($"{statusStatement} after {grid.IterationNumber:#,##0} iterations in " +
+            Write($"{statusStatement} after {iterationStatement} in " +
                   $"{grid.GameStopwatch.Elapsed.TotalSeconds:#,##0.###}s " +
                   $"({grid.IterationNumber / grid.GameStopwatch.Elapsed.TotalSeconds:#,##0.###} iterations/s).");
 

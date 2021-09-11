@@ -21,6 +21,7 @@ namespace GameOfLife
 
         public List<Cell> AllCellsFlattened { get; private init; }
 
+        // The status of the grid. It should only change once, when the game ends.
         public GridStatus Status { get; private set; } = GridStatus.Alive;
 
         /// <summary>
@@ -28,23 +29,24 @@ namespace GameOfLife
         /// </summary>
         private Queue<string> ChangeHistory { get; } = new Queue<string>(ChangeHistoryMaxItems);
 
-        private const ushort ChangeHistoryMaxItems = 7; // TODO: Convert into a setting.
+        private const ushort ChangeHistoryMaxItems = 5;
 
         public readonly Dictionary<bool, char> GridChars =
             new()
             {
                 { true, 'X' }, // Other candidates: █  // TODO: Convert into a setting.
-                { false, ' ' } // Other candidate: ·
+                { false, ' ' }
             };
 
-        public nuint IterationNumber { get; private set; } = 0;
-        public int OutputRow => RowCount + 1;
+        public nuint IterationNumber { get; private set; }
+        public nuint? LastLivingIteration { get; private set; }
+        public int FirstOutputRow => RowCount + 1;
         public Stopwatch GameStopwatch { get; private init; } = new();
 
         #region Setup
 
         /// <summary>
-        /// Constructor that start the game using a specific collection of cells
+        /// Constructor that starts the game using a specific collection of cells
         /// to initially be given life.
         /// </summary>
         /// <param name="rowCount"></param>
@@ -272,16 +274,22 @@ namespace GameOfLife
 
         /// <summary>
         /// Update the grid status, then also print the game status if needed.
+        /// The simulation might continue in a non-alive state, though.
         /// </summary>
         /// <param name="newStatus"></param>
         private void UpdateStatus(GridStatus newStatus)
         {
-            var shouldPrintResults = Status == GridStatus.Alive;
+            var isLeavingAliveState = Status == GridStatus.Alive;
+            var willStartLooping = newStatus == GridStatus.Looping;
 
             Status = newStatus;
 
-            if (shouldPrintResults)
+            if (isLeavingAliveState)
                 this.PrintGameStatus();
+
+            // The grid will continue in a non-alive state, so log when life ended.
+            if (willStartLooping)
+                LastLivingIteration = IterationNumber;
         }
 
         public void AbortGame() => UpdateStatus(GridStatus.Aborted);

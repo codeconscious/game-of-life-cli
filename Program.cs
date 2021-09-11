@@ -114,7 +114,7 @@
             grid.PrintGameStatus();
 
             // Place the cursor after the program output.
-            SetCursorPosition(0, grid.OutputRow + 1);
+            SetCursorPosition(0, grid.FirstOutputRow + 1);
         }
     }
 }
