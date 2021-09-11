@@ -1,6 +1,6 @@
 namespace GameOfLife
 {
-    public enum GridStatus
+    public enum GridState
     {
         Alive,
         Looping, // Stuck in an infinite loop.

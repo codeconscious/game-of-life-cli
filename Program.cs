@@ -109,9 +109,9 @@
 
                 grid.PrintIterationSummary(iterationStopwatch.Elapsed);
             }
-            while (grid.Status == GridStatus.Alive || grid.Status == GridStatus.Looping);
+            while (grid.State == GridState.Alive || grid.State == GridState.Looping);
 
-            grid.PrintGameStatus();
+            grid.PrintGameSummary();
 
             // Place the cursor after the program output.
             SetCursorPosition(0, grid.FirstOutputRow + 1);

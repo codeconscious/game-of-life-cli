@@ -21,11 +21,11 @@ namespace GameOfLife
 
         public List<Cell> AllCellsFlattened { get; private init; }
 
-        // The status of the grid. It should only change once, when the game ends.
-        public GridStatus Status { get; private set; } = GridStatus.Alive;
+        // The state of the grid should only change once, when the game ends.
+        public GridState State { get; private set; } = GridState.Alive;
 
         /// <summary>
-        /// A log of the last few cell updates made. Used for testing for certain grid statuses.
+        /// A log of the last few cell updates made. Used for testing for certain grid states.
         /// </summary>
         private Queue<string> ChangeHistory { get; } = new Queue<string>(ChangeHistoryMaxItems);
 
@@ -201,13 +201,13 @@ namespace GameOfLife
         #endregion
 
         /// <summary>
-        /// Iterate (advance) the grid to its next state.
+        /// Iterate (advance) the grid to its next incarnation.
         /// </summary>
         public void Iterate()
         {
             var cellsToFlip = GetCellsToFlip();
             Cell.FlipStatuses(cellsToFlip);
-            UpdateHistoryAndGameStatus(cellsToFlip);
+            UpdateHistoryAndGameState(cellsToFlip);
             this.PrintUpdates(cellsToFlip);
         }
 
@@ -233,24 +233,24 @@ namespace GameOfLife
         }
 
         /// <summary>
-        /// Updates the grid change history, then uses it to check grid status.
+        /// Updates the grid change history, then uses it to check grid state.
         /// </summary>
         /// <param name="recentlyFlippedCells"></param>
-        private void UpdateHistoryAndGameStatus(IList<Cell> recentlyFlippedCells)
+        private void UpdateHistoryAndGameState(IList<Cell> recentlyFlippedCells)
         {
             IterationNumber++;
 
             // No living cell means grid death.
             if (!AllCellsFlattened.Any(c => c.IsAlive))
             {
-                UpdateStatus(GridStatus.Dead);
+                UpdateState(GridState.Dead);
                 return;
             }
 
             // No updates means stagnation.
             if (!recentlyFlippedCells.Any())
             {
-                UpdateStatus(GridStatus.Stagnated);
+                UpdateState(GridState.Stagnated);
                 return;
             }
 
@@ -260,10 +260,10 @@ namespace GameOfLife
             ChangeHistory.Enqueue(updateSignature);
 
             // Identical updates in the history indicate that the grid is looping.
-            if (this.Status != GridStatus.Looping &&
+            if (this.State != GridState.Looping &&
                 ChangeHistory.Count != ChangeHistory.Distinct().Count())
             {
-                UpdateStatus(GridStatus.Looping);
+                UpdateState(GridState.Looping);
                 return;
             }
 
@@ -273,25 +273,25 @@ namespace GameOfLife
         }
 
         /// <summary>
-        /// Update the grid status, then also print the game status if needed.
+        /// Update the grid state, then also print the game state if needed.
         /// The simulation might continue in a non-alive state, though.
         /// </summary>
-        /// <param name="newStatus"></param>
-        private void UpdateStatus(GridStatus newStatus)
+        /// <param name="newState"></param>
+        private void UpdateState(GridState newState)
         {
-            var isLeavingAliveState = Status == GridStatus.Alive;
-            var willStartLooping = newStatus == GridStatus.Looping;
+            var isLeavingAliveState = State == GridState.Alive;
+            var willStartLooping = newState == GridState.Looping;
 
-            Status = newStatus;
+            State = newState;
 
             if (isLeavingAliveState)
-                this.PrintGameStatus();
+                this.PrintGameSummary();
 
             // The grid will continue in a non-alive state, so log when life ended.
             if (willStartLooping)
                 LastLivingIteration = IterationNumber;
         }
 
-        public void AbortGame() => UpdateStatus(GridStatus.Aborted);
+        public void AbortGame() => UpdateState(GridState.Aborted);
     }
 }

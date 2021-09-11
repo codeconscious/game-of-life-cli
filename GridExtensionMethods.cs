@@ -6,13 +6,13 @@ namespace GameOfLife
         /// Outputs the entire grid to the console. Intended to be used at game start.
         /// </summary>
         /// <param name="grid"></param>
-        /// <param name="shouldClear">Should the screen be cleared?</param>
+        /// <param name="shouldClear">Should the screen be cleared first?</param>
         public static void PrintEntire(this Grid grid, bool shouldClear)
         {
             if (shouldClear)
                 Clear();
 
-            ForegroundColor = Colors.StatusColors[grid.Status];
+            ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
             for (var row = 0; row < grid.RowCount; row++)
             {
@@ -30,7 +30,7 @@ namespace GameOfLife
         /// <param name="cellsForUpdate"></param>
         public static void PrintUpdates(this Grid grid, List<Cell> cellsForUpdate)
         {
-            ForegroundColor = Colors.StatusColors[grid.Status];
+            ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
             try
             {
@@ -68,17 +68,17 @@ namespace GameOfLife
 
         /// <summary>
         /// Outputs a single-line summary of the entire game.
-        /// Intended to be used for entire-grid status changes.
+        /// Intended to be used when there's an entire-grid state change.
         /// </summary>
         /// <param name="grid"></param>
-        public static void PrintGameStatus(this Grid grid)
+        public static void PrintGameSummary(this Grid grid)
         {
-            var statusStatement = grid.Status switch
+            var stateStatement = grid.State switch
             {
-                GridStatus.Dead => "Extinction occurred",
-                GridStatus.Looping => "Endless loop reached",
-                GridStatus.Stagnated => "Stagnated",
-                GridStatus.Aborted => "Aborted",
+                GridState.Dead => "Extinction occurred",
+                GridState.Looping => "Endless loop reached",
+                GridState.Stagnated => "Stagnated",
+                GridState.Aborted => "Aborted",
                 _ => "Unexpectedly finished"
             };
 
@@ -86,7 +86,7 @@ namespace GameOfLife
                 ? $"{grid.IterationNumber:#,##0} iterations"
                 : $"{grid.IterationNumber:#,##0} iterations (alive for {grid.LastLivingIteration:#,##0})";
 
-            ForegroundColor = Colors.StatusColors[grid.Status];
+            ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
             SetCursorPosition(0, grid.FirstOutputRow + 1);
 
@@ -95,7 +95,7 @@ namespace GameOfLife
             Write(new string(' ', WindowWidth - 1) + "\r");
 
             // Ex.: Infinite loop reached after 3,589 iterations in 277.96s (12.91 iterations/s).
-            Write($"{statusStatement} after {iterationStatement} in " +
+            Write($"{stateStatement} after {iterationStatement} in " +
                   $"{grid.GameStopwatch.Elapsed.TotalSeconds:#,##0.###}s " +
                   $"({grid.IterationNumber / grid.GameStopwatch.Elapsed.TotalSeconds:#,##0.###} iterations/s).");
 
