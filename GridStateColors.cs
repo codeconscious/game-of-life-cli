@@ -6,7 +6,7 @@ namespace GameOfLife
             = new()
             {
                 { GridState.Alive, ConsoleColor.Green },
-                { GridState.Dead, ConsoleColor.DarkRed },
+                { GridState.Extinct, ConsoleColor.DarkRed },
                 { GridState.Looping, ConsoleColor.Cyan },
                 { GridState.Stagnated, ConsoleColor.Blue },
                 { GridState.Aborted, ConsoleColor.DarkRed },

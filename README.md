@@ -26,7 +26,6 @@ Simply build the program and run it in your terminal. Certain arguments are nece
 
 ## TODO
 
-* Add game settings to the final output (for Windows, which doesn't allow scrolling back up)
 * Adding and editing application settings
 * Allow submitting seeds manually (maybe)
 * Check the possibility of higher resolution

@@ -9,6 +9,8 @@ namespace GameOfLife
         /// <param name="shouldClear">Should the screen be cleared first?</param>
         public static void PrintEntire(this Grid grid, bool shouldClear)
         {
+            ArgumentNullException.ThrowIfNull(grid);
+
             if (shouldClear)
                 Clear();
 
@@ -30,6 +32,8 @@ namespace GameOfLife
         /// <param name="cellsForUpdate"></param>
         public static void PrintUpdates(this Grid grid, List<Cell> cellsForUpdate)
         {
+            ArgumentNullException.ThrowIfNull(grid);
+
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
             try
@@ -55,6 +59,8 @@ namespace GameOfLife
         /// <param name="duration">An optional iteration time duration.</param>
         public static void PrintIterationSummary(this Grid grid, TimeSpan? duration = null)
         {
+            ArgumentNullException.ThrowIfNull(grid);
+
             ResetColor();
 
             SetCursorPosition(0, grid.FirstOutputRow);
@@ -63,7 +69,7 @@ namespace GameOfLife
                 ? ""
                 : $"({duration.Value.TotalMilliseconds:#,##0}ms)";
 
-            Write($"<Press any key to quit>  Iteration {grid.IterationNumber:#,##0} {durationText}  ");
+            Write($"<Press any key to quit>  Iteration {grid.CurrentIteration:#,##0} {durationText}  ");
         }
 
         /// <summary>
@@ -73,33 +79,41 @@ namespace GameOfLife
         /// <param name="grid"></param>
         public static void PrintGameSummary(this Grid grid)
         {
-            var stateStatement = grid.State switch
+            ArgumentNullException.ThrowIfNull(grid);
+
+            var stateClause = grid.State switch
             {
-                GridState.Dead => "Extinction occurred",
-                GridState.Looping => "Endless loop reached",
-                GridState.Stagnated => "Stagnated",
+                GridState.Extinct => "Extinction",
+                GridState.Looping => "Endless loop",
+                GridState.Stagnated => "Stagnation",
                 GridState.Aborted => "Aborted",
-                _ => "Unexpectedly finished"
+                _ => "Unknown" // Should never be reached
             };
 
-            var iterationStatement = grid.LastLivingIteration == null
-                ? $"{grid.IterationNumber:#,##0} iterations"
-                : $"{grid.IterationNumber:#,##0} iterations (alive for {grid.LastLivingIteration:#,##0})";
+            var iterationClause = grid.LastLivingIteration == null
+                ? $"{grid.CurrentIteration:#,##0} iterations"
+                : $"{grid.CurrentIteration:#,##0} iterations (alive for {grid.LastLivingIteration:#,##0})";
+
+            var seconds = grid.GameStopwatch.Elapsed.TotalSeconds;
+
+            var secondsClause = $"{seconds:#,##0.###} sec";
+
+            var iterationsPerSecondClause = ((grid.LastLivingIteration ?? grid.CurrentIteration) /
+                                            seconds).ToString("#,##0.###") + " iterations/sec";
+
+            var gridClause = $"{grid.RowCount} × {grid.ColumnCount}";
 
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
-            SetCursorPosition(0, grid.FirstOutputRow + 1);
+            SetCursorPosition(0, grid.FirstOutputRow + 1); // TODO: Use the FirstOutputRow instead?
 
             // Clear the line, then return to its start.
             // (This might not work when debugging since WindowWidth might equal 0.)
             Write(new string(' ', WindowWidth - 1) + "\r");
 
-            // Ex.: Infinite loop reached after 3,589 iterations in 277.96s (12.91 iterations/s).
-            Write($"{stateStatement} after {iterationStatement} in " +
-                  $"{grid.GameStopwatch.Elapsed.TotalSeconds:#,##0.###}s " +
-                  $"({grid.IterationNumber / grid.GameStopwatch.Elapsed.TotalSeconds:#,##0.###} iterations/s).");
-
-            ResetColor();
+            // Ex.: Aborted | 44,616 iterations (alive for 89) | 0.103s | 862.162 iterations/sec | 20 × 20 | 400 cells
+            Write($"{stateClause} | {iterationClause} | {secondsClause} | " +
+                  $"{iterationsPerSecondClause} | {gridClause} | {grid.TotalCells} cells");
         }
     }
 }

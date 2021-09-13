@@ -5,7 +5,7 @@ namespace GameOfLife
         Alive,
         Looping, // Stuck in an infinite loop.
         Stagnated, // No further changes in future iterations.
-        Dead, // No living cells remaining.
+        Extinct, // No living cells remaining.
         Aborted
     }
 }

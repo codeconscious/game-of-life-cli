@@ -14,6 +14,8 @@ namespace GameOfLife
         /// </summary>
         public int ColumnCount { get; private init; }
 
+        public long TotalCells => RowCount * ColumnCount;
+
         /// <summary>
         /// A dictionary that maps each cell (key) with its neighbor cells (values).
         /// </summary>
@@ -38,7 +40,7 @@ namespace GameOfLife
                 { false, ' ' }
             };
 
-        public nuint IterationNumber { get; private set; }
+        public nuint CurrentIteration { get; private set; }
         public nuint? LastLivingIteration { get; private set; }
         public int FirstOutputRow => RowCount + 1;
         public Stopwatch GameStopwatch { get; private init; } = new();
@@ -238,12 +240,12 @@ namespace GameOfLife
         /// <param name="recentlyFlippedCells"></param>
         private void UpdateHistoryAndGameState(IList<Cell> recentlyFlippedCells)
         {
-            IterationNumber++;
+            CurrentIteration++;
 
             // No living cell means grid death.
             if (!AllCellsFlattened.Any(c => c.IsAlive))
             {
-                UpdateState(GridState.Dead);
+                UpdateState(GridState.Extinct);
                 return;
             }
 
@@ -285,11 +287,14 @@ namespace GameOfLife
             State = newState;
 
             if (isLeavingAliveState)
+            {
+                GameStopwatch.Stop();
                 this.PrintGameSummary();
+            }
 
             // The grid will continue in a non-alive state, so log when life ended.
             if (willStartLooping)
-                LastLivingIteration = IterationNumber;
+                LastLivingIteration = CurrentIteration;
         }
 
         public void AbortGame() => UpdateState(GridState.Aborted);
