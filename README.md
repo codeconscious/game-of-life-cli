@@ -22,7 +22,7 @@ Simply build the program and run it in your terminal. Certain arguments are nece
 
 * Alex Golec氏が投稿された『[a blog post about Reddit interview strategy](https://alexgolec.dev/reddit-interview-problems-the-game-of-life/) (Redditの面接方法について)』というブログ記事の前半を読んでいたら、C#で[ライブゲーム](https://ja.wikipedia.org/wiki/%E3%83%A9%E3%82%A4%E3%83%95%E3%82%B2%E3%83%BC%E3%83%A0)を作ってみたいと思い、何も参照しないで僕なりに開発してみました。
 
-* コンソールのプロジェクトで、せっかくなので未リリースの.NET 6 previewとC# 10の新機能も試用しています。
+* 当プログラムはコンソールのプロジェクトで、せっかくなので未リリースの.NET 6 previewとC# 10の新機能も試用しています。
 
 ## TODO
 
