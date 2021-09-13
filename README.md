@@ -11,11 +11,18 @@ This console project targets the latest .NET 6 preview version and uses some sti
 ### Performance
 
 * Larger grids (generated due to larger or high-resolution screens) will run a slower than smaller ones.
+
 * The program runs much slower on Windows than on Mac OS and Linux. To my understanding, this is due to limitations of the Windows command line.
 
 ## Usage
 
 Simply build it and run it in your terminal. Certain arguments are necessary, but the program will explain them if you run it with no arguments.
+
+## 日本語の要約
+
+* Alex Golec氏が投稿された『[a blog post about Reddit interview strategy](https://alexgolec.dev/reddit-interview-problems-the-game-of-life/) (Redditの面接方法について)』というブログ記事の前半を読んでいたら、C#で[ライブゲーム](https://ja.wikipedia.org/wiki/%E3%83%A9%E3%82%A4%E3%83%95%E3%82%B2%E3%83%BC%E3%83%A0)を作ってみたいと思い、他のを参照せずに僕なりに開発してみました。
+
+* コンソールのプロジェクトで、未リリースの.NET 6 previewを使用。せっかくなので、C# 10の新機能も試用。
 
 ## TODO
 
