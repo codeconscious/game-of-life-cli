@@ -203,7 +203,7 @@ namespace GameOfLife
         #endregion
 
         /// <summary>
-        /// Iterate (advance) the grid to its next incarnation.
+        /// Iterate (advance) the grid to its next incarnation and print the updates.
         /// </summary>
         public void Iterate()
         {
@@ -216,7 +216,6 @@ namespace GameOfLife
         /// <summary>
         /// Get a list of grid cells whose statuses should be flipped (reversed) this iteration.
         /// </summary>
-        /// <param name="grid"></param>
         private List<Cell> GetCellsToFlip()
         {
             var cellsToFlip = new List<Cell>();
@@ -281,12 +280,12 @@ namespace GameOfLife
         /// <param name="newState"></param>
         private void UpdateState(GridState newState)
         {
-            var isLeavingAliveState = State == GridState.Alive;
+            var isNoLongerAlive = State == GridState.Alive;
             var willStartLooping = newState == GridState.Looping;
 
             State = newState;
 
-            if (isLeavingAliveState)
+            if (isNoLongerAlive)
             {
                 GameStopwatch.Stop();
                 this.PrintGameSummary();
