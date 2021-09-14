@@ -41,7 +41,6 @@ namespace GameOfLife
             };
 
         public nuint CurrentIteration { get; private set; }
-        public nuint? LastLivingIteration { get; private set; }
         public int OutputRow => RowCount;
         public Stopwatch GameStopwatch { get; private init; } = new();
 
@@ -207,9 +206,9 @@ namespace GameOfLife
         /// </summary>
         public void Iterate()
         {
-            var cellsToFlip = GetCellsToFlip();
+            var cellsToFlip = this.GetCellsToFlip();
             Cell.FlipLifeStatuses(cellsToFlip);
-            UpdateHistoryAndGameState(cellsToFlip);
+            this.UpdateHistoryAndGameState(cellsToFlip);
             this.PrintUpdates(cellsToFlip);
         }
 
@@ -275,25 +274,19 @@ namespace GameOfLife
 
         /// <summary>
         /// Update the grid state, then also print the game state if needed.
-        /// The simulation might continue in a non-alive state, though.
         /// </summary>
         /// <param name="newState"></param>
         private void UpdateState(GridState newState)
         {
-            var isNoLongerAlive = State == GridState.Alive;
-            var willStartLooping = newState == GridState.Looping;
+            var wasAlive = State == GridState.Alive;
 
             State = newState;
 
-            if (isNoLongerAlive)
+            if (wasAlive)
             {
                 GameStopwatch.Stop();
                 this.PrintGameSummary();
             }
-
-            // The grid will continue in a non-alive state, so log when life ended.
-            if (willStartLooping)
-                LastLivingIteration = CurrentIteration;
         }
 
         public void AbortGame() => UpdateState(GridState.Aborted);

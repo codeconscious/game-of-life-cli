@@ -107,7 +107,7 @@
                 grid.Iterate();
                 Thread.Sleep(settings.IterationDelayMs);
 
-                if (grid.State != GridState.Looping)
+                if (grid.State == GridState.Alive)
                     grid.PrintIterationSummary(iterationStopwatch.Elapsed);
             }
             while (grid.State == GridState.Alive || grid.State == GridState.Looping);

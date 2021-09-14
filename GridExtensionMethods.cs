@@ -6,7 +6,7 @@ namespace GameOfLife
         /// Outputs the entire grid to the console. Intended to be used at game start.
         /// </summary>
         /// <param name="grid"></param>
-        /// <param name="shouldClear">Should the screen be cleared first?</param>
+        /// <param name="shouldClear">Specifies whether the screen be cleared first.</param>
         public static void PrintEntire(this Grid grid, bool shouldClear)
         {
             ArgumentNullException.ThrowIfNull(grid);
@@ -90,25 +90,22 @@ namespace GameOfLife
                 _ => "Unknown" // Should never be reached
             };
 
-            var iterationClause = grid.LastLivingIteration == null
-                ? $"{grid.CurrentIteration:#,##0} iterations"
-                : $"{grid.CurrentIteration:#,##0} iterations (alive for {grid.LastLivingIteration:#,##0})";
+            var iterationClause = $"{grid.CurrentIteration:#,##0} iterations";
 
             var seconds = grid.GameStopwatch.Elapsed.TotalSeconds;
 
             var secondsClause = $"{seconds:#,##0.###} sec";
 
-            var iterationsPerSecondClause = ((grid.LastLivingIteration ?? grid.CurrentIteration) /
-                                            seconds).ToString("#,##0.###") + " iterations/sec";
+            var iterationsPerSecondClause =
+                (grid.CurrentIteration / seconds).ToString("#,##0.###") +
+                " iterations/sec";
 
             var gridClause = $"{grid.RowCount} × {grid.ColumnCount}";
 
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
+            // Move to the output row, then clear it.
             SetCursorPosition(0, grid.OutputRow);
-
-            // Clear the line, then return to its start.
-            // (This might not work when debugging since WindowWidth might equal 0.)
             Utility.ClearCurrentLine();
 
             // Ex.: Endless loop | 813 iterations | 4.181 sec | 194.431 iterations/sec | 44 × 178 | 7,832 cells
@@ -118,7 +115,7 @@ namespace GameOfLife
             // If we're looping, then show how to exit.
             if (grid.State == GridState.Looping)
             {
-                ForegroundColor = ConsoleColor.White;
+                ForegroundColor = ConsoleColor.Gray;
                 SetCursorPosition(0, grid.OutputRow + 1);
                 WriteLine("Press any key to quit.");
             }
