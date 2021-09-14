@@ -111,8 +111,6 @@
             }
             while (grid.State == GridState.Alive || grid.State == GridState.Looping);
 
-            grid.PrintGameSummary();
-
             // Place the cursor after the program output.
             SetCursorPosition(0, grid.FirstOutputRow + 1);
         }
