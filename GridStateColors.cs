@@ -9,7 +9,7 @@ namespace GameOfLife
                 { GridState.Extinct, ConsoleColor.DarkRed },
                 { GridState.Looping, ConsoleColor.Cyan },
                 { GridState.Stagnated, ConsoleColor.Blue },
-                { GridState.Aborted, ConsoleColor.DarkRed },
+                { GridState.Aborted, ConsoleColor.Red },
             };
     }
 }
