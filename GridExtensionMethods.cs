@@ -109,9 +109,9 @@ namespace GameOfLife
 
             // Clear the line, then return to its start.
             // (This might not work when debugging since WindowWidth might equal 0.)
-            Write(new string(' ', WindowWidth - 1) + "\r");
+            Utility.ClearCurrentLine();
 
-            // Ex.: Aborted | 44,616 iterations (alive for 89) | 0.103s | 862.162 iterations/sec | 20 × 20 | 400 cells
+            // Ex.: Endless loop | 813 iterations | 4.181 sec | 194.431 iterations/sec | 44 × 178 | 7,832 cells
             Write($"{stateClause} | {iterationClause} | {secondsClause} | " +
                   $"{iterationsPerSecondClause} | {gridClause} | {grid.TotalCells:#,##0} cells");
 
