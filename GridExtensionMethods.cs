@@ -63,7 +63,7 @@ namespace GameOfLife
 
             ResetColor();
 
-            SetCursorPosition(0, grid.FirstOutputRow);
+            SetCursorPosition(0, grid.OutputRow);
 
             var durationText = duration == null
                 ? ""
@@ -105,7 +105,7 @@ namespace GameOfLife
 
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
-            SetCursorPosition(0, grid.FirstOutputRow + 1); // TODO: Use the FirstOutputRow instead?
+            SetCursorPosition(0, grid.OutputRow);
 
             // Clear the line, then return to its start.
             // (This might not work when debugging since WindowWidth might equal 0.)
@@ -114,6 +114,14 @@ namespace GameOfLife
             // Ex.: Aborted | 44,616 iterations (alive for 89) | 0.103s | 862.162 iterations/sec | 20 × 20 | 400 cells
             Write($"{stateClause} | {iterationClause} | {secondsClause} | " +
                   $"{iterationsPerSecondClause} | {gridClause} | {grid.TotalCells:#,##0} cells");
+
+            // If we're looping, then show how to exit.
+            if (grid.State == GridState.Looping)
+            {
+                ForegroundColor = ConsoleColor.White;
+                SetCursorPosition(0, grid.OutputRow + 1);
+                WriteLine("Press any key to quit.");
+            }
         }
     }
 }

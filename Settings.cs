@@ -35,7 +35,7 @@ namespace GameOfLife
             if (args[0] == "-1")
             {
                 // Leave room at the bottom of the screen for output (during and after the game).
-                const int bottomMargin = 5;
+                const int bottomMargin = 3;
 
                 RowCount = Console.WindowHeight == 0 // This can occur when debugging.
                     ? 30 // Debugging value

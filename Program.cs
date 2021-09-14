@@ -107,12 +107,18 @@
                 grid.Iterate();
                 Thread.Sleep(settings.IterationDelayMs);
 
-                grid.PrintIterationSummary(iterationStopwatch.Elapsed);
+                if (grid.State != GridState.Looping)
+                    grid.PrintIterationSummary(iterationStopwatch.Elapsed);
             }
             while (grid.State == GridState.Alive || grid.State == GridState.Looping);
 
+            // Clear the line, then return to its start.
+            // (This might not work when debugging since WindowWidth might equal 0.)
+            SetCursorPosition(0, grid.OutputRow + 1);
+            Write(new string(' ', WindowWidth - 1) + "\r");
+
             // Place the cursor after the program output.
-            SetCursorPosition(0, grid.FirstOutputRow + 1);
+            SetCursorPosition(0, grid.OutputRow);
         }
     }
 }

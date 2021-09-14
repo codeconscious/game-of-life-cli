@@ -42,7 +42,7 @@ namespace GameOfLife
 
         public nuint CurrentIteration { get; private set; }
         public nuint? LastLivingIteration { get; private set; }
-        public int FirstOutputRow => RowCount + 1;
+        public int OutputRow => RowCount;
         public Stopwatch GameStopwatch { get; private init; } = new();
 
         #region Setup
