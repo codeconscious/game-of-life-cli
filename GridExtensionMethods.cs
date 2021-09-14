@@ -113,7 +113,7 @@ namespace GameOfLife
 
             // Ex.: Aborted | 44,616 iterations (alive for 89) | 0.103s | 862.162 iterations/sec | 20 × 20 | 400 cells
             Write($"{stateClause} | {iterationClause} | {secondsClause} | " +
-                  $"{iterationsPerSecondClause} | {gridClause} | {grid.TotalCells} cells");
+                  $"{iterationsPerSecondClause} | {gridClause} | {grid.TotalCells:#,##0} cells");
         }
     }
 }
