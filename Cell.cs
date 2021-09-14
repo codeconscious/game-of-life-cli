@@ -21,15 +21,14 @@ namespace GameOfLife
             };
         }
 
-        public void FlipLifeStatus() => IsAlive = !IsAlive;
-
         /// <summary>
-        /// Updates the cells in the grid as needed, then returns the affected cells.
+        /// Flips (switches) the status of each submitted cell.
+        /// If alive, it dies; if dead, it lives.
         /// </summary>
-        public static void FlipStatuses(IList<Cell> cellsToUpdate)
+        public static void FlipLifeStatuses(IList<Cell> cellsToUpdate)
         {
             foreach (var cell in cellsToUpdate)
-                cell.FlipLifeStatus();
+                cell.IsAlive = !cell.IsAlive;
         }
     }
 }

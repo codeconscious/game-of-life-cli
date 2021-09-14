@@ -208,7 +208,7 @@ namespace GameOfLife
         public void Iterate()
         {
             var cellsToFlip = GetCellsToFlip();
-            Cell.FlipStatuses(cellsToFlip);
+            Cell.FlipLifeStatuses(cellsToFlip);
             UpdateHistoryAndGameState(cellsToFlip);
             this.PrintUpdates(cellsToFlip);
         }
