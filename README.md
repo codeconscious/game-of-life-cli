@@ -6,7 +6,7 @@ After reading the first part of [a blog post about Reddit interviews](https://al
 
 ## Technical
 
-This console project targets the latest .NET 6 preview version and uses some newer and still-unreleased features in C# 10 that I wanted to try out (e.g, nullable reference types, records).
+This console project targets the latest .NET 6 preview version and uses some newer and still-unreleased features (upcoming in C# 10) that I wanted to try out (e.g., nullable reference types, record structs, init, switch expressions, global usings).
 
 ### Performance
 
