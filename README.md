@@ -6,7 +6,7 @@ After reading the first part of [a blog post about Reddit interviews](https://al
 
 ## Technical
 
-This console project targets the latest .NET 6 preview version and uses some still-unreleased features in C# 10 that I wanted to try out.
+This console project targets the latest .NET 6 preview version and uses some newer and still-unreleased features in C# 10 that I wanted to try out (e.g, nullable reference types, records).
 
 ### Performance
 
@@ -26,6 +26,7 @@ Simply build the program and run it in your terminal. Certain arguments are nece
 
 ## TODO
 
-* Adding and editing application settings
+* Adding and editing JSON application settings
 * Allow submitting seeds manually (maybe)
+* Allow only single-byte characters to represent cells
 * Check the possibility of higher resolution
