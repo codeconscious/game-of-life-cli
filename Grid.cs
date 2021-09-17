@@ -27,6 +27,12 @@ namespace GameOfLife
         public GridState State { get; private set; } = GridState.Alive;
 
         /// <summary>
+        /// The delay in milliseconds between two consecutive iterations (turns).
+        /// </summary>
+        /// <value></value>
+        public ushort IterationDelayMs { get; private set; }
+
+        /// <summary>
         /// A log of the last few cell updates made. Used for testing for certain grid states.
         /// </summary>
         private Queue<string> ChangeHistory { get; } = new Queue<string>(ChangeHistoryMaxItems);
@@ -47,39 +53,6 @@ namespace GameOfLife
         #region Setup
 
         /// <summary>
-        /// Constructor that starts the game using a specific collection of cells
-        /// to initially be given life.
-        /// </summary>
-        /// <param name="rowCount"></param>
-        /// <param name="columnCount"></param>
-        /// <param name="startAliveCells">Cells to begin the game alive.</param>
-        public Grid(int rowCount, int columnCount,
-                    List<CoordinatePair> startAliveCells)
-        {
-            CellGrid = new Cell[rowCount, columnCount];
-
-            RowCount = CellGrid.GetLength(0);
-            ColumnCount = CellGrid.GetLength(1);
-
-            // Create all cells and populate the grid with them.
-            for (var row = 0; row < rowCount; row++)
-            {
-                for (var column = 0; column < columnCount; column++)
-                {
-                    var coordinates = new CoordinatePair(row, column);
-                    var startAlive = startAliveCells.Contains(coordinates);
-                    CellGrid[row,column] = new Cell(row, column, startAlive);
-                }
-            }
-
-            AllCellsFlattened = CellGrid.Cast<Cell>().ToList();
-
-            NeighborMap = GetCellNeighbors(this);
-
-            GameStopwatch.Start();
-        }
-
-        /// <summary>
         /// Constructor that start the game using specified settings.
         /// </summary>
         /// <param name="gridSettings"></param>
@@ -89,6 +62,8 @@ namespace GameOfLife
 
             RowCount = CellGrid.GetLength(0);
             ColumnCount = CellGrid.GetLength(1);
+
+            IterationDelayMs = gridSettings.InitialIterationDelayMs;
 
             var random = new Random();
 
@@ -286,9 +261,26 @@ namespace GameOfLife
             {
                 GameStopwatch.Stop();
                 this.PrintGameSummary();
+                IterationDelayMs = 250; // TODO: Clean up this magic number.
             }
         }
 
         public void AbortGame() => UpdateState(GridState.Aborted);
+
+        /// <summary>
+        /// Adjust the iteration delay within the extent of valid values.
+        /// </summary>
+        /// <param name="adjustMs">The number of milliseconds (negative or positive) to adjust by.</param>
+        public void AdjustIterationDelayBy(short adjustMs)
+        {
+            var proposedDelay = IterationDelayMs + adjustMs;
+
+            IterationDelayMs = proposedDelay switch
+            {
+                <= ushort.MinValue => ushort.MinValue,
+                >= ushort.MaxValue => ushort.MaxValue,
+                _ => (ushort) proposedDelay
+            };
+        }
     }
 }

@@ -75,7 +75,7 @@
             WriteLine("done in " + grid.GameStopwatch.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
 
             grid.PrintEntire(shouldClear: true);
-            Thread.Sleep(settings.IterationDelayMs);
+            Thread.Sleep(settings.InitialIterationDelayMs);
 
             grid.PrintIterationSummary(iterationStopwatch.Elapsed);
 
@@ -89,11 +89,11 @@
 
                     if (key == ConsoleKey.LeftArrow) // Make slower
                     {
-                        settings.AdjustIterationDelayBy(50);
+                        grid.AdjustIterationDelayBy(50);
                     }
                     else if (key == ConsoleKey.RightArrow) // Make faster
                     {
-                        settings.AdjustIterationDelayBy(-50);
+                        grid.AdjustIterationDelayBy(-50);
                     }
                     else // Any other key
                     {
@@ -105,7 +105,7 @@
                 iterationStopwatch.Restart();
 
                 grid.Iterate();
-                Thread.Sleep(settings.IterationDelayMs);
+                Thread.Sleep(grid.IterationDelayMs);
 
                 if (grid.State == GridState.Alive)
                     grid.PrintIterationSummary(iterationStopwatch.Elapsed);

@@ -6,15 +6,14 @@ namespace GameOfLife
     public class Settings
     {
         private const byte MinimumRowsColumns = 3;
-        public int RowCount { get; init; }
-        public int ColumnCount { get; init; }
-        public int InitialPopulationRatio { get; init; }
+        public int RowCount { get; private init; }
+        public int ColumnCount { get; private init; }
+        public int InitialPopulationRatio { get; private init; }
 
         /// <summary>
-        /// The delay in milliseconds between two consecutive iterations (turns).
+        /// The initial delay in milliseconds between two consecutive iterations (turns).
         /// </summary>
-        /// <value></value>
-        public ushort IterationDelayMs { get; private set; }
+        public ushort InitialIterationDelayMs { get; private init; }
 
         /// <summary>
         /// The maximum population percentage allowed when setting it randomly.
@@ -86,31 +85,16 @@ namespace GameOfLife
                 if (!ushort.TryParse(args[3], out var iterationDelay))
                     throw new ArgumentOutOfRangeException(nameof(iterationDelay));
 
-                IterationDelayMs = iterationDelay;
+                InitialIterationDelayMs = iterationDelay;
             }
             else
             {
-                IterationDelayMs = 50; // Default value in milliseconds
+                InitialIterationDelayMs = 50; // Default value in milliseconds
             }
 
             WriteLine($"Grid:            {RowCount} rows x {ColumnCount} columns ({RowCount * ColumnCount:#,##0} cells)");
             WriteLine($"Population:      {InitialPopulationRatio}%");
-            WriteLine($"Iteration delay: {IterationDelayMs}ms");
-        }
-
-        /// <summary>
-        /// Adjust the iteration delay within the extent of valid values.
-        /// </summary>
-        /// <param name="adjustMs">The number of milliseconds (negative or positive) to adjust by.</param>
-        public void AdjustIterationDelayBy(short adjustMs)
-        {
-            var proposedDelay = IterationDelayMs + adjustMs;
-
-            if (proposedDelay >= ushort.MinValue &&
-                proposedDelay < ushort.MaxValue)
-            {
-                IterationDelayMs = (ushort) proposedDelay;
-            }
+            WriteLine($"Iteration delay: {InitialIterationDelayMs}ms");
         }
     }
 }
