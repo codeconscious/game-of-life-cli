@@ -5,9 +5,9 @@ namespace GameOfLife
     /// </summary>
     public class Settings
     {
-        private const byte MinimumRowsColumns = 3;
-        public int RowCount { get; private init; }
-        public int ColumnCount { get; private init; }
+        private const byte MinimumWidthHeight = 3;
+        public int Width { get; private init; }
+        public int Height { get; private init; }
         public int InitialPopulationRatio { get; private init; }
 
         /// <summary>
@@ -30,37 +30,37 @@ namespace GameOfLife
             if (args.Length != 3 && args.Length != 4)
                 throw new ArgumentException("An unsupported number of arguments was passed in.");
 
-            // Verify the row arg
+            // Verify the width (X axis) arg
             if (args[0] == "-1")
             {
-                // Leave room at the bottom of the screen for output (during and after the game).
-                const int bottomMargin = 3;
-
-                RowCount = Console.WindowHeight == 0 // This can occur when debugging.
-                    ? 30 // Debugging value
-                    : Console.WindowHeight - bottomMargin;
-            }
-            else
-            {
-                if (!ushort.TryParse(args[0], out var rowCount) || rowCount < MinimumRowsColumns)
-                    throw new ArgumentOutOfRangeException(nameof(rowCount));
-
-                RowCount = rowCount;
-            }
-
-            // Verify the column arg
-            if (args[1] == "-1")
-            {
-                ColumnCount = Console.WindowWidth == 0 // This can occur when debugging.
+                Width = Console.WindowWidth == 0 // This can occur when debugging.
                     ? 200 // Debugging value
                     : Console.WindowWidth;
             }
             else
             {
-                if (!ushort.TryParse(args[1], out var columnCount) || columnCount < MinimumRowsColumns)
-                    throw new ArgumentOutOfRangeException(nameof(columnCount));
+                if (!ushort.TryParse(args[0], out var width) || width < MinimumWidthHeight)
+                    throw new ArgumentOutOfRangeException(nameof(width));
 
-                ColumnCount = columnCount;
+                Width = width;
+            }
+
+            // Verify the height (Y axis) arg
+            if (args[1] == "-1")
+            {
+                // Leave room at the bottom of the screen for output (during and after the game).
+                const int bottomMargin = 3;
+
+                Height = Console.WindowHeight == 0 // This can occur when debugging.
+                    ? 30 // Debugging value
+                    : Console.WindowHeight - bottomMargin;
+            }
+            else
+            {
+                if (!ushort.TryParse(args[1], out var height) || height < MinimumWidthHeight)
+                    throw new ArgumentOutOfRangeException(nameof(height));
+
+                Height = height;
             }
 
             // Verify the population ratio arg
@@ -70,13 +70,13 @@ namespace GameOfLife
             }
             else
             {
-                if (!byte.TryParse(args[2], out var lifeProbability) ||
-                    lifeProbability > 100 || lifeProbability < 1)
+                if (!byte.TryParse(args[2], out var populationRatio) ||
+                    populationRatio > 100 || populationRatio < 1)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(lifeProbability));
+                    throw new ArgumentOutOfRangeException(nameof(populationRatio));
                 }
 
-                InitialPopulationRatio = lifeProbability;
+                InitialPopulationRatio = populationRatio;
             }
 
             // Verify the optional iteration delay arg, or if it's missing, set a default.
@@ -92,7 +92,7 @@ namespace GameOfLife
                 InitialIterationDelayMs = 50; // Default value in milliseconds
             }
 
-            WriteLine($"Grid:            {RowCount} rows x {ColumnCount} columns ({RowCount * ColumnCount:#,##0} cells)");
+            WriteLine($"Grid:            {Width} columns x {Height} rows ({Width * Height:#,##0} cells)");
             WriteLine($"Population:      {InitialPopulationRatio}%");
             WriteLine($"Iteration delay: {InitialIterationDelayMs}ms");
         }

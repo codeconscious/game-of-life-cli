@@ -3,18 +3,10 @@ namespace GameOfLife
     public class Grid
     {
         public Cell[,] CellGrid { get; init; }
+        public int Width { get; private init; }
+        public int Height { get; private init; }
 
-        /// <summary>
-        /// The count of rows (counting vertically) in the grid.
-        /// </summary>
-        public int RowCount { get; private init; }
-
-        /// <summary>
-        /// The count of columns (counting horizontally) in the grid.
-        /// </summary>
-        public int ColumnCount { get; private init; }
-
-        public long TotalCells => RowCount * ColumnCount;
+        public long TotalCells => Width * Height;
 
         /// <summary>
         /// A dictionary that maps each cell (key) with its neighbor cells (values).
@@ -27,9 +19,8 @@ namespace GameOfLife
         public GridState State { get; private set; } = GridState.Alive;
 
         /// <summary>
-        /// The delay in milliseconds between two consecutive iterations (turns).
+        /// The delay in milliseconds between two consecutive iterations.
         /// </summary>
-        /// <value></value>
         public ushort IterationDelayMs { get; private set; }
 
         /// <summary>
@@ -47,7 +38,7 @@ namespace GameOfLife
             };
 
         public nuint CurrentIteration { get; private set; }
-        public int OutputRow => RowCount;
+        public int OutputRow => Height;
         public Stopwatch GameStopwatch { get; private init; } = new();
 
         #region Setup
@@ -58,22 +49,22 @@ namespace GameOfLife
         /// <param name="gridSettings"></param>
         public Grid(Settings gridSettings)
         {
-            CellGrid = new Cell[gridSettings.RowCount, gridSettings.ColumnCount];
+            CellGrid = new Cell[gridSettings.Width, gridSettings.Height];
 
-            RowCount = CellGrid.GetLength(0);
-            ColumnCount = CellGrid.GetLength(1);
+            Width = CellGrid.GetLength(0);
+            Height = CellGrid.GetLength(1);
 
             IterationDelayMs = gridSettings.InitialIterationDelayMs;
 
             var random = new Random();
 
             // Create the cells and populate the grid with them.
-            for (var row = 0; row < gridSettings.RowCount; row++)
+            for (var x = 0; x < gridSettings.Width; x++)
             {
-                for (var column = 0; column < gridSettings.ColumnCount; column++)
+                for (var y = 0; y < gridSettings.Height; y++)
                 {
                     var startAlive = random.Next(100) <= gridSettings.InitialPopulationRatio;
-                    CellGrid[row,column] = new Cell(row, column, startAlive);
+                    CellGrid[x,y] = new Cell(x, y, startAlive);
                 }
             }
 
@@ -94,7 +85,7 @@ namespace GameOfLife
 
             Parallel.ForEach(grid.AllCellsFlattened, cell =>
             {
-                var neighborCoordinates = GetCellNeighborCoordinates(grid, cell.Coordinates);
+                var neighborCoordinates = GetCellNeighborCoordinates(grid, cell.Location);
 
                 cellsWithNeighbors.TryAdd(cell, GetCellsByCoordinates(grid, neighborCoordinates));
             });
@@ -108,22 +99,23 @@ namespace GameOfLife
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="sourcePair"></param>
-        /// <param name="shouldWrap">Determines whether cell calculations should wrap around the grid</param>
-        private static List<CoordinatePair> GetCellNeighborCoordinates(Grid grid,
-                                                                       CoordinatePair sourcePair,
-                                                                       bool shouldWrap = true)
+        /// <param name="shouldWrap">Determines whether the grid should wrap.</param>
+        private static List<Point> GetCellNeighborCoordinates(Grid grid,
+                                                              Point sourcePair,
+                                                              bool shouldWrap = true)
         {
             // The most variations likely to be held is 14 (9 - 1 + 5 possible corrections).
-            var generatedPairs = new List<CoordinatePair>(14);
+            var generatedPairs = new List<Point>(14);
 
             // Gather all potential neighbor values, including invalid ones.
-            for (var row = -1; row <= 1; row++)
+            for (var x = -1; x <= 1; x++)
             {
-                for (var column = -1; column <= 1; column++)
+                for (var y = -1; y <= 1; y++)
                 {
                     generatedPairs.Add(
-                        new CoordinatePair(sourcePair.Row + row,
-                                           sourcePair.Column + column));
+                        new Point(
+                            sourcePair.X + x,
+                            sourcePair.Y + y));
                 }
             }
 
@@ -132,30 +124,30 @@ namespace GameOfLife
 
             if (shouldWrap)
             {
-                var correctedPairs = new List<CoordinatePair>();
+                var correctedPoints = new List<Point>();
 
-                foreach (var invalidPair in generatedPairs.Where(p => !p.IsValid(grid.RowCount, grid.ColumnCount)))
+                foreach (var invalidPair in generatedPairs.Where(p => !p.IsValid(grid.Width, grid.Height)))
                 {
                     var workingPair = invalidPair;
 
-                    if (workingPair.Row < 0)
-                        workingPair = workingPair with { Row = grid.RowCount - 1 };
-                    if (workingPair.Row >= grid.RowCount)
-                        workingPair = workingPair with { Row = 0 };
-                    if (workingPair.Column < 0)
-                        workingPair = workingPair with { Column = grid.ColumnCount - 1 };
-                    if (workingPair.Column >= grid.ColumnCount)
-                        workingPair = workingPair with { Column = 0 };
+                    if (workingPair.X < 0)
+                        workingPair = workingPair with { X = grid.Width - 1 };
+                    if (workingPair.X >= grid.Width)
+                        workingPair = workingPair with { X = 0 };
+                    if (workingPair.Y < 0)
+                        workingPair = workingPair with { Y = grid.Height - 1 };
+                    if (workingPair.Y >= grid.Height)
+                        workingPair = workingPair with { Y = 0 };
 
-                    correctedPairs.Add(workingPair);
+                    correctedPoints.Add(workingPair);
                 }
 
-                generatedPairs.AddRange(correctedPairs);
+                generatedPairs.AddRange(correctedPoints);
             }
 
-            var validPairs = generatedPairs.Where(p => p.IsValid(grid.RowCount, grid.ColumnCount));
+            var validPairs = generatedPairs.Where(p => p.IsValid(grid.Width, grid.Height));
 
-            return validPairs.Select(v => new CoordinatePair(v.Row, v.Column))
+            return validPairs.Select(v => new Point(v.X, v.Y))
                              .ToList();
         }
 
@@ -164,12 +156,12 @@ namespace GameOfLife
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="coordinates"></param>
-        private static List<Cell> GetCellsByCoordinates(Grid grid, List<CoordinatePair> coordinates)
+        private static List<Cell> GetCellsByCoordinates(Grid grid, List<Point> coordinates)
         {
             var output = new List<Cell>(coordinates.Count);
 
             foreach (var pair in coordinates)
-                output.Add(grid.CellGrid[pair.Row, pair.Column]);
+                output.Add(grid.CellGrid[pair.X, pair.Y]);
 
             return output;
         }
@@ -230,7 +222,7 @@ namespace GameOfLife
             }
 
             var updateSignature = string.Concat(
-                recentlyFlippedCells.Select(c => $"{c.Coordinates.Row},{c.Coordinates.Column},{c.IsAlive}"));
+                recentlyFlippedCells.Select(c => $"{c.Location.X},{c.Location.Y},{c.IsAlive}"));
 
             ChangeHistory.Enqueue(updateSignature);
 

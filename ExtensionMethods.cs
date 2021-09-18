@@ -1,7 +1,9 @@
 namespace GameOfLife
 {
-    public static class GridExtensionMethods
+    public static class ExtensionMethods
     {
+        #region Grid-related
+
         /// <summary>
         /// Outputs the entire grid to the console. Intended to be used at game start.
         /// </summary>
@@ -16,12 +18,12 @@ namespace GameOfLife
 
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
-            for (var row = 0; row < grid.RowCount; row++)
+            for (var y = 0; y < grid.Height; y++)
             {
-                for (var column = 0; column < grid.ColumnCount; column++)
+                for (var x = 0; x < grid.Width; x++)
                 {
-                    SetCursorPosition(column, row);
-                    Write(grid.GridChars[grid.CellGrid[row, column].IsAlive]);
+                    SetCursorPosition(x, y);
+                    Write(grid.GridChars[grid.CellGrid[x, y].IsAlive]);
                 }
             }
         }
@@ -40,7 +42,7 @@ namespace GameOfLife
             {
                 foreach (var cell in cellsForUpdate)
                 {
-                    SetCursorPosition(cell.Coordinates.Column, cell.Coordinates.Row);
+                    SetCursorPosition(cell.Location.X, cell.Location.Y);
                     Write(grid.GridChars[cell.IsAlive]);
                 }
             }
@@ -100,7 +102,7 @@ namespace GameOfLife
                 (grid.CurrentIteration / seconds).ToString("#,##0.###") +
                 " iterations/sec";
 
-            var gridClause = $"{grid.RowCount} × {grid.ColumnCount}";
+            var gridClause = $"{grid.Width} × {grid.Height}";
 
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
@@ -119,6 +121,27 @@ namespace GameOfLife
                 SetCursorPosition(0, grid.OutputRow + 1);
                 WriteLine("Press any key to quit.");
             }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Determines if a Point is valid -- i.e., within established bounds.
+        /// Point coordinates cannot be negative, nor can they exceed the specified limits.
+        /// </summary>
+        public static bool IsValid(this Point point, int maxWidth, int maxHeight)
+        {
+            // TODO: Prevent null values in the first place.
+            if (maxWidth < 0)
+                throw new ArgumentOutOfRangeException(nameof(maxWidth));
+            if (maxHeight < 0)
+                throw new ArgumentOutOfRangeException(nameof(maxHeight));
+
+            return
+                point.X >= 0 &&
+                point.Y >= 0 &&
+                point.X < maxWidth &&
+                point.Y < maxHeight;
         }
     }
 }

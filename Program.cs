@@ -5,8 +5,8 @@
         private const string Instructions =
             "Run Conway's Game of Life in your terminal!\n" +
             "Supply the following arguments:\n" +
-            "   - Number of rows .......... At least 3, or else -1 to fit the console height\n" +
             "   - Number of columns ....... At least 3, or else -1 to fit the console width\n" +
+            "   - Number of rows .......... At least 3, or else -1 to fit the console height\n" +
             "   - Initial density (%) ..... 1 to 99 (inclusive, digits only), or else -1 for random\n" +
             "   - (Optional) Delay between iterations in milliseconds (Otherwise, defaults to 50)\n" +
             "Alternatively, supply only \"--default\" to use the default settings (in which all values are -1).\n" +
