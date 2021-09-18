@@ -198,7 +198,7 @@ namespace GameOfLife
             {
                 var livingNeighborCount = this.NeighborMap[cell].Count(c => c.IsAlive);
 
-                var willCellBeAlive = cell.WillCellBeAliveNextIteration(livingNeighborCount);
+                var willCellBeAlive = cell.ShouldCellLive(livingNeighborCount);
 
                 if (cell.IsAlive != willCellBeAlive)
                     cellsToFlip.Add(cell);

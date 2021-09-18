@@ -11,7 +11,12 @@ namespace GameOfLife
             IsAlive = isOn;
         }
 
-        public bool WillCellBeAliveNextIteration(int livingNeighborCount)
+        /// <summary>
+        /// Determines if this cell should be alive or not in the next iteration.
+        /// </summary>
+        /// <param name="livingNeighborCount">Count of surrounding cells that are alive.</param>
+        /// <returns>A bool indicate life (true) or death (false).</returns>
+        public bool ShouldCellLive(int livingNeighborCount)
         {
             return livingNeighborCount switch
             {
