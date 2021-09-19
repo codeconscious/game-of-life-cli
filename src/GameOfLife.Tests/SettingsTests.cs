@@ -10,7 +10,8 @@ public class SettingsTests
     [InlineData("50", "30", "20")]
     [InlineData("3", "3", "1")]
     [InlineData("20000", "20000", "99")]
-    public void Constructor_Succeeds_With3ProperArguments(string width, string height, string populationRatio)
+    public void Constructor_Succeeds_With3ProperArguments
+        (string width, string height, string populationRatio)
     {
         var args = new string[] { width, height, populationRatio };
         var settings = new Settings(args);
@@ -26,7 +27,8 @@ public class SettingsTests
     [InlineData("50", "30", "20", "10000")]
     [InlineData("3", "3", "1", "0")]
     [InlineData("20000", "20000", "99", "20000")]
-    public void Constructor_Succeeds_With4ProperArguments(string width, string height, string populationRatio, string delay)
+    public void Constructor_Succeeds_With4ProperArguments
+        (string width, string height, string populationRatio, string delay)
     {
         var args = new string[] { width, height, populationRatio, delay };
         var settings = new Settings(args);
@@ -39,6 +41,23 @@ public class SettingsTests
     }
 
     [Theory]
+    [InlineData("-1", "-1", "1", "0")]
+    [InlineData("-1", "3", "1", "0")]
+    [InlineData("20000", "20000", "99", "20000")]
+    public void Constructor_Succeeds_With4ProperArgumentsIncludingNegative
+        (string width, string height, string populationRatio, string delay)
+    {
+        var args = new string[] { width, height, populationRatio, delay };
+        var settings = new Settings(args);
+
+        Assert.NotNull(settings);
+        Assert.True(settings.Width > 0);
+        Assert.True(settings.Height > 0);
+        Assert.Equal(byte.Parse(populationRatio), settings.InitialPopulationRatio);
+        Assert.Equal(ushort.Parse(delay), settings.InitialIterationDelayMs);
+    }
+
+    [Theory]
     [InlineData("-2", "50", "90")]
     [InlineData("50", "-0", "20")]
     [InlineData("5", "5", "-5")]
@@ -46,7 +65,8 @@ public class SettingsTests
     [InlineData("5", "5", "50.5")]
     [InlineData("5", "5", "101")]
     [InlineData("5", "5", "200")]
-    public void Constructor_ThrowsArgumentOutOfRangeException_WithImproperArgumentInTrio(string width, string height, string populationRatio)
+    public void Constructor_ThrowsArgumentOutOfRangeException_WithImproperNumericArgumentInTrio
+        (string width, string height, string populationRatio)
     {
         var args = new string[] { width, height, populationRatio };
         Assert.Throws<ArgumentOutOfRangeException>(() => new GameOfLife.Settings(args));
@@ -57,9 +77,25 @@ public class SettingsTests
     [InlineData("50", "-0", "20", "10000")]
     [InlineData("5", "5", "200", "-10")]
     [InlineData("5", "5", "200", "200000000")]
-    public void Constructor_ThrowsArgumentOutOfRangeException_WithImproperArgumentInQuartet(string width, string height, string populationRatio, string delay)
+    public void Constructor_ThrowsArgumentOutOfRangeException_WithImproperNumericArgumentInQuartet
+        (string width, string height, string populationRatio, string delay)
     {
         var args = new string[] { width, height, populationRatio, delay };
+        Assert.Throws<ArgumentOutOfRangeException>(() => new GameOfLife.Settings(args));
+    }
+
+    [Theory]
+    [InlineData("-", "50", "90")]
+    [InlineData("50", "+", "20")]
+    [InlineData("5", "5", "::::")]
+    [InlineData("A", "5", "20")]
+    [InlineData("5", "Bb", "20")]
+    [InlineData("5", "5", "101%")]
+    [InlineData("あ", "5", "200")]
+    public void Constructor_ThrowsArgumentException_WithImproperNonNumericArguments
+        (string width, string height, string populationRatio)
+    {
+        var args = new string[] { width, height, populationRatio };
         Assert.Throws<ArgumentOutOfRangeException>(() => new GameOfLife.Settings(args));
     }
 
