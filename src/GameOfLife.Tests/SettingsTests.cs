@@ -5,16 +5,6 @@ namespace GameOfLife.Tests;
 
 public class SettingsTests
 {
-    // [Fact]
-    // public void Constructor_Succeeds_With3ProperArguments()
-    // {
-    //     var args = new string[] { "-1", "-1", "20" };
-    //     var settings = new GameOfLife.Settings(args);
-
-    //     Assert.NotNull(settings);
-    //     Assert.Equal(20, settings.InitialPopulationRatio);
-    // }
-
     [Theory]
     [InlineData("300", "50", "90")]
     [InlineData("50", "30", "20")]
@@ -24,7 +14,7 @@ public class SettingsTests
         var settings = new GameOfLife.Settings(args);
 
         Assert.NotNull(settings);
-        // Assert.Equal(20, settings.InitialPopulationRatio);
+        Assert.Equal(byte.Parse(populationRatio), settings.InitialPopulationRatio);
     }
 
     [Fact]
