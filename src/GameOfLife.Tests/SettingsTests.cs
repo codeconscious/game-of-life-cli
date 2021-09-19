@@ -59,33 +59,48 @@ public class SettingsTests
 
     [Theory]
     [InlineData("-2", "50", "90")]
-    [InlineData("50", "-0", "20")]
     [InlineData("5", "5", "-5")]
-    [InlineData("5", "5", "0")]
-    [InlineData("5", "5", "50.5")]
-    [InlineData("5", "5", "101")]
-    [InlineData("5", "5", "200")]
-    public void Constructor_ThrowsArgumentOutOfRangeException_WithImproperNumericArgumentInTrio
-        (string width, string height, string populationRatio)
+    public void Constructor_ThrowsOverflowException_WithUnparseableNumericArgumentInTrio
+        (string width, string height, string populationRatio, string delay = "50")
     {
-        var args = new string[] { width, height, populationRatio };
-        Assert.Throws<ArgumentOutOfRangeException>(() => new GameOfLife.Settings(args));
+        var args = new string[] { width, height, populationRatio, delay };
+        Assert.Throws<OverflowException>(() => new GameOfLife.Settings(args));
     }
 
     [Theory]
-    [InlineData("-2", "50", "90", "5000")]
-    [InlineData("50", "-0", "20", "10000")]
-    [InlineData("5", "5", "200", "-10")]
+    [InlineData("5", "5", "50.5")]
+    public void Constructor_ThrowsFormatException_WithUnparseableNumericArgumentInTrio
+        (string width, string height, string populationRatio, string delay = "50")
+    {
+        var args = new string[] { width, height, populationRatio, delay };
+        Assert.Throws<FormatException>(() => new GameOfLife.Settings(args));
+    }
+
+    [Theory]
+    [InlineData("50", "-0", "20")]
+    [InlineData("5", "5", "200")]
     [InlineData("5", "5", "200", "200000000")]
-    public void Constructor_ThrowsArgumentOutOfRangeException_WithImproperNumericArgumentInQuartet
-        (string width, string height, string populationRatio, string delay)
+    [InlineData("5", "5", "200", "-10")]
+    public void Constructor_ThrowsArgumentOutOfRangeException_WithImproperNumericArgumentInTrio
+        (string width, string height, string populationRatio, string delay = "50")
     {
         var args = new string[] { width, height, populationRatio, delay };
         Assert.Throws<ArgumentOutOfRangeException>(() => new GameOfLife.Settings(args));
     }
 
     [Theory]
-    [InlineData("-", "50", "90")]
+    [InlineData("5", "5", "-5")]
+    [InlineData("-2", "50", "90", "5000")]
+    [InlineData("50", "-10", "20", "10000")]
+    public void Constructor_ThrowsOverflowException_WithImproperNumericArgumentInQuartet
+        (string width, string height, string populationRatio, string delay = "50")
+    {
+        var args = new string[] { width, height, populationRatio, delay };
+        Assert.Throws<OverflowException>(() => new GameOfLife.Settings(args));
+    }
+
+    [Theory]
+    [InlineData("@", "50", "90")]
     [InlineData("50", "+", "20")]
     [InlineData("5", "5", "::::")]
     [InlineData("A", "5", "20")]
@@ -93,10 +108,10 @@ public class SettingsTests
     [InlineData("5", "5", "101%")]
     [InlineData("あ", "5", "200")]
     public void Constructor_ThrowsArgumentException_WithImproperNonNumericArguments
-        (string width, string height, string populationRatio)
+        (string width, string height, string populationRatio, string delay = "50")
     {
-        var args = new string[] { width, height, populationRatio };
-        Assert.Throws<ArgumentOutOfRangeException>(() => new GameOfLife.Settings(args));
+        var args = new string[] { width, height, populationRatio, delay };
+        Assert.Throws<FormatException>(() => new GameOfLife.Settings(args));
     }
 
     [Fact]
