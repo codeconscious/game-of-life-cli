@@ -5,22 +5,32 @@ namespace GameOfLife.Tests;
 
 public class SettingsTests
 {
-    [Fact]
-    public void Constructor_Succeeds_With3ProperArguments()
+    // [Fact]
+    // public void Constructor_Succeeds_With3ProperArguments()
+    // {
+    //     var args = new string[] { "-1", "-1", "20" };
+    //     var settings = new GameOfLife.Settings(args);
+
+    //     Assert.NotNull(settings);
+    //     Assert.Equal(20, settings.InitialPopulationRatio);
+    // }
+
+    [Theory]
+    [InlineData("300", "50", "90")]
+    [InlineData("50", "30", "20")]
+    public void Constructor_Succeeds_With3ProperArguments(string x, string y, string populationRatio)
     {
-        var args = new string[] { "-1", "-1", "20" };
+        var args = new string[] { x, y, populationRatio };
         var settings = new GameOfLife.Settings(args);
 
         Assert.NotNull(settings);
-        Assert.Equal(20, settings.InitialPopulationRatio);
+        // Assert.Equal(20, settings.InitialPopulationRatio);
     }
 
     [Fact]
     public void Constructor_ThrowsArgumentException_WhenTooManyArguments()
     {
         var args = new string[] { "-1", "-1", "20", "20", "100" };
-        //var settings = new GameOfLife.Settings(args);
-
         Assert.Throws<ArgumentException>(() => new GameOfLife.Settings(args));
     }
 }
