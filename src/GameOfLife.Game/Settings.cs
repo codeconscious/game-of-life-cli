@@ -39,7 +39,9 @@ namespace GameOfLife
             }
             else
             {
-                if (!ushort.TryParse(args[0], out var width) || width < MinimumWidthHeight)
+                var width = ushort.Parse(args[0]);
+
+                if (width < MinimumWidthHeight)
                     throw new ArgumentOutOfRangeException(nameof(width));
 
                 Width = width;
@@ -57,7 +59,9 @@ namespace GameOfLife
             }
             else
             {
-                if (!ushort.TryParse(args[1], out var height) || height < MinimumWidthHeight)
+                var height = ushort.Parse(args[1]);
+
+                if (height < MinimumWidthHeight)
                     throw new ArgumentOutOfRangeException(nameof(height));
 
                 Height = height;
@@ -70,11 +74,10 @@ namespace GameOfLife
             }
             else
             {
-                if (!byte.TryParse(args[2], out var populationRatio) ||
-                    populationRatio > 100 || populationRatio < 1)
-                {
+                var populationRatio = byte.Parse(args[2]);
+
+                if (populationRatio > 100 || populationRatio < 1)
                     throw new ArgumentOutOfRangeException(nameof(populationRatio));
-                }
 
                 InitialPopulationRatio = populationRatio;
             }
@@ -82,10 +85,7 @@ namespace GameOfLife
             // Verify the optional iteration delay arg, or if it's missing, set a default.
             if (args.Length == 4)
             {
-                if (!ushort.TryParse(args[3], out var iterationDelay))
-                    throw new ArgumentOutOfRangeException(nameof(iterationDelay));
-
-                InitialIterationDelayMs = iterationDelay;
+                InitialIterationDelayMs = ushort.Parse(args[3]);
             }
             else
             {
