@@ -5,10 +5,10 @@ namespace GameOfLife
         public Point Location { get; init; }
         public bool IsAlive { get; set; }
 
-        public Cell(int x, int y, bool isOn = false)
+        public Cell(int x, int y, bool isAlive = false)
         {
             Location = new Point(x, y);
-            IsAlive = isOn;
+            IsAlive = isAlive;
         }
 
         /// <summary>
