@@ -1,7 +1,9 @@
 using Xunit;
 using GameOfLife;
 
-namespace GameOfLife.Tests
+namespace GameOfLife.Tests;
+
+public class GridTests
 {
     [Theory]
     [InlineData("300", "50", "90")]
