@@ -4,6 +4,8 @@ namespace GameOfLife.Tests;
 
 public class SettingsTests
 {
+    private static readonly TestPrinter Printer = new();
+
     [Theory]
     [InlineData("300", "50", "90")]
     [InlineData("50", "30", "20")]
@@ -13,7 +15,7 @@ public class SettingsTests
         (string width, string height, string populationRatio)
     {
         var args = new string[] { width, height, populationRatio };
-        var settings = new Settings(args);
+        var settings = new Settings(args, Printer);
 
         Assert.NotNull(settings);
         Assert.Equal(ushort.Parse(width), settings.Width);
@@ -30,7 +32,7 @@ public class SettingsTests
         (string width, string height, string populationRatio, string delay)
     {
         var args = new string[] { width, height, populationRatio, delay };
-        var settings = new Settings(args);
+        var settings = new Settings(args, Printer);
 
         Assert.NotNull(settings);
         Assert.Equal(ushort.Parse(width), settings.Width);
@@ -48,7 +50,7 @@ public class SettingsTests
         (string width, string height, string populationRatio, string delay = "50")
     {
         var args = new string[] { width, height, populationRatio, delay };
-        var settings = new Settings(args);
+        var settings = new Settings(args, Printer);
 
         Assert.NotNull(settings);
         Assert.True(settings.Width > 0);
@@ -70,7 +72,7 @@ public class SettingsTests
         (string width, string height, string populationRatio, string delay = "50")
     {
         var args = new string[] { width, height, populationRatio, delay };
-        Assert.Throws<OverflowException>(() => new GameOfLife.Settings(args));
+        Assert.Throws<OverflowException>(() => new GameOfLife.Settings(args, Printer));
     }
 
     [Theory]
@@ -81,7 +83,7 @@ public class SettingsTests
         (string width, string height, string populationRatio, string delay = "50")
     {
         var args = new string[] { width, height, populationRatio, delay };
-        Assert.Throws<FormatException>(() => new GameOfLife.Settings(args));
+        Assert.Throws<FormatException>(() => new GameOfLife.Settings(args, Printer));
     }
 
     [Theory]
@@ -93,7 +95,9 @@ public class SettingsTests
         (string width, string height, string populationRatio, string delay = "50")
     {
         var args = new string[] { width, height, populationRatio, delay };
-        Assert.Throws<ArgumentOutOfRangeException>(() => new GameOfLife.Settings(args));
+
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () => new GameOfLife.Settings(args, Printer));
     }
 
     [Theory]
@@ -108,20 +112,26 @@ public class SettingsTests
         (string width, string height, string populationRatio, string delay = "50")
     {
         var args = new string[] { width, height, populationRatio, delay };
-        Assert.Throws<FormatException>(() => new GameOfLife.Settings(args));
+
+        Assert.Throws<FormatException>(
+            () => new GameOfLife.Settings(args, Printer));
     }
 
     [Fact]
     public void Constructor_ThrowsArgumentException_WhenTooFewArguments()
     {
         var args = new string[] { "10" };
-        Assert.Throws<ArgumentException>(() => new GameOfLife.Settings(args));
+
+        Assert.Throws<ArgumentException>(
+            () => new GameOfLife.Settings(args, Printer));
     }
 
     [Fact]
     public void Constructor_ThrowsArgumentException_WhenTooManyArguments()
     {
         var args = new string[] { "-1", "-1", "20", "20", "100" };
-        Assert.Throws<ArgumentException>(() => new GameOfLife.Settings(args));
+
+        Assert.Throws<ArgumentException>(
+            () => new GameOfLife.Settings(args, Printer));
     }
 }

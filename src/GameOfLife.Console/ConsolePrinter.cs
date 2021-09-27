@@ -2,8 +2,12 @@ using GameOfLife.Game;
 
 namespace GameOfLife
 {
-    public class GridConsolePrinter : IGridPrinter
+    public class ConsolePrinter : IPrinter
     {
+        public void Print(string text) => Write(text ?? "");
+
+        public void PrintLine(string text) => WriteLine(text ?? "");
+
         /// <summary>
         /// Outputs the entire grid to the console. Intended to be used at game start.
         /// </summary>

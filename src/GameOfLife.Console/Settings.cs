@@ -25,7 +25,7 @@ namespace GameOfLife
         /// Constructor that is expected to take in arguments from the user.
         /// </summary>
         /// <param name="args"></param>
-        public Settings(string[] args)
+        public Settings(string[] args, IPrinter printer)
         {
             if (args.Length != 3 && args.Length != 4)
                 throw new ArgumentException("An unsupported number of arguments was passed in.");
@@ -92,9 +92,9 @@ namespace GameOfLife
                 InitialIterationDelayMs = 50; // Default value in milliseconds
             }
 
-            WriteLine($"Grid:            {Width} columns x {Height} rows ({Width * Height:#,##0} cells)");
-            WriteLine($"Population:      {InitialPopulationRatio}%");
-            WriteLine($"Iteration delay: {InitialIterationDelayMs}ms");
+            printer.PrintLine($"Grid:            {Width} columns x {Height} rows ({Width * Height:#,##0} cells)");
+            printer.PrintLine($"Population:      {InitialPopulationRatio}%");
+            printer.PrintLine($"Iteration delay: {InitialIterationDelayMs}ms");
         }
     }
 }

@@ -16,18 +16,20 @@ namespace GameOfLife
 
         private static void Main(string[] args)
         {
+            IPrinter printer = new ConsolePrinter();
+
             IGameSettings gameSettings;
 
             if (args.Length == 1 && args[0] == "--default")
             {
                 WriteLine("Using default settings.");
-                gameSettings = new GameOfLife.Settings(new[] { "-1", "-1", "-1" });
+                gameSettings = new GameOfLife.Settings(new[] { "-1", "-1", "-1" }, printer);
             }
             else // Create settings from the individual args.
             {
                 try
                 {
-                    gameSettings = new Settings(args);
+                    gameSettings = new Settings(args, printer);
                 }
                 catch (Exception ex)
                 {
@@ -39,8 +41,6 @@ namespace GameOfLife
                     return;
                 }
             }
-
-            IGridPrinter printer = new GridConsolePrinter();
 
             // Create the grid and run the game.
             try
@@ -64,7 +64,7 @@ namespace GameOfLife
         /// Generate the grid and then continuously updates until it enters a non-living state.
         /// </summary>
         /// <param name="settings"></param>
-        private static void StartGame(IGameSettings settings, IGridPrinter printer)
+        private static void StartGame(IGameSettings settings, IPrinter printer)
         {
             var iterationStopwatch = new Stopwatch();
             iterationStopwatch.Start();

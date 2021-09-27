@@ -44,7 +44,7 @@ namespace GameOfLife.Game
         public Stopwatch GameStopwatch { get; private init; } = new();
 
         // public IPrinter Printer { get; private init; }
-        public IGridPrinter GridPrinter { get; private init; }
+        public IPrinter GridPrinter { get; private init; }
 
         #region Setup
 
@@ -52,7 +52,7 @@ namespace GameOfLife.Game
         /// Constructor that start the game using specified settings.
         /// </summary>
         /// <param name="gridSettings"></param>
-        public Grid(IGameSettings gridSettings, IGridPrinter gridPrinter)
+        public Grid(IGameSettings gridSettings, IPrinter gridPrinter)
         {
             CellGrid = new Cell[gridSettings.Width, gridSettings.Height];
 
