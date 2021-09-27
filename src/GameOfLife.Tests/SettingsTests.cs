@@ -65,7 +65,6 @@ public class SettingsTests
     [Theory]
     [InlineData("-2", "50", "90")]
     [InlineData("5", "5", "-5")]
-    [InlineData("5", "5", "-5")]
     [InlineData("-2", "50", "90", "5000")]
     [InlineData("50", "-10", "20", "10000")]
     public void Constructor_ThrowsOverflowException_WithOutOfRangeNumbers
