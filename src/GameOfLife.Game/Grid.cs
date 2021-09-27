@@ -1,4 +1,6 @@
-namespace GameOfLife
+using System.Drawing;
+
+namespace GameOfLife.Game
 {
     public class Grid
     {
@@ -41,18 +43,23 @@ namespace GameOfLife
         public int OutputRow => Height;
         public Stopwatch GameStopwatch { get; private init; } = new();
 
+        // public IPrinter Printer { get; private init; }
+        public IGridPrinter GridPrinter { get; private init; }
+
         #region Setup
 
         /// <summary>
         /// Constructor that start the game using specified settings.
         /// </summary>
         /// <param name="gridSettings"></param>
-        public Grid(Settings gridSettings)
+        public Grid(IGameSettings gridSettings, IGridPrinter gridPrinter)
         {
             CellGrid = new Cell[gridSettings.Width, gridSettings.Height];
 
             Width = CellGrid.GetLength(0);
             Height = CellGrid.GetLength(1);
+            GridPrinter = gridPrinter;
+            // Printer = printer;
 
             IterationDelayMs = gridSettings.InitialIterationDelayMs;
 
@@ -176,7 +183,7 @@ namespace GameOfLife
             var cellsToFlip = this.GetCellsToFlip();
             Cell.FlipLifeStatuses(cellsToFlip);
             this.UpdateHistoryAndGameState(cellsToFlip);
-            this.PrintUpdates(cellsToFlip);
+            GridPrinter.PrintUpdates(this, cellsToFlip);
         }
 
         /// <summary>
@@ -252,7 +259,7 @@ namespace GameOfLife
             if (wasAlive)
             {
                 GameStopwatch.Stop();
-                this.PrintGameSummary();
+                GridPrinter.PrintGameSummary(this);
                 IterationDelayMs = 250; // TODO: Clean up this magic number.
             }
         }

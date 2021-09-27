@@ -14,4 +14,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GameOfLife.Game\GameOfLife.Game.csproj" />
+  </ItemGroup>
 </Project>

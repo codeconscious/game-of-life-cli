@@ -1,4 +1,4 @@
-namespace GameOfLife
+namespace GameOfLife.Game
 {
     public class Cell
     {

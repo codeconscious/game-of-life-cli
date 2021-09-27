@@ -1,4 +1,4 @@
-namespace GameOfLife
+namespace GameOfLife.Game
 {
     /// <summary>
     /// An enum indicating the state of the grid/game.

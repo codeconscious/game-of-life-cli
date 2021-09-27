@@ -3,9 +3,9 @@ namespace GameOfLife
     /// <summary>
     /// The settings used to create a grid and affect elements of the game elsewhere.
     /// </summary>
-    public class Settings
+    public class Settings : IGameSettings
     {
-        private const byte MinimumWidthHeight = 3;
+        public const byte MinimumWidthHeight = 3;
         public int Width { get; private init; }
         public int Height { get; private init; }
         public int InitialPopulationRatio { get; private init; }

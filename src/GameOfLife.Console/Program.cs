@@ -1,4 +1,6 @@
-﻿namespace GameOfLife
+﻿using GameOfLife.Game;
+
+namespace GameOfLife
 {
     internal static class Program
     {
@@ -14,22 +16,18 @@
 
         private static void Main(string[] args)
         {
-#if DEBUG
-            WriteLine("Debugging");
-#endif
-
-            Settings settings;
+            IGameSettings gameSettings;
 
             if (args.Length == 1 && args[0] == "--default")
             {
                 WriteLine("Using default settings.");
-                settings = new Settings(new[] { "-1", "-1", "-1" });
+                gameSettings = new GameOfLife.Settings(new[] { "-1", "-1", "-1" });
             }
             else // Create settings from the individual args.
             {
                 try
                 {
-                    settings = new Settings(args);
+                    gameSettings = new Settings(args);
                 }
                 catch (Exception ex)
                 {
@@ -42,11 +40,13 @@
                 }
             }
 
+            IGridPrinter printer = new GridConsolePrinter();
+
             // Create the grid and run the game.
             try
             {
                 CursorVisible = false;
-                StartGame(settings);
+                StartGame(gameSettings, printer);
             }
             catch (Exception ex)
             {
@@ -64,20 +64,20 @@
         /// Generate the grid and then continuously updates until it enters a non-living state.
         /// </summary>
         /// <param name="settings"></param>
-        private static void StartGame(Settings settings)
+        private static void StartGame(IGameSettings settings, IGridPrinter printer)
         {
             var iterationStopwatch = new Stopwatch();
             iterationStopwatch.Start();
 
             // TODO: Pre-game output can't be seen post-game on the Windows command line, so also add post-game.
             Write("Preparing... ");
-            Grid grid = new(settings);
+            Grid grid = new(settings, printer);
             WriteLine("done in " + grid.GameStopwatch.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
 
-            grid.PrintEntire(shouldClear: true);
+            printer.PrintEntire(grid, shouldClear: true);
             Thread.Sleep(settings.InitialIterationDelayMs);
 
-            grid.PrintIterationSummary(iterationStopwatch.Elapsed);
+            printer.PrintIterationSummary(grid, iterationStopwatch.Elapsed);
 
             // Process and print subsequent updates until an end state is reached.
             do
@@ -108,7 +108,7 @@
                 Thread.Sleep(grid.IterationDelayMs);
 
                 if (grid.State == GridState.Alive)
-                    grid.PrintIterationSummary(iterationStopwatch.Elapsed);
+                    printer.PrintIterationSummary(grid, iterationStopwatch.Elapsed);
             }
             while (grid.State == GridState.Alive || grid.State == GridState.Looping);
 

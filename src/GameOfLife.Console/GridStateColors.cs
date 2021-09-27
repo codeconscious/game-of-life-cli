@@ -1,3 +1,5 @@
+using GameOfLife.Game;
+
 namespace GameOfLife
 {
     public static class GridStateColors

@@ -1,15 +1,15 @@
+using GameOfLife.Game;
+
 namespace GameOfLife
 {
-    public static class ExtensionMethods
+    public class GridConsolePrinter : IGridPrinter
     {
-        #region Grid-related
-
         /// <summary>
         /// Outputs the entire grid to the console. Intended to be used at game start.
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="shouldClear">Specifies whether the screen be cleared first.</param>
-        public static void PrintEntire(this Grid grid, bool shouldClear)
+        public void PrintEntire(Grid grid, bool shouldClear)
         {
             ArgumentNullException.ThrowIfNull(grid);
 
@@ -32,7 +32,7 @@ namespace GameOfLife
         /// Outputs only updated cells for the current iteration.
         /// </summary>
         /// <param name="cellsForUpdate"></param>
-        public static void PrintUpdates(this Grid grid, List<Cell> cellsForUpdate)
+        public void PrintUpdates(Grid grid, List<Cell> cellsForUpdate)
         {
             ArgumentNullException.ThrowIfNull(grid);
 
@@ -59,7 +59,7 @@ namespace GameOfLife
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="duration">An optional iteration time duration.</param>
-        public static void PrintIterationSummary(this Grid grid, TimeSpan? duration = null)
+        public void PrintIterationSummary(Grid grid, TimeSpan? duration = null)
         {
             ArgumentNullException.ThrowIfNull(grid);
 
@@ -79,7 +79,7 @@ namespace GameOfLife
         /// Intended to be used when there's an entire-grid state change.
         /// </summary>
         /// <param name="grid"></param>
-        public static void PrintGameSummary(this Grid grid)
+        public void PrintGameSummary(Grid grid)
         {
             ArgumentNullException.ThrowIfNull(grid);
 
@@ -121,27 +121,6 @@ namespace GameOfLife
                 SetCursorPosition(0, grid.OutputRow + 1);
                 WriteLine("Press any key to quit.");
             }
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Determines if a Point is valid -- i.e., within established bounds.
-        /// Point coordinates cannot be negative, nor can they exceed the specified limits.
-        /// </summary>
-        public static bool IsValid(this Point point, int maxWidth, int maxHeight)
-        {
-            // TODO: Prevent null values in the first place.
-            if (maxWidth < 0)
-                throw new ArgumentOutOfRangeException(nameof(maxWidth));
-            if (maxHeight < 0)
-                throw new ArgumentOutOfRangeException(nameof(maxHeight));
-
-            return
-                point.X >= 0 &&
-                point.Y >= 0 &&
-                point.X < maxWidth &&
-                point.Y < maxHeight;
         }
     }
 }
