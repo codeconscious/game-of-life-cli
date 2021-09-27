@@ -1,5 +1,4 @@
 ﻿using Xunit;
-using GameOfLife;
 
 namespace GameOfLife.Tests;
 
