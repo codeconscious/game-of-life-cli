@@ -18,7 +18,7 @@ namespace GameOfLife
         {
             IPrinter printer = new ConsolePrinter();
 
-            IGameSettings gameSettings;
+            IGridSettings gameSettings;
 
             if (args.Length == 1 && args[0] == "--default")
             {
@@ -64,7 +64,7 @@ namespace GameOfLife
         /// Generate the grid and then continuously updates until it enters a non-living state.
         /// </summary>
         /// <param name="settings"></param>
-        private static void StartGame(IGameSettings settings, IPrinter printer)
+        private static void StartGame(IGridSettings settings, IPrinter printer)
         {
             var iterationStopwatch = new Stopwatch();
             iterationStopwatch.Start();

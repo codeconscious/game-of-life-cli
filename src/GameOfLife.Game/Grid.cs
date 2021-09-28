@@ -52,7 +52,7 @@ namespace GameOfLife.Game
         /// Constructor that start the game using specified settings.
         /// </summary>
         /// <param name="gridSettings"></param>
-        public Grid(IGameSettings gridSettings, IPrinter gridPrinter)
+        public Grid(IGridSettings gridSettings, IPrinter gridPrinter)
         {
             CellGrid = new Cell[gridSettings.Width, gridSettings.Height];
 

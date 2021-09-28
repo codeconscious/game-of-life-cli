@@ -1,6 +1,6 @@
 namespace GameOfLife.Game
 {
-    public interface IGameSettings
+    public interface IGridSettings
     {
         private const byte MinimumWidthHeight = 3;
         public int Width { get; }

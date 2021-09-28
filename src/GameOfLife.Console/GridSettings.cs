@@ -3,7 +3,7 @@ namespace GameOfLife
     /// <summary>
     /// The settings used to create a grid and affect elements of the game elsewhere.
     /// </summary>
-    public class Settings : IGameSettings
+    public class Settings : IGridSettings
     {
         public const byte MinimumWidthHeight = 3;
         public int Width { get; private init; }
