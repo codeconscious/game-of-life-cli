@@ -10,7 +10,6 @@ namespace GameOfLife
         /// </summary>
         public static bool IsValid(this Point point, int maxWidth, int maxHeight)
         {
-            // TODO: Prevent null values in the first place.
             if (maxWidth < 0)
                 throw new ArgumentOutOfRangeException(nameof(maxWidth));
             if (maxHeight < 0)
