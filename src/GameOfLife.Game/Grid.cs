@@ -8,7 +8,7 @@ namespace GameOfLife.Game
         public int Width { get; private init; }
         public int Height { get; private init; }
 
-        public long TotalCells => Width * Height;
+        public float CellCount => Width * Height;
 
         /// <summary>
         /// A dictionary that maps each cell (key) with its neighbor cells (values).
@@ -16,6 +16,9 @@ namespace GameOfLife.Game
         public IDictionary<Cell, List<Cell>> NeighborMap { get; private init; }
 
         public List<Cell> AllCellsFlattened { get; private init; }
+
+        public float PopulationRatio
+            => AllCellsFlattened.Count(c => c.IsAlive) / CellCount;
 
         // The state of the grid should only change once, when the game ends.
         public GridState State { get; private set; } = GridState.Alive;
@@ -43,7 +46,6 @@ namespace GameOfLife.Game
         public int OutputRow => Height;
         public Stopwatch GameStopwatch { get; private init; } = new();
 
-        // public IPrinter Printer { get; private init; }
         public IPrinter GridPrinter { get; private init; }
 
         #region Setup

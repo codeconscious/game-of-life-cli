@@ -108,6 +108,8 @@ namespace GameOfLife
 
             var gridClause = $"{grid.Width} × {grid.Height}";
 
+            var populationClause = $"{(grid.PopulationRatio * 100).ToString("0.####")}%";
+
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
             // Move to the output row, then clear it.
@@ -116,7 +118,8 @@ namespace GameOfLife
 
             // Ex.: Endless loop | 813 iterations | 4.181 sec | 194.431 iterations/sec | 44 × 178 | 7,832 cells
             Write($"{stateClause} | {iterationClause} | {secondsClause} | " +
-                  $"{iterationsPerSecondClause} | {gridClause} | {grid.TotalCells:#,##0} cells");
+                  $"{iterationsPerSecondClause} | {gridClause} | {grid.CellCount:#,##0} cells | " +
+                  populationClause);
 
             // If we're looping, then show how to exit.
             if (grid.State == GridState.Looping)
