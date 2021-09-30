@@ -22,9 +22,9 @@ namespace GameOfLife
 
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
-            for (var y = 0; y < grid.Height; y++)
+            for (var x = 0; x < grid.Width; x++)
             {
-                for (var x = 0; x < grid.Width; x++)
+                for (var y = 0; y < grid.Height; y++)
                 {
                     SetCursorPosition(x, y);
                     Write(grid.GridChars[grid.CellGrid[x, y].IsAlive]);
