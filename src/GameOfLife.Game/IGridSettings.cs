@@ -2,7 +2,7 @@ namespace GameOfLife.Game
 {
     public interface IGridSettings
     {
-        private const byte MinimumWidthHeight = 3;
+        public byte MinimumWidthHeight { get; }
         public int Width { get; }
         public int Height { get; }
         public int InitialPopulationRatio { get; }

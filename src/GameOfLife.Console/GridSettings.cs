@@ -5,7 +5,7 @@ namespace GameOfLife
     /// </summary>
     public class Settings : IGridSettings
     {
-        public const byte MinimumWidthHeight = 3;
+        public byte MinimumWidthHeight { get; } = 3;
         public int Width { get; private init; }
         public int Height { get; private init; }
         public int InitialPopulationRatio { get; private init; }
