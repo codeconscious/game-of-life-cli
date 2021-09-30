@@ -116,12 +116,19 @@ namespace GameOfLife
             SetCursorPosition(0, grid.OutputRow);
             Utility.ClearCurrentLine();
 
-            // Ex.: Endless loop | 813 iterations | 4.181 sec | 194.431 iterations/sec | 44 × 178 | 7,832 cells
-            Write($"{stateClause} | {iterationClause} | {secondsClause} | " +
-                  $"{iterationsPerSecondClause} | {gridClause} | {grid.CellCount:#,##0} cells | " +
-                  populationClause);
+            // Ex.: Extinction | 813 iterations | 4.181 sec | 194.431 iterations/sec | 44 × 178 | 7,832 cells
+            Write(string.Join(" | ", new string[]
+                {
+                    stateClause,
+                    iterationClause,
+                    secondsClause,
+                    iterationsPerSecondClause,
+                    gridClause,
+                    grid.CellCount.ToString("#,##0 cells"),
+                    populationClause + " alive"
+                  }));
 
-            // If we're looping, then show how to exit.
+            // If the grid is looping, then show how to exit.
             if (grid.State == GridState.Looping)
             {
                 ForegroundColor = ConsoleColor.Gray;
