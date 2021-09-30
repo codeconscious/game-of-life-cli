@@ -224,7 +224,7 @@ namespace GameOfLife.Game
             }
 
             // No updates means stagnation.
-            if (!recentlyFlippedCells.Any())
+            if (recentlyFlippedCells.Count == 0)
             {
                 UpdateState(GridState.Stagnated);
                 return;
