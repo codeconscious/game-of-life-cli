@@ -2,6 +2,9 @@ using GameOfLife.Game;
 
 namespace GameOfLife.Tests;
 
+/// <summary>
+/// A class to avoid printing to the console during unit tests.
+/// </summary>
 public class TestPrinter : IPrinter
 {
     public void Print(string text) { }
