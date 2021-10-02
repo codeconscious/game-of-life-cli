@@ -13,6 +13,30 @@ namespace GameOfLife
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="shouldClear">Specifies whether the screen be cleared first.</param>
+        // public void PrintEntire(Grid grid, bool shouldClear)
+        // {
+        //     ArgumentNullException.ThrowIfNull(grid);
+
+        //     if (shouldClear)
+        //         Clear();
+
+        //     ForegroundColor = GridStateColors.GameStateColors[grid.State];
+
+        //     for (var x = 0; x < grid.Width; x++)
+        //     {
+        //         for (var y = 0; y < grid.Height; y++)
+        //         {
+        //             SetCursorPosition(x, y);
+        //             Write(grid.GridChars[grid.CellGrid[x, y].IsAlive]);
+        //         }
+        //     }
+        // }
+
+        /// <summary>
+        /// Outputs the entire grid to the console. Intended to be used at game start.
+        /// </summary>
+        /// <param name="grid"></param>
+        /// <param name="shouldClear">Specifies whether the screen be cleared first.</param>
         public void PrintEntire(Grid grid, bool shouldClear)
         {
             ArgumentNullException.ThrowIfNull(grid);
@@ -22,13 +46,23 @@ namespace GameOfLife
 
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
-            for (var x = 0; x < grid.Width; x++)
+            try
             {
-                for (var y = 0; y < grid.Height; y++)
+                foreach (var group in grid.CellGroupMap.Values.ToList())
                 {
-                    SetCursorPosition(x, y);
-                    Write(grid.GridChars[grid.CellGrid[x, y].IsAlive]);
+                    SetCursorPosition(
+                            group.MemberCells.Values.ToList()[1].Location.X / 2,
+                            group.MemberCells.Values.ToList()[2].Location.Y / 2);
+                    var signature = group.GetSignature();
+                    var @char = CellGroup.GetCharacterToPrint(signature);
+                    Write(@char);
                 }
+            }
+            catch (Exception)
+            {
+                Clear();
+                ResetColor();
+                throw;
             }
         }
 
@@ -48,6 +82,37 @@ namespace GameOfLife
                 {
                     SetCursorPosition(cell.Location.X, cell.Location.Y);
                     Write(grid.GridChars[cell.IsAlive]);
+                }
+            }
+            catch (Exception)
+            {
+                Clear();
+                ResetColor();
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Outputs only updated cells for the current iteration.
+        /// </summary>
+        /// <param name="cellsForUpdate"></param>
+        public void PrintUpdates(List<CellGroup> groups, Grid grid)
+        {
+            ArgumentNullException.ThrowIfNull(groups);
+            ArgumentNullException.ThrowIfNull(grid);
+
+            ForegroundColor = GridStateColors.GameStateColors[grid.State];
+
+            try
+            {
+                foreach (var group in groups)
+                {
+                    SetCursorPosition(
+                            group.MemberCells.Values.ToList()[1].Location.X / 2,
+                            group.MemberCells.Values.ToList()[2].Location.Y / 2);
+                    var signature = group.GetSignature();
+                    var @char = CellGroup.GetCharacterToPrint(signature);
+                    Write(@char);
                 }
             }
             catch (Exception)

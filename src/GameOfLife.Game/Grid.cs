@@ -10,6 +10,9 @@ namespace GameOfLife.Game
 
         public float CellCount => Width * Height;
 
+        // public List<CellGroup> CellGroups { get; init; }
+        public Dictionary<Cell, CellGroup> CellGroupMap = new();
+
         /// <summary>
         /// A dictionary that maps each cell (key) with its neighbor cells (values).
         /// </summary>
@@ -76,6 +79,9 @@ namespace GameOfLife.Game
                     CellGrid[x,y] = new Cell(x, y, startAlive);
                 }
             }
+
+            // CellGroups = CreateCellGroups();
+            CreateCellGroupMap();
 
             AllCellsFlattened = CellGrid.Cast<Cell>().ToList();
 
@@ -175,6 +181,41 @@ namespace GameOfLife.Game
             return output;
         }
 
+        public void CreateCellGroupMap()
+        {
+            // var groups = new List<CellGroup>((Width / 2) * (Height / 2));
+
+            for (var y = 0; y < Height; y += 2)
+            {
+                for (var x = 0; x < Width; x += 2)
+                {
+                    var newGroup = new CellGroup(
+                        CellGrid[x, y],
+                        CellGrid[x + 1, y],
+                        CellGrid[x, y + 1],
+                        CellGrid[x + 1, y + 1]);
+                    // var newGroup = new CellGroup();
+                    // newGroup.AddCell(CellGrid[x, y], CellGroup.CellGroupLocation.UpperLeft);
+                    // newGroup.AddCell(CellGrid[x + 1, y], CellGroup.CellGroupLocation.UpperRight);
+                    // newGroup.AddCell(CellGrid[x, y + 1], CellGroup.CellGroupLocation.LowerLeft);
+                    // newGroup.AddCell(CellGrid[x + 1, y + 1], CellGroup.CellGroupLocation.LowerRight);
+
+                    foreach (var cell in newGroup.MemberCells.Values.ToList())
+                    {
+                        CellGroupMap.Add(cell, newGroup);
+                    }
+
+                    // foreach(var group in newGroup.MemberCells)
+                    //     WriteLine(group.Value.Location);
+                    // WriteLine();
+
+                    // groups.Add(newGroup);
+                }
+            }
+
+            // return groups;
+        }
+
         #endregion
 
         /// <summary>
@@ -185,7 +226,13 @@ namespace GameOfLife.Game
             var cellsToFlip = this.GetCellsToFlip();
             Cell.FlipLifeStatuses(cellsToFlip);
             this.UpdateHistoryAndGameState(cellsToFlip);
-            GridPrinter.PrintUpdates(this, cellsToFlip);
+
+            // GridPrinter.PrintUpdates(this, cellsToFlip);
+            // var affectedGroups = CellGroups.Where(g => cellsToFlip.Any(c => g.MemberCells.Values.ToList().Contains(c))).ToList();
+            var affectedGroups = new List<CellGroup>(cellsToFlip.Count);
+            foreach (var cell in cellsToFlip)
+                affectedGroups.Add(CellGroupMap[cell]);
+            GridPrinter.PrintUpdates(affectedGroups, this);
         }
 
         /// <summary>

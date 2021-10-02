@@ -7,6 +7,7 @@ public interface IPrinter
 
     public void PrintEntire(Grid grid, bool shouldClear);
     public void PrintUpdates(Grid grid, List<Cell> cellsForUpdate);
+    public void PrintUpdates(List<CellGroup> groups, Grid grid);
     public void PrintIterationSummary(Grid grid, TimeSpan? duration = null);
     public void PrintGameSummary(Grid grid);
 }
