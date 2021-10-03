@@ -5,6 +5,7 @@ namespace GameOfLife
     /// </summary>
     public class Settings : IGridSettings
     {
+        public bool UseHighResMode { get; }
         public byte MinimumWidthHeight { get; } = 3;
         public int Width { get; private init; }
         public int Height { get; private init; }
