@@ -78,6 +78,7 @@ namespace GameOfLife
         /// <summary>
         /// Outputs only updated cells for the current iteration.
         /// </summary>
+        /// <param name="grid"></param>
         /// <param name="cellsForUpdate"></param>
         public void PrintUpdates(Grid grid, List<Cell> cellsForUpdate)
         {
@@ -102,9 +103,10 @@ namespace GameOfLife
         }
 
         /// <summary>
-        /// Outputs only updated cells for the current iteration .
+        /// Outputs only updated cells for the current iteration.
         /// </summary>
-        /// <param name="cellsForUpdate"></param>
+        /// <param name="groups"></param>
+        /// <param name="grid"></param>
         public void PrintUpdates(List<CellGroup> groups, Grid grid)
         {
             ArgumentNullException.ThrowIfNull(groups);
