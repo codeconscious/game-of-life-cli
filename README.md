@@ -8,6 +8,9 @@ After reading the first part of [a blog post about Reddit interviews](https://al
 
 This console project targets the latest .NET 6 preview version and uses some newer and still-unreleased features (upcoming in C# 10) that I wanted to try out (e.g., nullable reference types, record structs, init, switch expressions, global usings).
 
+You can publish the program  yourself from the GameOfLife.Console project by using the following command:
+````dotnet publish -c Release --use-current-runtime````
+
 ### Performance
 
 * Larger grids (generated on larger or high-resolution screens) will run slower than smaller ones.
@@ -29,4 +32,4 @@ Simply build the program and run it in your terminal. Certain arguments are nece
 * Adding and editing JSON application settings
 * Allow submitting seeds manually (maybe)
 * Allow only single-byte characters to represent cells
-* Check the possibility of higher resolution
+* ~~Check the possibility of higher resolution~~
