@@ -18,4 +18,6 @@ public class TestPrinter : IPrinter
     public void PrintLine(string text) { }
 
     public void PrintUpdates(Grid grid, List<Cell> cellsForUpdate) { }
+
+    public void PrintUpdates(List<CellGroup> groups, Grid grid) { }
 }

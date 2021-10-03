@@ -43,7 +43,7 @@ public class CellGroup
         var total = 0;
 
         // TODO: Do without LINQ.
-        foreach (var cellStatus in MemberCells.Values.ToList())
+        foreach (var cellStatus in MemberCells.Values.ToList().Select(c => c).Reverse())
         {
             total <<= 1;
             // Write("  " + total + "  ");
