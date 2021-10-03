@@ -8,36 +8,45 @@ namespace GameOfLife
 
         public void PrintLine(string text) => WriteLine(text ?? "");
 
-        /// <summary>
-        /// Outputs the entire grid to the console. Intended to be used at game start.
-        /// </summary>
-        /// <param name="grid"></param>
-        /// <param name="shouldClear">Specifies whether the screen be cleared first.</param>
-        // public void PrintEntire(Grid grid, bool shouldClear)
-        // {
-        //     ArgumentNullException.ThrowIfNull(grid);
-
-        //     if (shouldClear)
-        //         Clear();
-
-        //     ForegroundColor = GridStateColors.GameStateColors[grid.State];
-
-        //     for (var x = 0; x < grid.Width; x++)
-        //     {
-        //         for (var y = 0; y < grid.Height; y++)
-        //         {
-        //             SetCursorPosition(x, y);
-        //             Write(grid.GridChars[grid.CellGrid[x, y].IsAlive]);
-        //         }
-        //     }
-        // }
-
-        /// <summary>
-        /// Outputs the entire grid to the console. Intended to be used at game start.
-        /// </summary>
-        /// <param name="grid"></param>
-        /// <param name="shouldClear">Specifies whether the screen be cleared first.</param>
         public void PrintEntire(Grid grid, bool shouldClear)
+        {
+            // TODO: Refactor to use polymorphism instead.
+            if (grid.IsHighResMode)
+                PrintEntireHighRes(grid, shouldClear);
+            else
+                PrintEntireStandardRes(grid, shouldClear);
+        }
+
+        /// <summary>
+        /// Outputs the entire grid to the console. Intended to be used at game start.
+        /// </summary>
+        /// <param name="grid"></param>
+        /// <param name="shouldClear">Specifies whether the screen be cleared first.</param>
+        private void PrintEntireStandardRes(Grid grid, bool shouldClear)
+        {
+            ArgumentNullException.ThrowIfNull(grid);
+
+            if (shouldClear)
+                Clear();
+
+            ForegroundColor = GridStateColors.GameStateColors[grid.State];
+
+            for (var x = 0; x < grid.Width; x++)
+            {
+                for (var y = 0; y < grid.Height; y++)
+                {
+                    SetCursorPosition(x, y);
+                    Write(grid.GridChars[grid.CellGrid[x, y].IsAlive]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Outputs the entire grid to the console. Intended to be used at game start.
+        /// </summary>
+        /// <param name="grid"></param>
+        /// <param name="shouldClear">Specifies whether the screen be cleared first.</param>
+        private void PrintEntireHighRes(Grid grid, bool shouldClear)
         {
             ArgumentNullException.ThrowIfNull(grid);
 
@@ -93,7 +102,7 @@ namespace GameOfLife
         }
 
         /// <summary>
-        /// Outputs only updated cells for the current iteration.
+        /// Outputs only updated cells for the current iteration .
         /// </summary>
         /// <param name="cellsForUpdate"></param>
         public void PrintUpdates(List<CellGroup> groups, Grid grid)
@@ -108,8 +117,9 @@ namespace GameOfLife
                 foreach (var group in groups)
                 {
                     SetCursorPosition(
-                            group.MemberCells.Values.ToList()[1].Location.X / 2,
-                            group.MemberCells.Values.ToList()[2].Location.Y / 2);
+                        group.MemberCells.Values.ToList()[1].Location.X / 2,
+                        group.MemberCells.Values.ToList()[2].Location.Y / 2);
+
                     var signature = group.GetSignature();
                     var @char = CellGroup.GetCharacterToPrint(signature);
                     Write(@char);
@@ -136,11 +146,11 @@ namespace GameOfLife
 
             SetCursorPosition(0, grid.OutputRow);
 
-            var durationText = duration == null
+            var durationClause = duration == null
                 ? ""
                 : $"({duration.Value.TotalMilliseconds:#,##0}ms)";
 
-            Write($"<Press any key to quit>  Iteration {grid.CurrentIteration:#,##0} {durationText}  ");
+            Write($"<Press any key to quit>  Iteration {grid.CurrentIteration:#,##0} {durationClause}  ");
         }
 
         /// <summary>

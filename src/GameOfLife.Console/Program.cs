@@ -23,7 +23,7 @@ namespace GameOfLife
             if (args.Length == 1 && args[0] == "--default")
             {
                 WriteLine("Using default settings.");
-                gameSettings = new GameOfLife.Settings(new[] { "-1", "-1", "-1" }, printer);
+                gameSettings = new Settings(new[] { "-1", "-1", "-1" }, printer);
             }
             else // Create settings from the individual args.
             {
@@ -50,7 +50,10 @@ namespace GameOfLife
             }
             catch (Exception ex)
             {
+                ForegroundColor = ConsoleColor.Red;
                 WriteLine(ex.Message);
+                ForegroundColor = ConsoleColor.Yellow;
+                WriteLine(ex.StackTrace);
             }
             finally
             {
@@ -69,7 +72,6 @@ namespace GameOfLife
             var iterationStopwatch = new Stopwatch();
             iterationStopwatch.Start();
 
-            // TODO: Pre-game output can't be seen post-game on the Windows command line, so also add post-game.
             Write("Preparing... ");
             Grid grid = new(settings, printer);
             WriteLine("done in " + grid.GameStopwatch.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
@@ -82,6 +84,9 @@ namespace GameOfLife
             // Process and print subsequent updates until an end state is reached.
             do
             {
+/* Use this for debugging. TODO: Update this block so this hack isn't necessary. */
+// #if DEBUG
+// #else
                 // Handle user key presses
                 if (Console.KeyAvailable)
                 {
@@ -101,7 +106,7 @@ namespace GameOfLife
                         break;
                     }
                 }
-
+// #endif
                 iterationStopwatch.Restart();
 
                 grid.Iterate();

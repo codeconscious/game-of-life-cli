@@ -28,6 +28,9 @@ namespace GameOfLife
         /// <param name="args"></param>
         public Settings(string[] args, IPrinter printer)
         {
+            // TODO: Make this a proper setting.
+            UseHighResMode = true;
+
             if (args.Length != 3 && args.Length != 4)
                 throw new ArgumentException("An unsupported number of arguments was passed in.");
 

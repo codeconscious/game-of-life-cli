@@ -7,6 +7,7 @@ namespace GameOfLife.Game
         public Cell[,] CellGrid { get; init; }
         public int Width { get; private init; }
         public int Height { get; private init; }
+        public bool IsHighResMode { get; private init; }
 
         public float CellCount => Width * Height;
 
@@ -46,7 +47,7 @@ namespace GameOfLife.Game
             };
 
         public nuint CurrentIteration { get; private set; }
-        public int OutputRow => Height;
+        public int OutputRow => Height / (IsHighResMode ? 2 : 1);
         public Stopwatch GameStopwatch { get; private init; } = new();
 
         public IPrinter GridPrinter { get; private init; }
@@ -64,7 +65,7 @@ namespace GameOfLife.Game
             Width = CellGrid.GetLength(0);
             Height = CellGrid.GetLength(1);
             GridPrinter = gridPrinter;
-            // Printer = printer;
+            IsHighResMode = gridSettings.UseHighResMode;
 
             IterationDelayMs = gridSettings.InitialIterationDelayMs;
 
@@ -81,7 +82,8 @@ namespace GameOfLife.Game
             }
 
             // CellGroups = CreateCellGroups();
-            CreateCellGroupMap();
+            if (gridSettings.UseHighResMode)
+                CreateCellGroupMap();
 
             AllCellsFlattened = CellGrid.Cast<Cell>().ToList();
 
@@ -205,6 +207,8 @@ namespace GameOfLife.Game
                         CellGroupMap.Add(cell, newGroup);
                     }
 
+                    // WriteLine(string.Join("; ", CellGroupMap.Values.ToList().SelectMany(g => g.MemberCells.Select(c => c.Value.Location)).Where(p => p.X == 0)));
+
                     // foreach(var group in newGroup.MemberCells)
                     //     WriteLine(group.Value.Location);
                     // WriteLine();
@@ -227,12 +231,29 @@ namespace GameOfLife.Game
             Cell.FlipLifeStatuses(cellsToFlip);
             this.UpdateHistoryAndGameState(cellsToFlip);
 
-            // GridPrinter.PrintUpdates(this, cellsToFlip);
-            // var affectedGroups = CellGroups.Where(g => cellsToFlip.Any(c => g.MemberCells.Values.ToList().Contains(c))).ToList();
-            var affectedGroups = new List<CellGroup>(cellsToFlip.Count);
-            foreach (var cell in cellsToFlip)
-                affectedGroups.Add(CellGroupMap[cell]);
-            GridPrinter.PrintUpdates(affectedGroups, this);
+            if (IsHighResMode)
+            {
+                // var affectedGroups = CellGroups.Where(g => cellsToFlip.Any(c => g.MemberCells.Values.ToList().Contains(c))).ToList();
+                var affectedGroups = new List<CellGroup>(cellsToFlip.Count);
+
+                foreach (var cell in cellsToFlip)
+                {
+                    if (CellGroupMap.ContainsKey(cell))
+                    {
+                        affectedGroups.Add(CellGroupMap[cell]);
+                    }
+                    else
+                    {
+                        // WriteLine(string.Join("; ", CellGroupMap.Values.ToList().SelectMany(g => g.MemberCells.Select(c => c.Value.Location)).Where(p => p.X == 0).Distinct()));
+                        throw new InvalidOperationException($"Cell {cell.Location} is not in {nameof(CellGroupMap)}!");
+                    }
+                }
+                GridPrinter.PrintUpdates(affectedGroups, this);
+            }
+            else
+            {
+                GridPrinter.PrintUpdates(this, cellsToFlip);
+            }
         }
 
         /// <summary>
