@@ -19,7 +19,7 @@ You can publish the program  yourself from the GameOfLife.Console project by usi
 
 ## Usage
 
-Simply build the program and run it in your terminal. Certain arguments are necessary, but the program will explain them if you run it with no arguments.
+Simply run the GameOfLife.Console project and in your terminal. Certain arguments are necessary, but the program will explain them if you run it with no arguments.
 
 ## 日本語の要約 (Japanese summary)
 
@@ -29,7 +29,8 @@ Simply build the program and run it in your terminal. Certain arguments are nece
 
 ## TODO
 
-* Adding and editing JSON application settings
-* Allow submitting seeds manually (maybe)
-* Allow only single-byte characters to represent cells
+* Save application settings to a JSON file (using the new System.Text.Json library)
+* Allow editing the settings via UI
+* Allow saving and submitting seeds or grid states (maybe)
+* Allow only single-byte characters to represent cells (Standard mode only)
 * ~~Check the possibility of higher resolution~~
