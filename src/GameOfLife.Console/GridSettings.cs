@@ -105,7 +105,7 @@ namespace GameOfLife
             }
             else
             {
-                InitialIterationDelayMs = 50; // Default value in milliseconds
+                InitialIterationDelayMs = 0; // Default value in milliseconds
             }
 
             printer.PrintLine($"Grid:            {Width} columns x {Height} rows ({Width * Height:#,##0} cells)");
