@@ -29,7 +29,7 @@ namespace GameOfLife
         public Settings(string[] args, IPrinter printer)
         {
             // TODO: Make this a proper setting.
-            UseHighResMode = true;
+            UseHighResMode = false;
 
             if (args.Length != 3 && args.Length != 4)
                 throw new ArgumentException("An unsupported number of arguments was passed in.");
@@ -37,7 +37,7 @@ namespace GameOfLife
             // Verify the width (X axis) arg
             if (args[0] == "-1")
             {
-                var autoWidth = Console.WindowWidth * (UseHighResMode ? 2 : 1);
+                var autoWidth = Console.WindowWidth; //* (UseHighResMode ? 2 : 1);
 
                 // Ensure an even number in high-res mode.
                 if (UseHighResMode && autoWidth % 2 != 0)
@@ -61,9 +61,9 @@ namespace GameOfLife
             if (args[1] == "-1")
             {
                 // Leave room at the bottom of the screen for output (during and after the game).
-                var bottomMargin = 3 * (UseHighResMode ? 2 : 1);
+                var bottomMargin = 3; // * (UseHighResMode ? 2 : 1);
 
-                var autoHeight = (Console.WindowHeight * (UseHighResMode ? 2 : 1)) - bottomMargin;
+                var autoHeight = Console.WindowHeight /* * (UseHighResMode ? 2 : 1)) */ - bottomMargin;
 
                 // Ensure an even number in high-res mode.
                 if (UseHighResMode && autoHeight % 2 != 0)

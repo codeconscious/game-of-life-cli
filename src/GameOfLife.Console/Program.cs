@@ -16,6 +16,9 @@ namespace GameOfLife
 
         private static void Main(string[] args)
         {
+            // This is particularly necessary for high-res mode on Windows.
+            OutputEncoding = System.Text.Encoding.UTF8;
+
             IPrinter printer = new ConsolePrinter();
 
             IGridSettings gameSettings;
@@ -84,9 +87,6 @@ namespace GameOfLife
             // Process and print subsequent updates until an end state is reached.
             do
             {
-/* Use this for debugging. TODO: Update this block so this hack isn't necessary. */
-// #if DEBUG
-// #else
                 // Handle user key presses
                 if (Console.KeyAvailable)
                 {
@@ -106,7 +106,7 @@ namespace GameOfLife
                         break;
                     }
                 }
-// #endif
+
                 iterationStopwatch.Restart();
 
                 grid.Iterate();
@@ -120,7 +120,7 @@ namespace GameOfLife
             // Clear the line, then return to its start.
             // (This might not work when debugging since WindowWidth might equal 0.)
             SetCursorPosition(0, grid.OutputRow + 1);
-            Utility.ClearCurrentLine();
+            printer.ClearCurrentLine();
 
             // Place the cursor after the program output.
             SetCursorPosition(0, grid.OutputRow);

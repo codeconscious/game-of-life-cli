@@ -1,15 +1,14 @@
-using System.Drawing;
-
 namespace GameOfLife.Game
 {
-    public class Grid
+    public sealed class Grid
     {
+        public bool IsHighResMode { get; private init; }
         public Cell[,] CellGrid { get; init; }
         public int Width { get; private init; }
         public int Height { get; private init; }
-        public bool IsHighResMode { get; private init; }
+        public int Area => CellGrid.GetLength(0) * CellGrid.GetLength(1);
+        public Dimensions ScreenDimensions { get; private init; }
 
-        public float CellCount => Width * Height;
 
         // public List<CellGroup> CellGroups { get; init; }
         public Dictionary<Cell, CellGroup> CellGroupMap = new();
@@ -22,7 +21,7 @@ namespace GameOfLife.Game
         public List<Cell> AllCellsFlattened { get; private init; }
 
         public float PopulationRatio
-            => AllCellsFlattened.Count(c => c.IsAlive) / CellCount;
+            => AllCellsFlattened.Count(c => c.IsAlive) / Area;
 
         // The state of the grid should only change once, when the game ends.
         public GridState State { get; private set; } = GridState.Alive;
@@ -42,52 +41,64 @@ namespace GameOfLife.Game
         public readonly Dictionary<bool, char> GridChars =
             new()
             {
-                { true, 'X' }, // Other candidates: █  // TODO: Convert into a setting.
+                { true, 'X' }, // TODO: Convert into a setting.
                 { false, ' ' }
             };
 
         public nuint CurrentIteration { get; private set; }
-        public int OutputRow => Height / (IsHighResMode ? 2 : 1);
+        public int OutputRow => ScreenDimensions.Height;
         public Stopwatch GameStopwatch { get; private init; } = new();
 
         public IPrinter GridPrinter { get; private init; }
 
         #region Setup
 
-        /// <summary>
-        /// Constructor that start the game using specified settings.
-        /// </summary>
-        /// <param name="gridSettings"></param>
         public Grid(IGridSettings gridSettings, IPrinter gridPrinter)
         {
-            CellGrid = new Cell[gridSettings.Width, gridSettings.Height];
-
-            Width = CellGrid.GetLength(0);
-            Height = CellGrid.GetLength(1);
-            GridPrinter = gridPrinter;
-            IsHighResMode = gridSettings.UseHighResMode;
-
+            ScreenDimensions = new Dimensions(gridSettings.Width, gridSettings.Height);
             IterationDelayMs = gridSettings.InitialIterationDelayMs;
-
             var random = new Random();
 
-            // Create the cells and populate the grid with them.
-            for (var x = 0; x < gridSettings.Width; x++)
+            if (gridSettings.UseHighResMode)
             {
-                for (var y = 0; y < gridSettings.Height; y++)
+                IsHighResMode = true;
+                CellGrid = new Cell[gridSettings.Width * 2, gridSettings.Height * 2];
+                Width = CellGrid.GetLength(0);
+                Height = CellGrid.GetLength(1);
+
+                // Create the cells and populate the grid with them.
+                for (var x = 0; x < gridSettings.Width * 2; x++)
                 {
-                    var startAlive = random.Next(100) <= gridSettings.InitialPopulationRatio;
-                    CellGrid[x,y] = new Cell(x, y, startAlive);
+                    for (var y = 0; y < gridSettings.Height * 2; y++)
+                    {
+                        var startAlive = random.Next(100) <= gridSettings.InitialPopulationRatio;
+                        CellGrid[x,y] = new Cell(x, y, startAlive);
+                    }
+                }
+
+                CellGroupMap = CreateHighResCellGroupMap();
+            }
+            else // Use normal resolution
+            {
+                IsHighResMode = false;
+                CellGrid = new Cell[gridSettings.Width, gridSettings.Height];
+                Width = CellGrid.GetLength(0);
+                Height = CellGrid.GetLength(1);
+
+                // Create the cells and populate the grid with them.
+                for (var x = 0; x < gridSettings.Width; x++)
+                {
+                    for (var y = 0; y < gridSettings.Height; y++)
+                    {
+                        var startAlive = random.Next(100) <= gridSettings.InitialPopulationRatio;
+                        CellGrid[x,y] = new Cell(x, y, startAlive);
+                    }
                 }
             }
 
-            // CellGroups = CreateCellGroups();
-            if (gridSettings.UseHighResMode)
-                CreateCellGroupMap();
-
             AllCellsFlattened = CellGrid.Cast<Cell>().ToList();
-
             NeighborMap = GetCellNeighbors(this);
+            GridPrinter = gridPrinter;
 
             GameStopwatch.Start();
         }
@@ -143,7 +154,12 @@ namespace GameOfLife.Game
             {
                 var correctedPoints = new List<Point>();
 
-                foreach (var invalidPair in generatedPairs.Where(p => !p.IsValid(grid.Width, grid.Height)))
+                var invalidPairs = generatedPairs
+                    .Where(p => !p.IsValid(
+                        grid.Width,
+                        grid.Height));
+
+                foreach (var invalidPair in invalidPairs)
                 {
                     var workingPair = invalidPair;
 
@@ -162,10 +178,12 @@ namespace GameOfLife.Game
                 generatedPairs.AddRange(correctedPoints);
             }
 
-            var validPairs = generatedPairs.Where(p => p.IsValid(grid.Width, grid.Height));
+            var validPairs = generatedPairs
+                .Where(p => p.IsValid(grid.Width, grid.Height));
 
-            return validPairs.Select(v => new Point(v.X, v.Y))
-                             .ToList();
+            return validPairs
+                .Select(v => new Point(v.X, v.Y))
+                .ToList();
         }
 
         /// <summary>
@@ -183,9 +201,9 @@ namespace GameOfLife.Game
             return output;
         }
 
-        public void CreateCellGroupMap()
+        public Dictionary<Cell, CellGroup> CreateHighResCellGroupMap()
         {
-            // var groups = new List<CellGroup>((Width / 2) * (Height / 2));
+            var map = new Dictionary<Cell, CellGroup>();
 
             for (var y = 0; y < Height; y += 2)
             {
@@ -195,29 +213,17 @@ namespace GameOfLife.Game
                         CellGrid[x, y],
                         CellGrid[x + 1, y],
                         CellGrid[x, y + 1],
-                        CellGrid[x + 1, y + 1]);
-                    // var newGroup = new CellGroup();
-                    // newGroup.AddCell(CellGrid[x, y], CellGroup.CellGroupLocation.UpperLeft);
-                    // newGroup.AddCell(CellGrid[x + 1, y], CellGroup.CellGroupLocation.UpperRight);
-                    // newGroup.AddCell(CellGrid[x, y + 1], CellGroup.CellGroupLocation.LowerLeft);
-                    // newGroup.AddCell(CellGrid[x + 1, y + 1], CellGroup.CellGroupLocation.LowerRight);
+                        CellGrid[x + 1, y + 1],
+                        new Point(x / 2, y / 2));
 
                     foreach (var cell in newGroup.MemberCells.Values.ToList())
                     {
-                        CellGroupMap.Add(cell, newGroup);
+                        map.Add(cell, newGroup);
                     }
-
-                    // WriteLine(string.Join("; ", CellGroupMap.Values.ToList().SelectMany(g => g.MemberCells.Select(c => c.Value.Location)).Where(p => p.X == 0)));
-
-                    // foreach(var group in newGroup.MemberCells)
-                    //     WriteLine(group.Value.Location);
-                    // WriteLine();
-
-                    // groups.Add(newGroup);
                 }
             }
 
-            // return groups;
+            return map;
         }
 
         #endregion
@@ -234,7 +240,7 @@ namespace GameOfLife.Game
             if (IsHighResMode)
             {
                 // var affectedGroups = CellGroups.Where(g => cellsToFlip.Any(c => g.MemberCells.Values.ToList().Contains(c))).ToList();
-                var affectedGroups = new List<CellGroup>(cellsToFlip.Count);
+                var affectedGroups = new HashSet<CellGroup>(cellsToFlip.Count);
 
                 foreach (var cell in cellsToFlip)
                 {
@@ -248,6 +254,7 @@ namespace GameOfLife.Game
                         throw new InvalidOperationException($"Cell {cell.Location} is not in {nameof(CellGroupMap)}!");
                     }
                 }
+
                 GridPrinter.PrintUpdates(affectedGroups, this);
             }
             else

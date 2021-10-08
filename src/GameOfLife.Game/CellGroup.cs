@@ -1,23 +1,21 @@
 namespace GameOfLife.Game;
 
-public class CellGroup
+public class CellGroup : IPrintableUnit
 {
     // public Cell[,] MemberCells { get; init; } = new Cell[2,2];
     public Dictionary<CellGroupLocation, Cell> MemberCells { get; init; } = new(4);
+    public Point PrintLocation { get; init; }
 
     public CellGroup() { }
 
-    public CellGroup(Cell upperLeftCell, Cell upperRightCell, Cell lowerLeftCell, Cell lowerRightCell)
+    public CellGroup(Cell upperLeftCell, Cell upperRightCell, Cell lowerLeftCell, Cell lowerRightCell, Point location)
     {
-        // MemberCells[0,0] = upperLeftCell;
-        // MemberCells[1,0] = upperRightCell;
-        // MemberCells[0,1] = lowerLeftCell;
-        // MemberCells[1,1] = lowerRightCell;
-
         MemberCells.Add(CellGroupLocation.UpperLeft, upperLeftCell);
         MemberCells.Add(CellGroupLocation.UpperRight, upperRightCell);
         MemberCells.Add(CellGroupLocation.LowerLeft, lowerLeftCell);
         MemberCells.Add(CellGroupLocation.LowerRight, lowerRightCell);
+
+        PrintLocation = location;
     }
 
     public void AddCell(Cell cell, CellGroupLocation locationInGroup)
@@ -25,20 +23,11 @@ public class CellGroup
         MemberCells.Add(locationInGroup, cell);
     }
 
-    [Flags]
-    public enum CellGroupLocation : byte
-    {
-        UpperLeft = 0,
-        UpperRight = 1,
-        LowerLeft = 2,
-        LowerRight = 4
-    }
-
     /// <summary>
     /// Convert the life status to a single hex char??
     /// </summary>
     /// <returns></returns>
-    public int GetSignature()
+    public int GetCellLifeSignature()
     {
         var total = 0;
 

@@ -31,9 +31,9 @@ namespace GameOfLife
 
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
-            for (var x = 0; x < grid.Width; x++)
+            for (var x = 0; x < grid.ScreenDimensions.Width; x++)
             {
-                for (var y = 0; y < grid.Height; y++)
+                for (var y = 0; y < grid.ScreenDimensions.Height; y++)
                 {
                     SetCursorPosition(x, y);
                     Write(grid.GridChars[grid.CellGrid[x, y].IsAlive]);
@@ -57,12 +57,10 @@ namespace GameOfLife
 
             try
             {
-                foreach (var group in grid.CellGroupMap.Values.ToList())
+                foreach (var group in grid.CellGroupMap.Values.Distinct().ToList())
                 {
-                    SetCursorPosition(
-                            group.MemberCells.Values.ToList()[1].Location.X / 2,
-                            group.MemberCells.Values.ToList()[2].Location.Y / 2);
-                    var signature = group.GetSignature();
+                    SetCursorPosition(group.PrintLocation.X, group.PrintLocation.Y);
+                    var signature = group.GetCellLifeSignature();
                     var @char = CellGroup.GetCharacterToPrint(signature);
                     Write(@char);
                 }
@@ -107,7 +105,7 @@ namespace GameOfLife
         /// </summary>
         /// <param name="groups"></param>
         /// <param name="grid"></param>
-        public void PrintUpdates(List<CellGroup> groups, Grid grid)
+        public void PrintUpdates(IEnumerable<CellGroup> groups, Grid grid)
         {
             ArgumentNullException.ThrowIfNull(groups);
             ArgumentNullException.ThrowIfNull(grid);
@@ -118,11 +116,9 @@ namespace GameOfLife
             {
                 foreach (var group in groups)
                 {
-                    SetCursorPosition(
-                        group.MemberCells.Values.ToList()[1].Location.X / 2,
-                        group.MemberCells.Values.ToList()[2].Location.Y / 2);
+                    SetCursorPosition(group.PrintLocation.X, group.PrintLocation.Y);
 
-                    var signature = group.GetSignature();
+                    var signature = group.GetCellLifeSignature();
                     var @char = CellGroup.GetCharacterToPrint(signature);
                     Write(@char);
                 }
@@ -191,7 +187,7 @@ namespace GameOfLife
 
             // Move to the output row, then clear it.
             SetCursorPosition(0, grid.OutputRow);
-            Utility.ClearCurrentLine();
+            ClearCurrentLine();
 
             // Ex.: Extinction | 813 iterations | 4.181 sec | 194.431 iterations/sec | 44 × 178 | 7,832 cells
             Write(string.Join(" | ", new string[]
@@ -201,7 +197,7 @@ namespace GameOfLife
                     secondsClause,
                     iterationsPerSecondClause,
                     gridClause,
-                    grid.CellCount.ToString("#,##0 cells"),
+                    grid.Area.ToString("#,##0 cells"),
                     populationClause + " alive"
                   }));
 
@@ -212,6 +208,14 @@ namespace GameOfLife
                 SetCursorPosition(0, grid.OutputRow + 1);
                 WriteLine("Press any key to quit.");
             }
+        }
+
+        /// <summary>
+        /// Fills the current terminal line with spaces, effectively erasing it.
+        /// </summary>
+        public void ClearCurrentLine()
+        {
+            // Write(new string(' ', Console.WindowWidth - 1) + "\r");
         }
     }
 }
