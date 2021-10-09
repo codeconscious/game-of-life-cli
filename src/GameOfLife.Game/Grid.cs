@@ -233,33 +233,24 @@ namespace GameOfLife.Game
         /// </summary>
         public void Iterate()
         {
-            var cellsToFlip = this.GetCellsToFlip();
-            Cell.FlipLifeStatuses(cellsToFlip);
-            this.UpdateHistoryAndGameState(cellsToFlip);
+            var iterationCells = this.GetCellsToFlip();
+            Cell.FlipLifeStatuses(iterationCells);
+            this.UpdateHistoryAndGameState(iterationCells);
 
             if (IsHighResMode)
             {
-                // var affectedGroups = CellGroups.Where(g => cellsToFlip.Any(c => g.MemberCells.Values.ToList().Contains(c))).ToList();
-                var affectedGroups = new HashSet<CellGroup>(cellsToFlip.Count);
+                var iterationGroups = new List<CellGroup>(iterationCells.Count);
 
-                foreach (var cell in cellsToFlip)
+                foreach (var cell in iterationCells)
                 {
-                    if (CellGroupMap.ContainsKey(cell))
-                    {
-                        affectedGroups.Add(CellGroupMap[cell]);
-                    }
-                    else
-                    {
-                        // WriteLine(string.Join("; ", CellGroupMap.Values.ToList().SelectMany(g => g.MemberCells.Select(c => c.Value.Location)).Where(p => p.X == 0).Distinct()));
-                        throw new InvalidOperationException($"Cell {cell.Location} is not in {nameof(CellGroupMap)}!");
-                    }
+                    iterationGroups.Add(CellGroupMap[cell]);
                 }
 
-                GridPrinter.PrintUpdates(affectedGroups, this);
+                GridPrinter.PrintUpdates(this, iterationGroups);
             }
             else
             {
-                GridPrinter.PrintUpdates(this, cellsToFlip);
+                GridPrinter.PrintUpdates(this, iterationCells);
             }
         }
 

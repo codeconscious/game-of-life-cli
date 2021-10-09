@@ -77,16 +77,17 @@ namespace GameOfLife
         /// Outputs only updated cells for the current iteration.
         /// </summary>
         /// <param name="grid"></param>
-        /// <param name="cellsForUpdate"></param>
-        public void PrintUpdates(Grid grid, List<Cell> cellsForUpdate)
+        /// <param name="updatedCells"></param>
+        public void PrintUpdates(Grid grid, List<Cell> updatedCells)
         {
             ArgumentNullException.ThrowIfNull(grid);
+            ArgumentNullException.ThrowIfNull(updatedCells);
 
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
             try
             {
-                foreach (var cell in cellsForUpdate)
+                foreach (var cell in updatedCells)
                 {
                     SetCursorPosition(cell.Location.X, cell.Location.Y);
                     Write(grid.GridChars[cell.IsAlive]);
@@ -103,18 +104,18 @@ namespace GameOfLife
         /// <summary>
         /// Outputs only updated cells for the current iteration.
         /// </summary>
-        /// <param name="groups"></param>
         /// <param name="grid"></param>
-        public void PrintUpdates(IEnumerable<CellGroup> groups, Grid grid)
+        /// <param name="updatedGroups"></param>
+        public void PrintUpdates(Grid grid, List<CellGroup> updatedGroups)
         {
-            ArgumentNullException.ThrowIfNull(groups);
+            ArgumentNullException.ThrowIfNull(updatedGroups);
             ArgumentNullException.ThrowIfNull(grid);
 
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
             try
             {
-                foreach (var group in groups)
+                foreach (var group in updatedGroups)
                 {
                     SetCursorPosition(group.PrintLocation.X, group.PrintLocation.Y);
 
