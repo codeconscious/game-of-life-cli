@@ -19,7 +19,7 @@ public class TestPrinter : IPrinter
 
     public void PrintUpdates(Grid grid, List<Cell> cellsForUpdate) { }
 
-    public void PrintUpdates(IEnumerable<CellGroup> groups, Grid grid) { }
+    public void PrintUpdates(Grid grid, List<CellGroup> groups) { }
 
     public void ClearCurrentLine() { }
 }

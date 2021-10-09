@@ -11,7 +11,7 @@ namespace GameOfLife
         /// </summary>
         public bool UseHighResMode { get; }
 
-        public byte MinimumWidthHeight { get; } = 5;
+        public byte MinimumWidthHeight { get; } = 3;
 
         /// <summary>
         /// The desired width of the output area.
