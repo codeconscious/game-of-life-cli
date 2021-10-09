@@ -26,7 +26,7 @@ namespace GameOfLife
             if (args.Length == 1 && args[0] == "--default")
             {
                 WriteLine("Using default settings.");
-                gameSettings = new Settings(new[] { "-1", "-1", "-1" }, printer);
+                gameSettings = new Settings(new[] { "1", "-1", "-1", "-1" }, printer);
             }
             else // Create settings from the individual args.
             {

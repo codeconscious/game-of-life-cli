@@ -5,14 +5,33 @@ namespace GameOfLife
     /// </summary>
     public class Settings : IGridSettings
     {
+        /// <summary>
+        /// Determines whether to use normal characters or else
+        /// block characters to allow a higher-resolution simulation.
+        /// </summary>
         public bool UseHighResMode { get; }
-        public byte MinimumWidthHeight { get; } = 3;
+
+        public byte MinimumWidthHeight { get; } = 5;
+
+        /// <summary>
+        /// The desired width of the output area.
+        /// </summary>
         public int Width { get; private init; }
+
+        /// <summary>
+        /// The desired height of the output area.
+        /// </summary>
         public int Height { get; private init; }
+
+        /// <summary>
+        /// The percentage of cells that should be alive at
+        /// the beginning of the simulation.
+        /// </summary>
         public int InitialPopulationRatio { get; private init; }
 
         /// <summary>
         /// The initial delay in milliseconds between two consecutive iterations (turns).
+        /// (The user can adjust this during the game.)
         /// </summary>
         public ushort InitialIterationDelayMs { get; private init; }
 
@@ -23,23 +42,29 @@ namespace GameOfLife
         public const byte MaximumRandomPopulationRatio = 70;
 
         /// <summary>
-        /// Constructor that is expected to take in arguments from the user.
+        /// Constructor that accepts arguments from the user.
         /// </summary>
         /// <param name="args"></param>
+        /// <param name="printer"></param>
         public Settings(string[] args, IPrinter printer)
         {
-            // TODO: Make this a proper setting.
-            UseHighResMode = false;
-
-            if (args.Length != 3 && args.Length != 4)
+            if (args.Length != 4 && args.Length != 5)
                 throw new ArgumentException("An unsupported number of arguments was passed in.");
 
-            // Verify the width (X axis) arg
-            if (args[0] == "-1")
+            UseHighResMode = args[0] switch
             {
-                var autoWidth = Console.WindowWidth; //* (UseHighResMode ? 2 : 1);
+                "1" => true,
+                "0" => false,
+                _ => throw new ArgumentOutOfRangeException(args[0])
+            };
 
-                // Ensure an even number in high-res mode.
+            // Verify the width (X axis) arg
+            if (args[1] == "-1")
+            {
+                var autoWidth = Console.WindowWidth;
+
+                // Ensure an even number in high-res mode because each
+                // cell group contains an even number of cells.
                 if (UseHighResMode && autoWidth % 2 != 0)
                     autoWidth--;
 
@@ -49,7 +74,7 @@ namespace GameOfLife
             }
             else
             {
-                var width = ushort.Parse(args[0]);
+                var width = ushort.Parse(args[1]);
 
                 if (width < MinimumWidthHeight)
                     throw new ArgumentOutOfRangeException(nameof(width));
@@ -58,12 +83,12 @@ namespace GameOfLife
             }
 
             // Verify the height (Y axis) arg
-            if (args[1] == "-1")
+            if (args[2] == "-1")
             {
                 // Leave room at the bottom of the screen for output (during and after the game).
-                var bottomMargin = 3; // * (UseHighResMode ? 2 : 1);
+                var bottomMargin = 3;
 
-                var autoHeight = Console.WindowHeight /* * (UseHighResMode ? 2 : 1)) */ - bottomMargin;
+                var autoHeight = Console.WindowHeight - bottomMargin;
 
                 // Ensure an even number in high-res mode.
                 if (UseHighResMode && autoHeight % 2 != 0)
@@ -75,7 +100,7 @@ namespace GameOfLife
             }
             else
             {
-                var height = ushort.Parse(args[1]);
+                var height = ushort.Parse(args[2]);
 
                 if (height < MinimumWidthHeight)
                     throw new ArgumentOutOfRangeException(nameof(height));
@@ -84,13 +109,13 @@ namespace GameOfLife
             }
 
             // Verify the population ratio arg
-            if (args[2] == "-1")
+            if (args[3] == "-1")
             {
                 InitialPopulationRatio = new Random().Next(MaximumRandomPopulationRatio);
             }
             else
             {
-                var populationRatio = byte.Parse(args[2]);
+                var populationRatio = byte.Parse(args[3]);
 
                 if (populationRatio > 100 || populationRatio < 1)
                     throw new ArgumentOutOfRangeException(nameof(populationRatio));
@@ -99,9 +124,9 @@ namespace GameOfLife
             }
 
             // Verify the optional iteration delay arg, or if it's missing, set a default.
-            if (args.Length == 4)
+            if (args.Length == 5)
             {
-                InitialIterationDelayMs = ushort.Parse(args[3]);
+                InitialIterationDelayMs = ushort.Parse(args[4]);
             }
             else
             {
