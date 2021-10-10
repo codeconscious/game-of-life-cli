@@ -182,7 +182,7 @@ namespace GameOfLife
 
             var gridClause = $"{grid.Width} × {grid.Height}";
 
-            var populationClause = $"{grid.PopulationRatio * 100:0.####}%";
+            var populationClause = $"{grid.PopulationRatio * 100:0.##}%";
 
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
