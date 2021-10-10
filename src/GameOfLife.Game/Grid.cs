@@ -21,7 +21,7 @@ namespace GameOfLife.Game
         public List<Cell> AllCellsFlattened { get; private init; }
 
         public float PopulationRatio
-            => AllCellsFlattened.Count(c => c.IsAlive) / Area;
+            => (float) AllCellsFlattened.Count(c => c.IsAlive) / Area;
 
         // The state of the grid should only change once, when the game ends.
         public GridState State { get; private set; } = GridState.Alive;
