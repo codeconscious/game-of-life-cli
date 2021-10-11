@@ -7,6 +7,7 @@ namespace GameOfLife
         private const string Instructions =
             "Run Conway's Game of Life in your terminal!\n" +
             "Supply the following arguments:\n" +
+            "   - High-res mode ........... Enter 0 for standard resolution or 1 for high resolution" +
             "   - Number of columns ....... At least 3, or else -1 to fit the console width\n" +
             "   - Number of rows .......... At least 3, or else -1 to fit the console height\n" +
             "   - Initial density (%) ..... 1 to 99 (inclusive, digits only), or else -1 for random\n" +
