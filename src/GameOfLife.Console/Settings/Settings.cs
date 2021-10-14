@@ -43,36 +43,15 @@ namespace GameOfLife
         /// </summary>
         public const byte MaximumRandomPopulationRatio = 70;
 
-        public Settings(SettingsDto dto)
-            : this(new string[]
-            {
-                dto.UseHighResMode ? "1" : "0",
-                dto.Width.ToString(),
-                dto.Height.ToString(),
-                dto.InitialPopulationRatio.ToString(),
-                dto.InitialIterationDelayMs.ToString()
-            }, new ConsolePrinter())
-        { }
-
-        /// <summary>
-        /// Constructor that accepts arguments from the user.
-        /// </summary>
-        /// <param name="args"></param>
-        /// <param name="printer"></param>
-        public Settings(string[] args, IPrinter printer)
+        public Settings(SettingsDto? dto, IPrinter printer)
         {
-            if (args.Length != 4 && args.Length != 5)
-                throw new ArgumentException("An unsupported number of arguments was passed in.");
+            ArgumentNullException.ThrowIfNull(dto);
+            ArgumentNullException.ThrowIfNull(printer);
 
-            UseHighResMode = args[0] switch
-            {
-                "1" => true,
-                "0" => false,
-                _ => throw new ArgumentOutOfRangeException(args[0])
-            };
+            UseHighResMode = dto.UseHighResMode;
 
             // Verify the width (X axis) arg
-            if (args[1] == "-1")
+            if (dto.Width == -1)
             {
                 var autoWidth = Console.WindowWidth;
 
@@ -87,16 +66,14 @@ namespace GameOfLife
             }
             else
             {
-                var width = ushort.Parse(args[1]);
+                if (dto.Width < MinimumWidthHeight)
+                    throw new ArgumentOutOfRangeException(nameof(dto.Width));
 
-                if (width < MinimumWidthHeight)
-                    throw new ArgumentOutOfRangeException(nameof(width));
-
-                Width = width;
+                Width = dto.Width;
             }
 
             // Verify the height (Y axis) arg
-            if (args[2] == "-1")
+            if (dto.Height == -1)
             {
                 // Leave room at the bottom of the screen for output (during and after the game).
                 const int bottomMargin = 3;
@@ -113,38 +90,26 @@ namespace GameOfLife
             }
             else
             {
-                var height = ushort.Parse(args[2]);
+                if (dto.Height < MinimumWidthHeight)
+                    throw new ArgumentOutOfRangeException(nameof(dto.Height));
 
-                if (height < MinimumWidthHeight)
-                    throw new ArgumentOutOfRangeException(nameof(height));
-
-                Height = height;
+                Height = dto.Height;
             }
 
             // Verify the population ratio arg
-            if (args[3] == "-1")
+            if (dto.InitialPopulationRatio == -1)
             {
                 InitialPopulationRatio = new Random().Next(MaximumRandomPopulationRatio);
             }
             else
             {
-                var populationRatio = byte.Parse(args[3]);
+                if (dto.InitialPopulationRatio > 100 || dto.InitialPopulationRatio < 1)
+                    throw new ArgumentOutOfRangeException(nameof(dto.InitialPopulationRatio));
 
-                if (populationRatio > 100 || populationRatio < 1)
-                    throw new ArgumentOutOfRangeException(nameof(populationRatio));
-
-                InitialPopulationRatio = populationRatio;
+                InitialPopulationRatio = dto.InitialPopulationRatio;
             }
 
-            // Verify the optional iteration delay arg, or if it's missing, set a default.
-            if (args.Length == 5)
-            {
-                InitialIterationDelayMs = ushort.Parse(args[4]);
-            }
-            else
-            {
-                InitialIterationDelayMs = 0; // Default value in milliseconds
-            }
+            InitialIterationDelayMs = dto.InitialIterationDelayMs;
 
             printer.PrintLine($"Grid:            {Width} columns x {Height} rows ({Width * Height:#,##0} cells)");
             printer.PrintLine($"Population:      {InitialPopulationRatio}%");

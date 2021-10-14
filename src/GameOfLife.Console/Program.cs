@@ -24,16 +24,34 @@ namespace GameOfLife
 
             IGridSettings gameSettings;
 
-            if (args.Length == 1 && args[0] == "--default")
+            if (args.Length == 0)
             {
                 WriteLine("Using default settings.");
-                gameSettings = new Settings(new[] { "1", "-1", "-1", "-1" }, printer);
+
+                var defaultDto = new SettingsDto
+                {
+                    UseHighResMode = false,
+                    Width = -1,
+                    Height = -1,
+                    InitialPopulationRatio = -1,
+                    InitialIterationDelayMs = 0
+                };
+
+                gameSettings = new Settings(defaultDto, printer);
             }
-            else // Create settings from the individual args.
+            else if (args.Length == 1)
             {
+                if (args[0] == "--help")
+                {
+                    printer.PrintLine(Instructions);
+                    return;
+                }
+
                 try
                 {
-                    gameSettings = new Settings(args, printer);
+                    var settingsService = new SettingsService();
+                    var settingsDto = settingsService.GetFromFile(args[0]);
+                    gameSettings = new Settings(settingsDto, printer);
                 }
                 catch (Exception ex)
                 {
@@ -44,6 +62,14 @@ namespace GameOfLife
                     WriteLine(Instructions);
                     return;
                 }
+            }
+            else // More than 1 argument
+            {
+                ForegroundColor = ConsoleColor.Red; // TODO: Add to the PrintLine method parameters.
+                printer.PrintLine("Too many arguments were entered.");
+                ForegroundColor = default;
+                printer.PrintLine(Instructions);
+                return;
             }
 
             // Create the grid and run the game.

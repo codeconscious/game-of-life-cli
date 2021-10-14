@@ -3,9 +3,10 @@ using System.Text.Json;
 
 namespace GameOfLife;
 
+// Represents the desired settings, either from user input or a settings file.
 public record SettingsDto : IGridSettings
 {
-    public bool UseHighResMode { get; set; }
+    public bool UseHighResMode { get; init; }
     public int MinimumWidthHeight { get; init; }
     public int Width { get; init; }
     public int Height { get; init; }
@@ -20,16 +21,16 @@ public record SettingsDto : IGridSettings
 
 public class SettingsService
 {
-    public void Serialize()
-    {
-        var dto = new SettingsDto();
+    // public void Serialize()
+    // {
+    //     var dto = new SettingsDto();
 
-        var options = new JsonSerializerOptions { WriteIndented = true };
-        var jsonString = JsonSerializer.Serialize(dto, options);
-        WriteLine(jsonString);
-    }
+    //     var options = new JsonSerializerOptions { WriteIndented = true };
+    //     var jsonString = JsonSerializer.Serialize(dto, options);
+    //     WriteLine(jsonString);
+    // }
 
-    public SettingsDto? Deserialize(string settingsPath)
+    public SettingsDto? GetFromFile(string settingsPath)
     {
         ArgumentNullException.ThrowIfNull(settingsPath);
 

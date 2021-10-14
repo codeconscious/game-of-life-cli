@@ -4,6 +4,7 @@ namespace GameOfLife.Tests;
 
 public class SettingsTests
 {
+    /*
     private static readonly TestPrinter Printer = new();
 
     [Theory]
@@ -130,4 +131,5 @@ public class SettingsTests
 
         Assert.Throws<ArgumentException>(() => new Settings(args, Printer));
     }
+    */
 }

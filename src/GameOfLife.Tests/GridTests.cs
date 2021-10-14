@@ -4,6 +4,7 @@ namespace GameOfLife.Tests;
 
 public class GridTests
 {
+    /*
     [Theory]
     [InlineData("0", "300", "50", "90")]
     [InlineData("0", "50", "30", "20")]
@@ -22,4 +23,5 @@ public class GridTests
         Assert.Equal(ushort.Parse(height), grid.Height);
         Assert.Equal(GridState.Alive, grid.State);
     }
+    */
 }
