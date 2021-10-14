@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace GameOfLife
 {
     /// <summary>
@@ -40,6 +42,17 @@ namespace GameOfLife
         /// If it's too high, then the game will likely end very quickly.
         /// </summary>
         public const byte MaximumRandomPopulationRatio = 70;
+
+        public Settings(SettingsDto dto)
+            : this(new string[]
+            {
+                dto.UseHighResMode ? "1" : "0",
+                dto.Width.ToString(),
+                dto.Height.ToString(),
+                dto.InitialPopulationRatio.ToString(),
+                dto.InitialIterationDelayMs.ToString()
+            }, new ConsolePrinter())
+        { }
 
         /// <summary>
         /// Constructor that accepts arguments from the user.
@@ -86,7 +99,7 @@ namespace GameOfLife
             if (args[2] == "-1")
             {
                 // Leave room at the bottom of the screen for output (during and after the game).
-                var bottomMargin = 3;
+                const int bottomMargin = 3;
 
                 var autoHeight = Console.WindowHeight - bottomMargin;
 

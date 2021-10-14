@@ -3,7 +3,7 @@ namespace GameOfLife.Game
     public interface IGridSettings
     {
         public bool UseHighResMode { get; }
-        public byte MinimumWidthHeight { get; }
+        // public byte MinimumWidthHeight { get; }
         public int Width { get; }
         public int Height { get; }
         public int InitialPopulationRatio { get; }
