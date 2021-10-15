@@ -1,4 +1,5 @@
 ﻿using GameOfLife.Game;
+using System.IO;
 
 namespace GameOfLife
 {
@@ -24,20 +25,44 @@ namespace GameOfLife
 
             IGridSettings gameSettings;
 
+            printer.PrintLine("test");
+
             if (args.Length == 0)
             {
                 WriteLine("Using default settings.");
 
-                var defaultDto = new SettingsDto
-                {
-                    UseHighResMode = false,
-                    Width = -1,
-                    Height = -1,
-                    InitialPopulationRatio = -1,
-                    InitialIterationDelayMs = 0
-                };
+                const string settingsFile = "custom.gol";
 
-                gameSettings = new Settings(defaultDto, printer);
+                if (File.Exists(settingsFile))
+                {
+                    printer.PrintLine("Parsing custom settings...");
+
+                    var settingsService = new SettingsService();
+                    var dto = settingsService.GetFromFile(settingsFile);
+
+                    if (dto == null)
+                    {
+                        printer.PrintLine($"Could not parse settings file \"{settingsFile}\".");
+                        return; // TODO: Use default settings instead.
+                    }
+
+                    gameSettings = new Settings(dto, printer);
+                }
+                else
+                {
+                    printer.PrintLine("Using default settings...");
+
+                    var defaultDto = new SettingsDto
+                    {
+                        UseHighResMode = false,
+                        Width = -1,
+                        Height = -1,
+                        InitialPopulationRatio = -1,
+                        InitialIterationDelayMs = 0
+                    };
+
+                    gameSettings = new Settings(defaultDto, printer);
+                }
             }
             else if (args.Length == 1)
             {
@@ -47,21 +72,11 @@ namespace GameOfLife
                     return;
                 }
 
-                try
-                {
-                    var settingsService = new SettingsService();
-                    var settingsDto = settingsService.GetFromFile(args[0]);
-                    gameSettings = new Settings(settingsDto, printer);
-                }
-                catch (Exception ex)
-                {
-                    ForegroundColor = ConsoleColor.Yellow;
-                    WriteLine("ERROR: " + ex.Message);
-                    ResetColor();
-
-                    WriteLine(Instructions);
-                    return;
-                }
+                ForegroundColor = ConsoleColor.Red; // TODO: Add to the PrintLine method parameters.
+                printer.PrintLine("An unrecognized command was passed in.");
+                ForegroundColor = default;
+                printer.PrintLine(Instructions);
+                return;
             }
             else // More than 1 argument
             {
