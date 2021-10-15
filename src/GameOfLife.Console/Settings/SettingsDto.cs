@@ -37,6 +37,11 @@ public class SettingsService
         if (!File.Exists(settingsPath))
             throw new FileNotFoundException("Settings file missing.", settingsPath);
 
-        return JsonSerializer.Deserialize<SettingsDto>(settingsPath);
+        var json = System.IO.File.ReadAllText(settingsPath);
+
+        if (string.IsNullOrWhiteSpace(json))
+            throw new InvalidDataException("The file was empty.");
+
+        return JsonSerializer.Deserialize<SettingsDto>(json);
     }
 }
