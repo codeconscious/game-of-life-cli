@@ -29,8 +29,6 @@ namespace GameOfLife
 
             if (args.Length == 0)
             {
-                WriteLine("Using default settings.");
-
                 const string settingsFile = "custom.gol";
 
                 if (File.Exists(settingsFile))
