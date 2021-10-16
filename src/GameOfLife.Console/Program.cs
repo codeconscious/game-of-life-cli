@@ -1,19 +1,38 @@
-﻿using GameOfLife.Game;
+﻿using Spectre.Console;
 using System.IO;
 
 namespace GameOfLife
 {
     internal static class Program
     {
-        const string SettingsFile = "settings.json";
-        const short IterationDelayAdjustmentMs = 50;
+        private const string SettingsFile = "settings.json";
+        private const short IterationDelayAdjustmentMs = 50;
 
-        private const string Instructions =
-            "Conway's Game of Life in your terminal!\n\n" +
-            $"Run with no arguments to begin. If the file \"{SettingsFile}\" exists, its settings will be parsed and used.\n" +
-            "Otherwise, the program will use its own default settings.\n" +
-            "Use \"--save-settings\" or \"-s\" to create and save a new settings file.\n\n" +
-            "During the simulation, you can press the left and right arrow keys to adjust the iteration speed.";
+        private static void PrintInstructions()
+        {
+            var table = new Table();
+            table.Border(TableBorder.Rounded);
+
+            table.AddColumn(new TableColumn("[blue]Conway's Game of Life in your terminal![/]").Centered());
+
+            table.Columns[0].PadLeft(20).PadRight(20);
+
+            table.AddRow("Simply run with no arguments to begin. " +
+                $"If the file \"{SettingsFile}\" exists in the program's folder, " +
+                "its settings will be parsed and used. " +
+                "Otherwise, the program will use its own default settings.");
+
+            table.AddEmptyRow();
+
+            table.AddRow("Use [yellow]\"--save-settings\"[/] or [yellow]\"-s\"[/] to create and save a new settings file.");
+
+            table.AddEmptyRow();
+
+            table.AddRow("During the simulation, you can press the [yellow]left and right arrow keys[/] to " +
+                $"adjust the simulation speed by {IterationDelayAdjustmentMs}ms.");
+
+            AnsiConsole.Write(table);
+        }
 
         private static void Main(string[] args)
         {
@@ -57,7 +76,7 @@ namespace GameOfLife
             {
                 if (args[0] == "--help" || args[0] == "-h" || args[0] == "-hh")
                 {
-                    printer.PrintLine(Instructions);
+                    PrintInstructions();
                     return;
                 }
 
@@ -72,7 +91,7 @@ namespace GameOfLife
                 ForegroundColor = ConsoleColor.Red; // TODO: Add to the PrintLine method parameters.
                 printer.PrintLine("Unrecognized command.");
                 ForegroundColor = default;
-                printer.PrintLine(Instructions);
+                PrintInstructions();
                 return;
             }
             else // More than 1 argument
@@ -80,7 +99,7 @@ namespace GameOfLife
                 ForegroundColor = ConsoleColor.Red; // TODO: Add to the PrintLine method parameters.
                 printer.PrintLine("Too many arguments were entered.");
                 ForegroundColor = default;
-                printer.PrintLine(Instructions);
+                PrintInstructions();
                 return;
             }
 
@@ -115,7 +134,7 @@ namespace GameOfLife
             iterationStopwatch.Start();
 
             Write("Preparing... ");
-            Grid grid = new(settings, printer);
+            var grid = new Game.Grid(settings, printer);
             WriteLine("done in " + grid.GameStopwatch.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
 
             printer.PrintEntire(grid, shouldClear: true);
