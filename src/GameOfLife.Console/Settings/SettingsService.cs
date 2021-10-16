@@ -8,7 +8,7 @@ public class SettingsService
 {
     public SettingsDto CreateSettingsFromUserInput()
     {
-        AnsiConsole.WriteLine("Please answer the following questions. Press the Enter key to submit the default option.");
+        AnsiConsole.WriteLine("Please enter your settings below. Press the Enter key to submit the default option.");
 
         var useHighResMode = AnsiConsole.Confirm("Use high-res mode?");
 
@@ -80,7 +80,7 @@ public class SettingsService
 
         AnsiConsole.WriteLine("Settings saved.");
 
-        // Display the requested settings.
+        // Display the saved settings.
         var table = new Table();
         table.AddColumn("Setting");
         table.AddColumn("Value");
