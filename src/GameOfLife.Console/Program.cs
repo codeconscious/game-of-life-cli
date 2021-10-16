@@ -11,7 +11,7 @@ namespace GameOfLife
         private static void PrintInstructions()
         {
             var table = new Table();
-            table.Border(TableBorder.Rounded);
+            table.Border(TableBorder.Rounded).BorderColor(Spectre.Console.Color.Grey19);
 
             table.AddColumn(new TableColumn("[blue]Conway's Game of Life in your terminal![/]").Centered());
 
@@ -24,11 +24,11 @@ namespace GameOfLife
 
             table.AddEmptyRow();
 
-            table.AddRow("Use [yellow]\"--save-settings\"[/] or [yellow]\"-s\"[/] to create and save a new settings file.");
+            table.AddRow("Use [bold yellow]\"--save-settings\"[/] or [bold yellow]\"-s\"[/] to create and save a new settings file.");
 
             table.AddEmptyRow();
 
-            table.AddRow("During the simulation, you can press the [yellow]left and right arrow keys[/] to " +
+            table.AddRow("During the simulation, you can press the [bold yellow]left and right arrow keys[/] to " +
                 $"adjust the simulation speed by {IterationDelayAdjustmentMs}ms.");
 
             AnsiConsole.Write(table);
