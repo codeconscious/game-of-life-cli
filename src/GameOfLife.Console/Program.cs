@@ -5,21 +5,21 @@ namespace GameOfLife
 {
     internal static class Program
     {
+        const string SettingsFile = "settings.json";
+        const short IterationDelayAdjustmentMs = 50;
+
         private const string Instructions =
-            "Run Conway's Game of Life in your terminal!\n" +
-            "Supply the following arguments:\n" +
-            "   - High-res mode ........... Enter 0 for standard resolution or 1 for high resolution" +
-            "   - Number of columns ....... At least 3, or else -1 to fit the console width\n" +
-            "   - Number of rows .......... At least 3, or else -1 to fit the console height\n" +
-            "   - Initial density (%) ..... 1 to 99 (inclusive, digits only), or else -1 for random\n" +
-            "   - (Optional) Delay between iterations in milliseconds (Otherwise, defaults to 50)\n" +
-            "Alternatively, supply only \"--default\" to use the default settings (in which all values are -1).\n" +
+            "Conway's Game of Life in your terminal!\n\n" +
+            $"Run with no arguments to begin. If the file \"{SettingsFile}\" exists, its settings will be parsed and used.\n" +
+            "Otherwise, the program will use its own default settings.\n" +
+            "Use \"--save-settings\" or \"-s\" to create and save a new settings file.\n\n" +
             "During the simulation, you can press the left and right arrow keys to adjust the iteration speed.";
 
         private static void Main(string[] args)
         {
             // This is particularly necessary for high-res mode on Windows.
             OutputEncoding = System.Text.Encoding.UTF8;
+            ResetColor();
 
             IPrinter printer = new ConsolePrinter();
 
@@ -55,13 +55,13 @@ namespace GameOfLife
             }
             else if (args.Length == 1)
             {
-                if (args[0] == "--help" || args[0] == "-h")
+                if (args[0] == "--help" || args[0] == "-h" || args[0] == "-hh")
                 {
                     printer.PrintLine(Instructions);
                     return;
                 }
 
-                if (args[0] == "--create-settings" || args[0] == "-c")
+                if (args[0] == "--save-settings" || args[0] == "-s")
                 {
                     var settingsService = new SettingsService();
                     var settingsDto = settingsService.CreateSettingsFromUserInput();
@@ -133,11 +133,11 @@ namespace GameOfLife
 
                     if (key == ConsoleKey.LeftArrow) // Make slower
                     {
-                        grid.AdjustIterationDelayBy(50);
+                        grid.AdjustIterationDelayBy(IterationDelayAdjustmentMs);
                     }
                     else if (key == ConsoleKey.RightArrow) // Make faster
                     {
-                        grid.AdjustIterationDelayBy(-50);
+                        grid.AdjustIterationDelayBy(IterationDelayAdjustmentMs * -1);
                     }
                     else // Any other key
                     {
