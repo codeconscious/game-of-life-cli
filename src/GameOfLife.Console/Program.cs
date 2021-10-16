@@ -13,7 +13,7 @@ namespace GameOfLife
             var table = new Table();
             table.Border(TableBorder.Rounded).BorderColor(Spectre.Console.Color.Grey19);
 
-            table.AddColumn(new TableColumn("[blue]Conway's Game of Life in your terminal![/]").Centered());
+            table.AddColumn(new TableColumn("[blue]Conway's Game of Life in your terminal![/]"));
 
             table.Columns[0].PadLeft(20).PadRight(20);
 
