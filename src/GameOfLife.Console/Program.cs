@@ -25,7 +25,7 @@ namespace GameOfLife
 
             IGridSettings gameSettings;
 
-            const string settingsFile = "custom.gol";
+            const string settingsFile = "settings.json";
 
             if (args.Length == 0)
             {
