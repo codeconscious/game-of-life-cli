@@ -64,11 +64,7 @@ public class SettingsService
 
         if (File.Exists(fileName))
         {
-            printer.PrintLine($"The file \"{fileName}\" already exists. Overwrite it? (Y/N)");
-
-            // TODO: This should be a loop, or else use Spectre.
-            var key = Console.ReadKey();
-            if (char.ToLowerInvariant(key.KeyChar) != 'y')
+            if (!AnsiConsole.Confirm($"The file \"{fileName}\" already exists. Overwrite it? (Y/N)"))
             {
                 printer.PrintLine("Cancelled saving settings.");
                 return;
