@@ -8,10 +8,13 @@ public class SettingsService
 {
     public SettingsDto CreateSettingsFromUserInput()
     {
-        var useHighResMode = AnsiConsole.Confirm("Use [yellow]high-res[/] mode?");
+        AnsiConsole.WriteLine("Please answer the following questions. Press the Enter key to submit the default option.");
+
+        var useHighResMode = AnsiConsole.Confirm("Use high-res mode?");
 
         var width = AnsiConsole.Prompt(
-            new TextPrompt<short>("Grid width? (\"Enter [green]-1[/] for screen width.)")
+            new TextPrompt<short>("Grid width? (\"Enter [yellow]-1[/] for screen width.)")
+                .DefaultValue<short>(-1)
                 .Validate(width =>
                 {
                     return width switch
@@ -22,7 +25,8 @@ public class SettingsService
                 }));
 
         var height = AnsiConsole.Prompt(
-            new TextPrompt<short>("Grid height? (Enter [green]-1[/] for screen height.)")
+            new TextPrompt<short>("Grid height? (Enter [yellow]-1[/] for screen height.)")
+                .DefaultValue<short>(-1)
                 .Validate(height =>
                 {
                     return height switch
@@ -33,7 +37,8 @@ public class SettingsService
                 }));
 
         var ratio = AnsiConsole.Prompt(
-            new TextPrompt<byte>("Population ratio %? ([green]0-99[/], or else [green]-1[/] for a random one.)")
+            new TextPrompt<sbyte>("Population ratio %? ([yellow]0-99[/], or else [yellow]-1[/] for a random one.)")
+                .DefaultValue<sbyte>(-1)
                 .Validate(ratio =>
                 {
                     return ratio switch
@@ -45,7 +50,8 @@ public class SettingsService
                 }));
 
         var delay = AnsiConsole.Prompt(
-            new TextPrompt<ushort>("Iteration delay (in ms)? Enter [green]0[/] or higher.)"));
+            new TextPrompt<ushort>("Iteration delay in ms? Enter [yellow]0[/] or higher.)")
+                .DefaultValue<ushort>(0));
 
         return new SettingsDto(useHighResMode, width, height, ratio, delay);
     }
@@ -76,7 +82,7 @@ public class SettingsService
 
         File.WriteAllText(fileName, jsonString, System.Text.Encoding.UTF8);
 
-        AnsiConsole.WriteLine("[green]Settings saved to file.[/]");
+        AnsiConsole.WriteLine("Settings saved.");
 
         // Display the requested settings.
         var table = new Table();
@@ -85,7 +91,7 @@ public class SettingsService
         table.AddRow("High-res mode", settings.UseHighResMode ? "On" : "Off");
         table.AddRow("Width", settings.Width == -1 ? "Fit" : settings.Width.ToString() + " rows");
         table.AddRow("Height", settings.Height == -1 ? "Fit" : settings.Height.ToString() + " columns");
-        table.AddRow("Population", settings.InitialPopulationRatio.ToString() + "%");
+        table.AddRow("Population", settings.InitialPopulationRatio == -1 ? "Random" : settings.InitialPopulationRatio.ToString() + "%");
         table.AddRow("Iteration delay", settings.InitialIterationDelayMs.ToString() + "ms");
         AnsiConsole.Write(table);
     }
