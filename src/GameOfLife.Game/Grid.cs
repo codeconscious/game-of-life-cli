@@ -56,7 +56,7 @@ namespace GameOfLife.Game
         public Grid(IGridSettings gridSettings, IPrinter gridPrinter)
         {
             ScreenDimensions = new Dimensions(gridSettings.Width, gridSettings.Height);
-            IterationDelayMs = gridSettings.InitialIterationDelayMs;
+            IterationDelayMs = gridSettings.IterationDelayMs;
             var random = new Random();
 
             if (gridSettings.UseHighResMode)
@@ -71,7 +71,7 @@ namespace GameOfLife.Game
                 {
                     for (var y = 0; y < gridSettings.Height * 2; y++)
                     {
-                        var startAlive = random.Next(100) <= gridSettings.InitialPopulationRatio;
+                        var startAlive = random.Next(100) <= gridSettings.PopulationRatio;
                         CellGrid[x,y] = new Cell(x, y, startAlive);
                     }
                 }
@@ -90,7 +90,7 @@ namespace GameOfLife.Game
                 {
                     for (var y = 0; y < gridSettings.Height; y++)
                     {
-                        var startAlive = random.Next(100) <= gridSettings.InitialPopulationRatio;
+                        var startAlive = random.Next(100) <= gridSettings.PopulationRatio;
                         CellGrid[x,y] = new Cell(x, y, startAlive);
                     }
                 }

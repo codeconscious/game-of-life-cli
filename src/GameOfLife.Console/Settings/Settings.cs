@@ -7,35 +7,18 @@ namespace GameOfLife
     /// </summary>
     public class Settings : IGridSettings
     {
-        /// <summary>
-        /// Determines whether to use normal characters or else
-        /// block characters to allow a higher-resolution simulation.
-        /// </summary>
         public bool UseHighResMode { get; }
-
-        public byte MinimumWidthHeight { get; } = 3;
-
-        /// <summary>
-        /// The desired width of the output area.
-        /// </summary>
-        public int Width { get; private init; }
+        public byte MinimumWidthHeight { get; } = 5;
+        public int Width { get; }
+        public int Height { get; }
+        public int PopulationRatio { get; }
+        public ushort IterationDelayMs { get; }
 
         /// <summary>
-        /// The desired height of the output area.
+        /// The minimum population percentage allowed when setting it randomly.
+        /// If it's too low, then the game will likely end very quickly.
         /// </summary>
-        public int Height { get; private init; }
-
-        /// <summary>
-        /// The percentage of cells that should be alive at
-        /// the beginning of the simulation.
-        /// </summary>
-        public int InitialPopulationRatio { get; private init; }
-
-        /// <summary>
-        /// The initial delay in milliseconds between two consecutive iterations (turns).
-        /// (The user can adjust this during the game.)
-        /// </summary>
-        public ushort InitialIterationDelayMs { get; private init; }
+        public const byte MinimumRandomPopulationRatio = 10;
 
         /// <summary>
         /// The maximum population percentage allowed when setting it randomly.
@@ -97,23 +80,24 @@ namespace GameOfLife
             }
 
             // Verify the population ratio arg
-            if (dto.InitialPopulationRatio == -1)
+            if (dto.PopulationRatio == -1)
             {
-                InitialPopulationRatio = new Random().Next(MaximumRandomPopulationRatio);
+                PopulationRatio = new Random()
+                    .Next(MinimumRandomPopulationRatio, MaximumRandomPopulationRatio);
             }
             else
             {
-                if (dto.InitialPopulationRatio > 100 || dto.InitialPopulationRatio < 1)
-                    throw new ArgumentOutOfRangeException(nameof(dto.InitialPopulationRatio));
+                if (dto.PopulationRatio >= 100 || dto.PopulationRatio < 1)
+                    throw new ArgumentOutOfRangeException(nameof(dto.PopulationRatio));
 
-                InitialPopulationRatio = dto.InitialPopulationRatio;
+                PopulationRatio = dto.PopulationRatio;
             }
 
-            InitialIterationDelayMs = dto.InitialIterationDelayMs;
+            IterationDelayMs = dto.IterationDelayMs;
 
             printer.PrintLine($"Grid:            {Width} columns x {Height} rows ({Width * Height:#,##0} cells)");
-            printer.PrintLine($"Population:      {InitialPopulationRatio}%");
-            printer.PrintLine($"Iteration delay: {InitialIterationDelayMs}ms");
+            printer.PrintLine($"Population:      {PopulationRatio}%");
+            printer.PrintLine($"Iteration delay: {IterationDelayMs}ms");
         }
     }
 }

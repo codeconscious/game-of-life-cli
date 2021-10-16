@@ -119,7 +119,7 @@ namespace GameOfLife
             WriteLine("done in " + grid.GameStopwatch.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
 
             printer.PrintEntire(grid, shouldClear: true);
-            Thread.Sleep(settings.InitialIterationDelayMs);
+            Thread.Sleep(settings.IterationDelayMs);
 
             printer.PrintIterationSummary(grid, iterationStopwatch.Elapsed);
 
