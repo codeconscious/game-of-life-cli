@@ -36,15 +36,15 @@ namespace GameOfLife
                     printer.PrintLine("Parsing custom settings...");
 
                     var settingsService = new SettingsService();
-                    var dto = settingsService.GetFromFile(settingsFile);
+                    var settingsDto = settingsService.GetFromFile(settingsFile);
 
-                    if (dto == null)
+                    if (settingsDto == null)
                     {
                         printer.PrintLine($"Could not parse settings file \"{settingsFile}\".");
                         return; // TODO: Use default settings instead.
                     }
 
-                    gameSettings = new Settings(dto, printer);
+                    gameSettings = new Settings(settingsDto, printer);
                 }
                 else
                 {
