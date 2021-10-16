@@ -29,8 +29,8 @@ Simply run the GameOfLife.Console project and in your terminal. Certain argument
 
 ## TODO
 
-* Save application settings to a JSON file (using the new System.Text.Json library)
-* Allow editing the settings via UI
+* ~~Save application settings to a JSON file (using the new System.Text.Json library)~~
+* ~~Allow editing the settings via UI~~
 * Allow saving and submitting seeds or grid states (maybe)
 * Allow only single-byte characters to represent cells (Standard mode only)
 * ~~Check the possibility of higher resolution~~
