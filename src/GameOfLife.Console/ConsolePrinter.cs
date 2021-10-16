@@ -4,13 +4,12 @@ namespace GameOfLife
 {
     public class ConsolePrinter : IPrinter
     {
-        public void Print(string text) => Write(text ?? "");
+        public void Print(string text = "") => Write(text);
 
-        public void PrintLine(string text) => WriteLine(text ?? "");
+        public void PrintLine(string text = "") => WriteLine(text);
 
         public void PrintEntire(Grid grid, bool shouldClear)
         {
-            // TODO: Refactor to use polymorphism instead.
             if (grid.IsHighResMode)
                 PrintEntireHighRes(grid, shouldClear);
             else

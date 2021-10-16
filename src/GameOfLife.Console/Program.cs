@@ -25,12 +25,10 @@ namespace GameOfLife
 
             IGridSettings gameSettings;
 
-            printer.PrintLine("test");
+            const string settingsFile = "custom.gol";
 
             if (args.Length == 0)
             {
-                const string settingsFile = "custom.gol";
-
                 if (File.Exists(settingsFile))
                 {
                     printer.PrintLine("Parsing custom settings...");
@@ -50,28 +48,29 @@ namespace GameOfLife
                 {
                     printer.PrintLine("Using default settings...");
 
-                    var defaultDto = new SettingsDto
-                    {
-                        UseHighResMode = false,
-                        Width = -1,
-                        Height = -1,
-                        InitialPopulationRatio = -1,
-                        InitialIterationDelayMs = 0
-                    };
+                    var defaultDto = new SettingsDto(false, -1, -1, -1, 0);
 
                     gameSettings = new Settings(defaultDto, printer);
                 }
             }
             else if (args.Length == 1)
             {
-                if (args[0] == "--help")
+                if (args[0] == "--help" || args[0] == "-h")
                 {
                     printer.PrintLine(Instructions);
                     return;
                 }
 
+                if (args[0] == "--create-settings" || args[0] == "-c")
+                {
+                    var settingsService = new SettingsService();
+                    var settingsDto = settingsService.CreateSettingsFromUserInput();
+                    settingsService.SaveToFile(settingsDto, settingsFile, printer);
+                    return;
+                }
+
                 ForegroundColor = ConsoleColor.Red; // TODO: Add to the PrintLine method parameters.
-                printer.PrintLine("An unrecognized command was passed in.");
+                printer.PrintLine("Unrecognized command.");
                 ForegroundColor = default;
                 printer.PrintLine(Instructions);
                 return;
