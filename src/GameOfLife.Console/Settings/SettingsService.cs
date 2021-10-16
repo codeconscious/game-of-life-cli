@@ -16,7 +16,7 @@ public class SettingsService
                 {
                     return width switch
                     {
-                        < -1 => ValidationResult.Error("[red]That's an invalid width.[/]"),
+                        < -1 => ValidationResult.Error("[red]Invalid width.[/]"),
                         _ => ValidationResult.Success(),
                     };
                 }));
@@ -27,13 +27,13 @@ public class SettingsService
                 {
                     return height switch
                     {
-                        < -1 => ValidationResult.Error("[red]That's an invalid height.[/]"),
+                        < -1 => ValidationResult.Error("[red]Invalid height.[/]"),
                         _ => ValidationResult.Success(),
                     };
                 }));
 
         var ratio = AnsiConsole.Prompt(
-            new TextPrompt<byte>("Population ratio? ([green]0-99[/], or else [green]-1[/] for a random one.)")
+            new TextPrompt<byte>("Population ratio %? ([green]0-99[/], or else [green]-1[/] for a random one.)")
                 .Validate(ratio =>
                 {
                     return ratio switch
@@ -45,7 +45,7 @@ public class SettingsService
                 }));
 
         var delay = AnsiConsole.Prompt(
-            new TextPrompt<ushort>("Iteration delay in ms? (Enter 0 or higher.)"));
+            new TextPrompt<ushort>("Iteration delay (in ms)? Enter [green]0[/] or higher.)"));
 
         return new SettingsDto(useHighResMode, width, height, ratio, delay);
     }
@@ -58,7 +58,9 @@ public class SettingsService
 
         if (File.Exists(fileName))
         {
-            printer.PrintLine($"The file \"{fileName}\" already exists. Overwrite it?");
+            printer.PrintLine($"The file \"{fileName}\" already exists. Overwrite it? (Y/N)");
+
+            // TODO: This should be a loop, or else use Spectre.
             var key = Console.ReadKey();
             if (char.ToLowerInvariant(key.KeyChar) != 'y')
             {
@@ -72,10 +74,20 @@ public class SettingsService
         var options = new JsonSerializerOptions { WriteIndented = true };
         var jsonString = JsonSerializer.Serialize(settings, options);
 
-        // printer.PrintLine(jsonString);
         File.WriteAllText(fileName, jsonString, System.Text.Encoding.UTF8);
 
-        printer.PrintLine("Settings saved to file.");
+        AnsiConsole.WriteLine("[green]Settings saved to file.[/]");
+
+        // Display the requested settings.
+        var table = new Table();
+        table.AddColumn("Setting");
+        table.AddColumn("Value");
+        table.AddRow("High-res mode", settings.UseHighResMode ? "ON" : "OFF");
+        table.AddRow("Width", settings.Width == -1 ? "Fit" : settings.Width.ToString());
+        table.AddRow("Height", settings.Height == -1 ? "Fit" : settings.Height.ToString());
+        table.AddRow("Population", settings.InitialPopulationRatio.ToString() + "%");
+        table.AddRow("Iteration delay", settings.InitialIterationDelayMs.ToString() + "ms");
+        AnsiConsole.Write(table);
     }
 
     public SettingsDto? GetFromFile(string settingsPath)
@@ -85,7 +97,7 @@ public class SettingsService
         if (!File.Exists(settingsPath))
             throw new FileNotFoundException("Settings file missing.", settingsPath);
 
-        var json = System.IO.File.ReadAllText(settingsPath);
+        var json = File.ReadAllText(settingsPath);
 
         if (string.IsNullOrWhiteSpace(json))
             throw new InvalidDataException("The file was empty.");
