@@ -31,6 +31,10 @@ namespace GameOfLife
             table.AddRow("During the simulation, you can press the [bold yellow]left and right arrow keys[/] to " +
                 $"adjust the simulation speed by {IterationDelayAdjustmentMs}ms.");
 
+            table.AddEmptyRow();
+
+            table.AddRow("Online at https://github.com/codeconscious/GameOfLife/");
+
             AnsiConsole.Write(table);
         }
 
