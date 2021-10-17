@@ -62,17 +62,6 @@ public class SettingsService
         ArgumentNullException.ThrowIfNull(fileName);
         ArgumentNullException.ThrowIfNull(printer);
 
-        if (File.Exists(fileName))
-        {
-            if (!AnsiConsole.Confirm($"The file \"{fileName}\" already exists. Overwrite it? (Y/N)"))
-            {
-                printer.PrintLine("Cancelled saving settings.");
-                return;
-            }
-
-            printer.PrintLine();
-        }
-
         var options = new JsonSerializerOptions { WriteIndented = true };
         var jsonString = JsonSerializer.Serialize(settings, options);
 
