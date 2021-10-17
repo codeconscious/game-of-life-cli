@@ -34,7 +34,7 @@ namespace GameOfLife
             UseHighResMode = dto.UseHighResMode;
 
             // Verify the width (X axis) arg
-            if (dto.Width == -1)
+            if (dto.Width < 0)
             {
                 var autoWidth = Console.WindowWidth;
 
@@ -56,7 +56,7 @@ namespace GameOfLife
             }
 
             // Verify the height (Y axis) arg
-            if (dto.Height == -1)
+            if (dto.Height < 0)
             {
                 // Leave room at the bottom of the screen for output (during and after the game).
                 const int bottomMargin = 3;
@@ -80,7 +80,7 @@ namespace GameOfLife
             }
 
             // Verify the population ratio arg
-            if (dto.PopulationRatio == -1)
+            if (dto.PopulationRatio < 0)
             {
                 PopulationRatio = new Random()
                     .Next(MinimumRandomPopulationRatio, MaximumRandomPopulationRatio);
