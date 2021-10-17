@@ -56,16 +56,26 @@ namespace GameOfLife
                 {
                     printer.PrintLine("Parsing custom settings...");
 
-                    var settingsService = new SettingsService();
-                    var settingsDto = settingsService.GetFromFile(settingsFile);
-
-                    if (settingsDto == null)
+                    try
                     {
-                        printer.PrintLine($"Could not parse settings file \"{settingsFile}\".");
-                        return; // TODO: Use default settings instead.
-                    }
+                        var settingsService = new SettingsService();
+                        var settingsDto = settingsService.GetFromFile(settingsFile);
 
-                    gameSettings = new Settings(settingsDto, printer);
+                        if (settingsDto == null)
+                        {
+                            printer.PrintLine($"Could not parse settings file \"{settingsFile}\".");
+                            return; // TODO: Use default settings instead.
+                        }
+
+                        gameSettings = new Settings(settingsDto, printer);
+                    }
+                    catch (Exception ex)
+                    {
+                        AnsiConsole.MarkupLine($"[red]Could not parse {settingsFile}: {ex.Message}[/]");
+                        AnsiConsole.MarkupLine("Please fix it manually or else use [yellow]--save-settings[/] or [yellow]-s[/] to create a new settings file.");
+
+                        return;
+                    }
                 }
                 else
                 {
