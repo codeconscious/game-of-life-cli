@@ -28,6 +28,12 @@ namespace GameOfLife
 
             table.AddEmptyRow();
 
+            table.AddRow("This program features an optional \"high-res\" mode that uses Unicode block characters to quadruple the size of the grid. " +
+                "While it's a great way to instantly get a larger grid, note that the extra calculations means performance will take a hit. " +
+                "Disable high-res mode if it slows things down too much for you.");
+
+            table.AddEmptyRow();
+
             table.AddRow("During the simulation, you can press the [bold yellow]left and right arrow keys[/] to " +
                 $"adjust the simulation speed by {IterationDelayAdjustmentMs}ms.");
 
