@@ -6,7 +6,9 @@ After reading the first part of [a blog post about Reddit interviews](https://al
 
 ## Usage
 
-You can publish the program yourself by using the following command from the GameOfLife.Console project:
+This program runs on Linux, Windows, and Mac OS.
+
+If you have the .NET 6 SDK installed, you can publish the program yourself by using the following command from the GameOfLife.Console project:
 ````dotnet publish -c Release --use-current-runtime````.
 
 Then, simply run the executable from your command line. Pass in the ````--help```` or ````-h```` argument for more information.
@@ -23,9 +25,9 @@ This console project targets the latest .NET 6 preview version (RC2) and uses so
 
 ## 日本語の要約 (Japanese summary)
 
-* Alex Golec氏が投稿された『[a blog post about Reddit interview strategy](https://alexgolec.dev/reddit-interview-problems-the-game-of-life/) (Redditの面接方法について)』というブログ記事の前半を読んでいたら、C#で[ライブゲーム](https://ja.wikipedia.org/wiki/%E3%83%A9%E3%82%A4%E3%83%95%E3%82%B2%E3%83%BC%E3%83%A0)を作ってみたいと思い、何も参照しないで僕なりに開発してみました。
+* Alex Golec氏が投稿された『[a blog post about Reddit interview strategy](https://alexgolec.dev/reddit-interview-problems-the-game-of-life/) (Redditの面接方法について)』というブログ記事の前半を読んでいたら、C#で[ライブゲーム](https://ja.wikipedia.org/wiki/%E3%83%A9%E3%82%A4%E3%83%95%E3%82%B2%E3%83%BC%E3%83%A0)を作ってみたいと思い、ルール以外何も参照しないで僕なりに開発してみました。
 
-* 当プログラムはコンソールのプロジェクトで、せっかくなので未リリースの.NET 6 previewとC# 10の新機能も試用しています。
+* 当プログラムはコンソールのプロジェクトで、せっかくなので未リリースの.NET 6 RC2とC# 10の新機能も試用しています。
 
 ## TODO
 
