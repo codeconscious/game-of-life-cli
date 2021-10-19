@@ -8,7 +8,7 @@ public class SettingsService
 {
     public SettingsDto CreateSettingsFromUserInput()
     {
-        AnsiConsole.WriteLine("Please enter your settings below. Press the Enter key to submit the default option.");
+        AnsiConsole.WriteLine("Enter your settings below. Press the Enter key to submit the default option.");
 
         var useHighResMode = AnsiConsole.Confirm("Use high-res mode?");
 
@@ -81,12 +81,12 @@ public class SettingsService
         AnsiConsole.Write(table);
     }
 
-    public SettingsDto? GetFromFile(string settingsPath)
+    public SettingsDto? ReadFromFile(string settingsPath)
     {
         ArgumentNullException.ThrowIfNull(settingsPath);
 
         if (!File.Exists(settingsPath))
-            throw new FileNotFoundException("Settings file missing.", settingsPath);
+            throw new FileNotFoundException("No settings file found.", settingsPath);
 
         var json = File.ReadAllText(settingsPath);
 

@@ -59,7 +59,7 @@ namespace GameOfLife
                     try
                     {
                         var settingsService = new SettingsService();
-                        var settingsDto = settingsService.GetFromFile(settingsFile);
+                        var settingsDto = settingsService.ReadFromFile(settingsFile);
 
                         if (settingsDto == null)
                         {
