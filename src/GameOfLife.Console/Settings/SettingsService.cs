@@ -13,7 +13,7 @@ public class SettingsService
         var useHighResMode = AnsiConsole.Confirm("Use high-res mode?");
 
         var width = AnsiConsole.Prompt(
-            new TextPrompt<short>("Grid width? (\"Enter [yellow]-1[/] for screen width.)")
+            new TextPrompt<short>("Grid width? (Enter [yellow]-1[/] for screen width.)")
                 .DefaultValue<short>(-1)
                 .Validate(width =>
                 {
@@ -50,7 +50,7 @@ public class SettingsService
                 }));
 
         var delay = AnsiConsole.Prompt(
-            new TextPrompt<ushort>("Iteration delay in ms? Enter [yellow]0[/] or higher.)")
+            new TextPrompt<ushort>("Iteration delay in ms? (Enter [yellow]0[/] or higher.)")
                 .DefaultValue<ushort>(0));
 
         return new SettingsDto(useHighResMode, width, height, ratio, delay);
