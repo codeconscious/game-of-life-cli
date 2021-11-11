@@ -77,6 +77,7 @@ public class SettingsService
         ArgumentNullException.ThrowIfNull(settings);
 
         var table = new Table();
+        table.Border(TableBorder.Rounded);
 
         table.AddColumn("Setting");
         table.AddColumn("Value");
