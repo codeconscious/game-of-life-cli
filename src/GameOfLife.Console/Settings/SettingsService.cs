@@ -69,15 +69,22 @@ public class SettingsService
 
         AnsiConsole.WriteLine("Settings saved.");
 
-        // Display the saved settings.
+        PrintSettings(settings);
+    }
+
+    private void PrintSettings(IGridSettings settings)
+    {
         var table = new Table();
+
         table.AddColumn("Setting");
         table.AddColumn("Value");
+
         table.AddRow("High-res mode", settings.UseHighResMode ? "On" : "Off");
         table.AddRow("Width", settings.Width == -1 ? "Fit" : settings.Width.ToString() + " rows");
         table.AddRow("Height", settings.Height == -1 ? "Fit" : settings.Height.ToString() + " columns");
         table.AddRow("Population", settings.PopulationRatio == -1 ? "Random" : settings.PopulationRatio.ToString() + "%");
         table.AddRow("Iteration delay", settings.IterationDelayMs.ToString() + "ms");
+
         AnsiConsole.Write(table);
     }
 
