@@ -74,6 +74,8 @@ public class SettingsService
 
     private void PrintSettings(IGridSettings settings)
     {
+        ArgumentNullException.ThrowIfNull(settings);
+
         var table = new Table();
 
         table.AddColumn("Setting");
