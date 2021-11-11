@@ -94,9 +94,6 @@ public class SettingsService
     {
         ArgumentNullException.ThrowIfNull(settingsPath);
 
-        if (!File.Exists(settingsPath))
-            throw new FileNotFoundException("No settings file found.", settingsPath);
-
         var json = File.ReadAllText(settingsPath);
 
         if (string.IsNullOrWhiteSpace(json))
