@@ -1,12 +1,14 @@
 namespace GameOfLife.Game;
 
+/// <summary>
+/// Represents a single group of cells.
+/// </summary>
 public class CellGroup : IPrintableUnit
 {
-    // public Cell[,] MemberCells { get; init; } = new Cell[2,2];
     public Dictionary<CellGroupLocation, Cell> MemberCells { get; init; } = new(4);
     public Point PrintLocation { get; init; }
 
-    public CellGroup() { }
+    private CellGroup() { }
 
     public CellGroup(Cell upperLeftCell, Cell upperRightCell, Cell lowerLeftCell, Cell lowerRightCell, Point location)
     {
