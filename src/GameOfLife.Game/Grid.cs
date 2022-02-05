@@ -18,6 +18,8 @@ namespace GameOfLife.Game
         /// </summary>
         public IDictionary<Cell, List<Cell>> NeighborMap { get; private init; }
 
+        public List<Cell> CellsForUpdate { get; private init; }
+
         public List<Cell> AllCellsFlattened { get; private init; }
 
         public float PopulationRatio
@@ -56,6 +58,7 @@ namespace GameOfLife.Game
         public Grid(IGridSettings gridSettings, IPrinter gridPrinter)
         {
             ScreenDimensions = new Dimensions(gridSettings.Width, gridSettings.Height);
+            CellsForUpdate = new List<Cell>(ScreenDimensions.Area);
             IterationDelayMs = gridSettings.IterationDelayMs;
             var random = new Random();
 
@@ -233,15 +236,15 @@ namespace GameOfLife.Game
         /// </summary>
         public void Iterate()
         {
-            var iterationCells = this.GetCellsToFlip();
-            Cell.FlipLifeStatuses(iterationCells);
-            this.UpdateHistoryAndGameState(iterationCells);
+            this.UpdateCellsToFlip();
+            Cell.FlipLifeStatuses(CellsForUpdate);
+            this.UpdateHistoryAndGameState(CellsForUpdate);
 
             if (IsHighResMode)
             {
-                var iterationGroups = new List<CellGroup>(iterationCells.Count);
+                var iterationGroups = new List<CellGroup>(CellsForUpdate.Count);
 
-                foreach (var cell in iterationCells)
+                foreach (var cell in CellsForUpdate)
                 {
                     iterationGroups.Add(CellGroupMap[cell]);
                 }
@@ -250,16 +253,16 @@ namespace GameOfLife.Game
             }
             else
             {
-                GridPrinter.PrintUpdates(this, iterationCells);
+                GridPrinter.PrintUpdates(this, CellsForUpdate);
             }
         }
 
         /// <summary>
         /// Get a list of grid cells whose statuses should be flipped (reversed) this iteration.
         /// </summary>
-        private List<Cell> GetCellsToFlip()
+        private void UpdateCellsToFlip()
         {
-            var cellsToFlip = new List<Cell>();
+            CellsForUpdate.Clear();
 
             foreach (var cell in this.AllCellsFlattened)
             {
@@ -268,10 +271,8 @@ namespace GameOfLife.Game
                 var willCellBeAlive = cell.ShouldCellLive(livingNeighborCount);
 
                 if (cell.IsAlive != willCellBeAlive)
-                    cellsToFlip.Add(cell);
+                    CellsForUpdate.Add(cell);
             }
-
-            return cellsToFlip;
         }
 
         /// <summary>
