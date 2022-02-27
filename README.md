@@ -11,6 +11,8 @@ This program runs on Linux, Windows, and Mac OS, though you will need to compile
 If you have the .NET 6 SDK installed, you can publish the program yourself by using the following command from the GameOfLife.Console project using
 ````dotnet publish -c Release --use-current-runtime````. Then, simply run the executable from your command line. Pass in ````--help```` or ````-h```` for more information.
 
+During the simulation, you can press the left and right arrows to adjust its speed.
+
 ## Technical
 
 This console project targets .NET 6 and uses some newer C# features that I wanted to try out (e.g., nullable reference types, record structs, init, switch expressions, global usings).
