@@ -3,7 +3,7 @@ namespace GameOfLife.Game
     /// <summary>
     /// An enum indicating the state of the grid/game.
     /// </summary>
-    public enum GridState
+    public enum GridState : byte
     {
         /// <summary>
         /// The initial state indicating the game is ongoing.
