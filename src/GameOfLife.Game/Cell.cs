@@ -1,6 +1,6 @@
 namespace GameOfLife.Game
 {
-    public class Cell
+    public sealed class Cell
     {
         public Point Location { get; init; }
         public bool IsAlive { get; set; }

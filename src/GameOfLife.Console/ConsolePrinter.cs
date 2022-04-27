@@ -1,8 +1,6 @@
-using GameOfLife.Game;
-
 namespace GameOfLife
 {
-    public class ConsolePrinter : IPrinter
+    public sealed class ConsolePrinter : IPrinter
     {
         public void Print(string text = "") => Write(text);
 

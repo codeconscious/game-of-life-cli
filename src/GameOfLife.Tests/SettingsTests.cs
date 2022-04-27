@@ -2,7 +2,7 @@
 
 namespace GameOfLife.Tests;
 
-public class SettingsTests
+public sealed class SettingsTests
 {
     /*
     private static readonly TestPrinter Printer = new();

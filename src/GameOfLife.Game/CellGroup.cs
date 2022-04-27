@@ -3,7 +3,7 @@ namespace GameOfLife.Game;
 /// <summary>
 /// Represents a single group of cells.
 /// </summary>
-public class CellGroup : IPrintableUnit
+public sealed class CellGroup : IPrintableUnit
 {
     public Dictionary<CellGroupLocation, Cell> MemberCells { get; init; } = new(4);
     public Point PrintLocation { get; init; }

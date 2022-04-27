@@ -1,6 +1,6 @@
 namespace GameOfLife.Game;
 
-public class Dimensions
+public sealed class Dimensions
 {
     public int Width { get; init; }
     public int Height { get; init; }

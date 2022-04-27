@@ -2,7 +2,7 @@ using Xunit;
 
 namespace GameOfLife.Tests;
 
-public class CellGroupTests
+public sealed class CellGroupTests
 {
     /*
     [Theory]
