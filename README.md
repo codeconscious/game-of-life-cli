@@ -2,22 +2,22 @@
 
 ## Overview
 
-After reading the first part of [a blog post about Reddit interviews](https://alexgolec.dev/reddit-interview-problems-the-game-of-life/) by Alex Golec, I felt that creating my own iteration of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) in C# might be a fun practice exercise and a decent way to jump into .NET 6 and C# 10 as well. Other than verifying the rules of the game, I opted not to reference other implementations in order to see how well I could do.
+After reading the first part of [a blog post about Reddit interviews](https://alexgolec.dev/reddit-interview-problems-the-game-of-life/) by Alex Golec, I felt that creating my own iteration of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) in C# might be a fun practice exercise and a decent way to jump into newer versions of C# and .NET too. Other than verifying the rules of the game, I opted not to reference other implementations in order to see how well I could do.
 
 The board is populated randomly at the start, and its borders wrap around, such that cells that go beyond one border will appear on the opposite side. The simulation continues until there are no moves left or an infinite loop is reached.
 
 ## Usage
 
-This program runs on Linux, Windows, and Mac OS, though you will need to compile it manually at this point.
+This program runs using .NET on Linux, Windows, or Mac OS, though you will need to compile and run it manually.
 
-If you have the .NET 6 SDK installed, you can publish the program yourself by using the following command within the GameOfLife.Console project:
+If you have the .NET SDK installed, you can publish the program yourself by using the following command within the GameOfLife.Console project:
 ````dotnet publish -c Release --use-current-runtime````. Then, simply run the executable from your command line. Pass in ````--help```` or ````-h```` for more information.
 
 During the simulation, you can press the left and right arrows to adjust its speed.
 
 ## Technical
 
-This console project targets .NET 6 and uses some newer C# features that I wanted to try out (e.g., nullable reference types, record structs, init, switch expressions, global usings).
+This console project targets .NET 7 and uses some newer C# features that I wanted to try out (e.g., nullable reference types, record structs, init, switch expressions, global usings).
 
 ### Performance
 
