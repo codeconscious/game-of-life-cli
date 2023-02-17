@@ -31,4 +31,8 @@ Global
 		{7EE69724-D32B-4DC3-A42A-2AB6E2A0A1D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7EE69724-D32B-4DC3-A42A-2AB6E2A0A1D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		description = Conway’s Game of Life for the CLI, powered by .NET and C#.
+		version = 1.0
+	EndGlobalSection
 EndGlobal

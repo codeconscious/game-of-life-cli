@@ -4,6 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
 
 </Project>
