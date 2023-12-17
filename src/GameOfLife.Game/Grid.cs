@@ -57,7 +57,7 @@ namespace GameOfLife.Game
         {
             ScreenDimensions = new Dimensions(gridSettings.Width, gridSettings.Height);
             IterationDelayMs = gridSettings.IterationDelayMs;
-            var random = new Random();
+            Random random = new();
 
             if (gridSettings.UseHighResMode)
             {
@@ -67,11 +67,11 @@ namespace GameOfLife.Game
                 Height = CellGrid.GetLength(1);
 
                 // Create the cells and populate the grid with them.
-                for (var x = 0; x < gridSettings.Width * 2; x++)
+                for (int x = 0; x < gridSettings.Width * 2; x++)
                 {
-                    for (var y = 0; y < gridSettings.Height * 2; y++)
+                    for (int y = 0; y < gridSettings.Height * 2; y++)
                     {
-                        var startAlive = random.Next(100) <= gridSettings.PopulationRatio;
+                        bool startAlive = random.Next(100) <= gridSettings.PopulationRatio;
                         CellGrid[x,y] = new Cell(x, y, startAlive);
                     }
                 }
@@ -86,11 +86,11 @@ namespace GameOfLife.Game
                 Height = CellGrid.GetLength(1);
 
                 // Create the cells and populate the grid with them.
-                for (var x = 0; x < gridSettings.Width; x++)
+                for (int x = 0; x < gridSettings.Width; x++)
                 {
-                    for (var y = 0; y < gridSettings.Height; y++)
+                    for (int y = 0; y < gridSettings.Height; y++)
                     {
-                        var startAlive = random.Next(100) <= gridSettings.PopulationRatio;
+                        bool startAlive = random.Next(100) <= gridSettings.PopulationRatio;
                         CellGrid[x,y] = new Cell(x, y, startAlive);
                     }
                 }
@@ -109,12 +109,11 @@ namespace GameOfLife.Game
         /// <param name="grid"></param>
         private static IDictionary<Cell, List<Cell>> GetCellNeighbors(Grid grid)
         {
-            var cellsWithNeighbors = new ConcurrentDictionary<Cell, List<Cell>>();
+            ConcurrentDictionary<Cell, List<Cell>> cellsWithNeighbors = new();
 
             Parallel.ForEach(grid.AllCellsFlattened, cell =>
             {
-                var neighborCoordinates = GetCellNeighborCoordinates(grid, cell.Location);
-
+                List<Point> neighborCoordinates = GetCellNeighborCoordinates(grid, cell.Location);
                 cellsWithNeighbors.TryAdd(cell, GetCellsByCoordinates(grid, neighborCoordinates));
             });
 
@@ -128,17 +127,18 @@ namespace GameOfLife.Game
         /// <param name="grid"></param>
         /// <param name="sourcePair"></param>
         /// <param name="shouldWrap">Determines whether the grid should wrap.</param>
-        private static List<Point> GetCellNeighborCoordinates(Grid grid,
-                                                              Point sourcePair,
-                                                              bool shouldWrap = true)
+        private static List<Point> GetCellNeighborCoordinates(
+            Grid grid,
+            Point sourcePair,
+            bool shouldWrap = true)
         {
             // The most variations likely to be held is 14 (9 - 1 + 5 possible corrections).
-            var generatedPairs = new List<Point>(14);
+            List<Point> generatedPairs = new(14);
 
             // Gather all potential neighbor values, including invalid ones.
-            for (var x = -1; x <= 1; x++)
+            for (int x = -1; x <= 1; x++)
             {
-                for (var y = -1; y <= 1; y++)
+                for (int y = -1; y <= 1; y++)
                 {
                     generatedPairs.Add(
                         new Point(
@@ -152,16 +152,14 @@ namespace GameOfLife.Game
 
             if (shouldWrap)
             {
-                var correctedPoints = new List<Point>();
+                List<Point> correctedPoints = [];
 
-                var invalidPairs = generatedPairs
-                    .Where(p => !p.IsValid(
-                        grid.Width,
-                        grid.Height));
+                IEnumerable<Point> invalidPairs = generatedPairs
+                    .Where(p => !p.IsValid(grid.Width, grid.Height));
 
-                foreach (var invalidPair in invalidPairs)
+                foreach (Point invalidPair in invalidPairs)
                 {
-                    var workingPair = invalidPair;
+                    Point workingPair = invalidPair;
 
                     if (workingPair.X < 0)
                         workingPair = workingPair with { X = grid.Width - 1 };
@@ -178,7 +176,7 @@ namespace GameOfLife.Game
                 generatedPairs.AddRange(correctedPoints);
             }
 
-            var validPairs = generatedPairs
+            IEnumerable<Point> validPairs = generatedPairs
                 .Where(p => p.IsValid(grid.Width, grid.Height));
 
             return validPairs
@@ -193,9 +191,9 @@ namespace GameOfLife.Game
         /// <param name="coordinates"></param>
         private static List<Cell> GetCellsByCoordinates(Grid grid, List<Point> coordinates)
         {
-            var output = new List<Cell>(coordinates.Count);
+            List<Cell> output = new(coordinates.Count);
 
-            foreach (var pair in coordinates)
+            foreach (Point pair in coordinates)
                 output.Add(grid.CellGrid[pair.X, pair.Y]);
 
             return output;
@@ -203,20 +201,20 @@ namespace GameOfLife.Game
 
         public Dictionary<Cell, CellGroup> CreateHighResCellGroupMap()
         {
-            var map = new Dictionary<Cell, CellGroup>();
+            Dictionary<Cell, CellGroup>map = [];
 
-            for (var y = 0; y < Height; y += 2)
+            for (int y = 0; y < Height; y += 2)
             {
-                for (var x = 0; x < Width; x += 2)
+                for (int x = 0; x < Width; x += 2)
                 {
-                    var newGroup = new CellGroup(
+                    CellGroup newGroup = new(
                         CellGrid[x, y],
                         CellGrid[x + 1, y],
                         CellGrid[x, y + 1],
                         CellGrid[x + 1, y + 1],
                         new Point(x / 2, y / 2));
 
-                    foreach (var cell in newGroup.MemberCells.Values.ToList())
+                    foreach (Cell cell in newGroup.MemberCells.Values.ToList())
                     {
                         map.Add(cell, newGroup);
                     }
@@ -233,15 +231,15 @@ namespace GameOfLife.Game
         /// </summary>
         public void Iterate()
         {
-            var iterationCells = this.GetCellsToFlip();
+            List<Cell> iterationCells = this.GetCellsToFlip();
             Cell.FlipLifeStatuses(iterationCells);
             this.UpdateHistoryAndGameState(iterationCells);
 
             if (IsHighResMode)
             {
-                var iterationGroups = new List<CellGroup>(iterationCells.Count);
+                List<CellGroup> iterationGroups = new(iterationCells.Count);
 
-                foreach (var cell in iterationCells)
+                foreach (Cell cell in iterationCells)
                 {
                     iterationGroups.Add(CellGroupMap[cell]);
                 }
@@ -259,15 +257,15 @@ namespace GameOfLife.Game
         /// </summary>
         private List<Cell> GetCellsToFlip()
         {
-            var cellsToFlip = new List<Cell>();
+            List<Cell> cellsToFlip = [];
 
-            foreach (var cell in this.AllCellsFlattened)
+            foreach (Cell cell in this.AllCellsFlattened)
             {
-                var livingNeighborCount = this.NeighborMap[cell].Count(c => c.IsAlive);
+                int livingNeighborCount = this.NeighborMap[cell].Count(c => c.IsAlive);
 
-                var willCellBeAlive = cell.ShouldCellLive(livingNeighborCount);
+                bool willSurvive = cell.ShouldCellLive(livingNeighborCount);
 
-                if (cell.IsAlive != willCellBeAlive)
+                if (cell.IsAlive != willSurvive)
                     cellsToFlip.Add(cell);
             }
 
@@ -296,10 +294,11 @@ namespace GameOfLife.Game
                 return;
             }
 
-            var updateSignature = string.Concat(
-                recentlyFlippedCells.Select(c => $"{c.Location.X},{c.Location.Y},{c.IsAlive}"));
+            string updatedSignature = string.Concat(
+                recentlyFlippedCells.Select(c =>
+                    $"{c.Location.X},{c.Location.Y},{c.IsAlive}"));
 
-            ChangeHistory.Enqueue(updateSignature);
+            ChangeHistory.Enqueue(updatedSignature);
 
             // Identical updates in the history indicate that the grid is looping.
             if (this.State != GridState.Looping &&
@@ -320,7 +319,7 @@ namespace GameOfLife.Game
         /// <param name="newState"></param>
         private void UpdateState(GridState newState)
         {
-            var wasAlive = State == GridState.Alive;
+            bool wasAlive = State == GridState.Alive;
 
             State = newState;
 
@@ -340,7 +339,7 @@ namespace GameOfLife.Game
         /// <param name="adjustMs">The number of milliseconds (negative or positive) to adjust by.</param>
         public void AdjustIterationDelayBy(short adjustMs)
         {
-            var proposedDelay = IterationDelayMs + adjustMs;
+            int proposedDelay = IterationDelayMs + adjustMs;
 
             IterationDelayMs = proposedDelay switch
             {

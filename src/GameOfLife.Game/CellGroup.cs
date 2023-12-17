@@ -31,10 +31,10 @@ public class CellGroup : IPrintableUnit
     /// <returns></returns>
     public int GetCellLifeSignature()
     {
-        var total = 0;
+        int total = 0;
 
         // TODO: Do without LINQ.
-        foreach (var cellStatus in MemberCells.Values.ToList().Select(c => c).Reverse())
+        foreach (Cell cellStatus in MemberCells.Values.ToList().Select(c => c).Reverse())
         {
             total <<= 1;
             // Write("  " + total + "  ");

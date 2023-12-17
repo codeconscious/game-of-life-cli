@@ -28,9 +28,9 @@ namespace GameOfLife
 
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
-            for (var x = 0; x < grid.ScreenDimensions.Width; x++)
+            for (int x = 0; x < grid.ScreenDimensions.Width; x++)
             {
-                for (var y = 0; y < grid.ScreenDimensions.Height; y++)
+                for (int y = 0; y < grid.ScreenDimensions.Height; y++)
                 {
                     SetCursorPosition(x, y);
                     Console.Write(grid.GridChars[grid.CellGrid[x, y].IsAlive]);
@@ -54,11 +54,11 @@ namespace GameOfLife
 
             try
             {
-                foreach (var group in grid.CellGroupMap.Values.Distinct().ToList())
+                foreach (CellGroup group in grid.CellGroupMap.Values.Distinct().ToList())
                 {
                     SetCursorPosition(group.WriteLocation.X, group.WriteLocation.Y);
-                    var signature = group.GetCellLifeSignature();
-                    var @char = CellGroup.GetCharacterToPrint(signature);
+                    int signature = group.GetCellLifeSignature();
+                    char @char = CellGroup.GetCharacterToPrint(signature);
                     Console.Write(@char);
                 }
             }
@@ -84,7 +84,7 @@ namespace GameOfLife
 
             try
             {
-                foreach (var cell in updatedCells)
+                foreach (Cell cell in updatedCells)
                 {
                     SetCursorPosition(cell.Location.X, cell.Location.Y);
                     Console.Write(grid.GridChars[cell.IsAlive]);
@@ -112,12 +112,12 @@ namespace GameOfLife
 
             try
             {
-                foreach (var group in updatedGroups)
+                foreach (CellGroup group in updatedGroups)
                 {
                     SetCursorPosition(group.WriteLocation.X, group.WriteLocation.Y);
 
-                    var signature = group.GetCellLifeSignature();
-                    var @char = CellGroup.GetCharacterToPrint(signature);
+                    int signature = group.GetCellLifeSignature();
+                    char @char = CellGroup.GetCharacterToPrint(signature);
                     Console.Write(@char);
                 }
             }
@@ -142,8 +142,8 @@ namespace GameOfLife
 
             SetCursorPosition(0, grid.OutputRow);
 
-            var durationClause = duration == null
-                ? ""
+            string durationClause = duration == null
+                ? string.Empty
                 : $"({duration.Value.TotalMilliseconds:#,##0}ms)";
 
             Console.Write($"<Press any key to quit>  Iteration {grid.CurrentIteration:#,##0} {durationClause}  ");
@@ -158,7 +158,7 @@ namespace GameOfLife
         {
             ArgumentNullException.ThrowIfNull(grid);
 
-            var stateClause = grid.State switch
+            string stateClause = grid.State switch
             {
                 GridState.Extinct => "Extinction",
                 GridState.Looping => "Endless loop",
@@ -167,19 +167,19 @@ namespace GameOfLife
                 _ => "Unknown" // Should never be reached
             };
 
-            var iterationClause = $"{grid.CurrentIteration:#,##0} iterations";
+            string iterationClause = $"{grid.CurrentIteration:#,##0} iterations";
 
-            var seconds = grid.GameStopwatch.Elapsed.TotalSeconds;
+            double seconds = grid.GameStopwatch.Elapsed.TotalSeconds;
 
-            var secondsClause = $"{seconds:#,##0.###} sec";
+            string secondsClause = $"{seconds:#,##0.###} sec";
 
-            var iterationsPerSecondClause =
+            string iterationsPerSecondClause =
                 (grid.CurrentIteration / seconds).ToString("#,##0.###") +
                 " iterations/sec";
 
-            var gridClause = $"{grid.Width} × {grid.Height}";
+            string gridClause = $"{grid.Width} × {grid.Height}";
 
-            var populationClause = $"{grid.PopulationRatio * 100:0.##}%";
+            string populationClause = $"{grid.PopulationRatio * 100:0.##}%";
 
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
 

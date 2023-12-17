@@ -10,9 +10,9 @@ public class SettingsService
     {
         AnsiConsole.WriteLine("Enter your settings below. Press the Enter key to submit the default option.");
 
-        var useHighResMode = AnsiConsole.Confirm("Use high-res mode?");
+        bool useHighResMode = AnsiConsole.Confirm("Use high-res mode?");
 
-        var width = AnsiConsole.Prompt(
+        short width = AnsiConsole.Prompt(
             new TextPrompt<short>("Grid width? (Enter [yellow]-1[/] for screen width.)")
                 .DefaultValue<short>(-1)
                 .Validate(width =>
@@ -24,7 +24,7 @@ public class SettingsService
                     };
                 }));
 
-        var height = AnsiConsole.Prompt(
+        short height = AnsiConsole.Prompt(
             new TextPrompt<short>("Grid height? (Enter [yellow]-1[/] for screen height.)")
                 .DefaultValue<short>(-1)
                 .Validate(height =>
@@ -36,7 +36,7 @@ public class SettingsService
                     };
                 }));
 
-        var ratio = AnsiConsole.Prompt(
+        sbyte ratio = AnsiConsole.Prompt(
             new TextPrompt<sbyte>("Population ratio %? ([yellow]0-99[/], or else [yellow]-1[/] for a random one.)")
                 .DefaultValue<sbyte>(-1)
                 .Validate(ratio =>
@@ -49,7 +49,7 @@ public class SettingsService
                     };
                 }));
 
-        var delay = AnsiConsole.Prompt(
+        ushort delay = AnsiConsole.Prompt(
             new TextPrompt<ushort>("Iteration delay in ms? (Enter [yellow]0[/] or higher.)")
                 .DefaultValue<ushort>(0));
 
@@ -62,8 +62,8 @@ public class SettingsService
         ArgumentNullException.ThrowIfNull(fileName);
         ArgumentNullException.ThrowIfNull(printer);
 
-        var options = new JsonSerializerOptions { WriteIndented = true };
-        var jsonString = JsonSerializer.Serialize(settings, options);
+        JsonSerializerOptions options = new() { WriteIndented = true }; // TODO: Reuse instance.
+        string jsonString = JsonSerializer.Serialize(settings, options);
 
         File.WriteAllText(fileName, jsonString, System.Text.Encoding.UTF8);
 
@@ -76,7 +76,7 @@ public class SettingsService
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        var table = new Table();
+        Table table = new();
         table.Border(TableBorder.Rounded);
 
         table.AddColumn("Setting");
@@ -95,7 +95,7 @@ public class SettingsService
     {
         ArgumentNullException.ThrowIfNull(settingsPath);
 
-        var json = File.ReadAllText(settingsPath);
+        string json = File.ReadAllText(settingsPath);
 
         if (string.IsNullOrWhiteSpace(json))
             throw new InvalidDataException("The file was empty.");

@@ -36,7 +36,7 @@ namespace GameOfLife
             // Verify the width (X axis) arg
             if (dto.Width < 0)
             {
-                var autoWidth = Console.WindowWidth;
+                int autoWidth = Console.WindowWidth;
 
                 // Ensure an even number in high-res mode because each
                 // cell group contains an even number of cells.
@@ -61,7 +61,7 @@ namespace GameOfLife
                 // Leave room at the bottom of the screen for output (during and after the game).
                 const int bottomMargin = 3;
 
-                var autoHeight = Console.WindowHeight - bottomMargin;
+                int autoHeight = Console.WindowHeight - bottomMargin;
 
                 // Ensure an even number in high-res mode.
                 if (UseHighResMode && autoHeight % 2 != 0)

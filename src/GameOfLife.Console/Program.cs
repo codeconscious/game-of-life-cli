@@ -10,7 +10,7 @@ namespace GameOfLife
 
         private static void PrintInstructions()
         {
-            var table = new Table();
+            Table table = new();
             table.Border(TableBorder.Rounded).BorderColor(Spectre.Console.Color.Grey19);
 
             table.AddColumn(new TableColumn("[blue]Conway's Game of Life in your terminal![/]"));
@@ -64,8 +64,8 @@ namespace GameOfLife
 
                     try
                     {
-                        var settingsService = new SettingsService();
-                        var settingsDto = settingsService.ReadFromFile(settingsFile);
+                        SettingsService settingsService = new();
+                        SettingsDto? settingsDto = settingsService.ReadFromFile(settingsFile);
 
                         if (settingsDto == null)
                         {
@@ -87,7 +87,7 @@ namespace GameOfLife
                 {
                     printer.WriteLine("Using default settings...");
 
-                    var defaultDto = new SettingsDto(false, -1, -1, -1, 0);
+                    SettingsDto defaultDto = new(false, -1, -1, -1, 0);
 
                     gameSettings = new Settings(defaultDto, printer);
                 }
@@ -102,8 +102,8 @@ namespace GameOfLife
 
                 if (args[0] == "--save-settings" || args[0] == "-s")
                 {
-                    var settingsService = new SettingsService();
-                    var settingsDto = settingsService.CreateSettingsFromUserInput();
+                    SettingsService settingsService = new();
+                    SettingsDto settingsDto = settingsService.CreateSettingsFromUserInput();
                     settingsService.SaveToFile(settingsDto, settingsFile, printer);
                     return;
                 }
@@ -150,11 +150,11 @@ namespace GameOfLife
         /// <param name="settings"></param>
         private static void StartGame(IGridSettings settings, IPrinter printer)
         {
-            var iterationStopwatch = new Stopwatch();
+            Stopwatch iterationStopwatch = new();
             iterationStopwatch.Start();
 
             Write("Preparing... ");
-            var grid = new Game.Grid(settings, printer);
+            Game.Grid grid = new(settings, printer);
             WriteLine("done in " + grid.GameStopwatch.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
 
             printer.WriteEntire(grid, shouldClear: true);
@@ -168,7 +168,7 @@ namespace GameOfLife
                 // Handle user key presses
                 if (Console.KeyAvailable)
                 {
-                    var key = Console.ReadKey(true).Key;
+                    ConsoleKey key = Console.ReadKey(true).Key;
 
                     if (key == ConsoleKey.LeftArrow) // Make slower
                     {
