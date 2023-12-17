@@ -1,19 +1,17 @@
-using GameOfLife.Game;
-
 namespace GameOfLife
 {
     public class ConsolePrinter : IPrinter
     {
-        public void Print(string text = "") => Write(text);
+        public void Write(string text = "") => Console.Write(text);
 
-        public void PrintLine(string text = "") => WriteLine(text);
+        public void WriteLine(string text = "") => Console.WriteLine(text);
 
-        public void PrintEntire(Grid grid, bool shouldClear)
+        public void WriteEntire(Grid grid, bool shouldClear)
         {
             if (grid.IsHighResMode)
-                PrintEntireHighRes(grid, shouldClear);
+                WriteEntireHighRes(grid, shouldClear);
             else
-                PrintEntireStandardRes(grid, shouldClear);
+                WriteEntireStandardRes(grid, shouldClear);
         }
 
         /// <summary>
@@ -21,7 +19,7 @@ namespace GameOfLife
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="shouldClear">Specifies whether the screen be cleared first.</param>
-        private void PrintEntireStandardRes(Grid grid, bool shouldClear)
+        private void WriteEntireStandardRes(Grid grid, bool shouldClear)
         {
             ArgumentNullException.ThrowIfNull(grid);
 
@@ -35,7 +33,7 @@ namespace GameOfLife
                 for (var y = 0; y < grid.ScreenDimensions.Height; y++)
                 {
                     SetCursorPosition(x, y);
-                    Write(grid.GridChars[grid.CellGrid[x, y].IsAlive]);
+                    Console.Write(grid.GridChars[grid.CellGrid[x, y].IsAlive]);
                 }
             }
         }
@@ -45,7 +43,7 @@ namespace GameOfLife
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="shouldClear">Specifies whether the screen be cleared first.</param>
-        private void PrintEntireHighRes(Grid grid, bool shouldClear)
+        private void WriteEntireHighRes(Grid grid, bool shouldClear)
         {
             ArgumentNullException.ThrowIfNull(grid);
 
@@ -58,10 +56,10 @@ namespace GameOfLife
             {
                 foreach (var group in grid.CellGroupMap.Values.Distinct().ToList())
                 {
-                    SetCursorPosition(group.PrintLocation.X, group.PrintLocation.Y);
+                    SetCursorPosition(group.WriteLocation.X, group.WriteLocation.Y);
                     var signature = group.GetCellLifeSignature();
                     var @char = CellGroup.GetCharacterToPrint(signature);
-                    Write(@char);
+                    Console.Write(@char);
                 }
             }
             catch (Exception)
@@ -77,7 +75,7 @@ namespace GameOfLife
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="updatedCells"></param>
-        public void PrintUpdates(Grid grid, List<Cell> updatedCells)
+        public void WriteUpdates(Grid grid, List<Cell> updatedCells)
         {
             ArgumentNullException.ThrowIfNull(grid);
             ArgumentNullException.ThrowIfNull(updatedCells);
@@ -89,7 +87,7 @@ namespace GameOfLife
                 foreach (var cell in updatedCells)
                 {
                     SetCursorPosition(cell.Location.X, cell.Location.Y);
-                    Write(grid.GridChars[cell.IsAlive]);
+                    Console.Write(grid.GridChars[cell.IsAlive]);
                 }
             }
             catch (Exception)
@@ -105,7 +103,7 @@ namespace GameOfLife
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="updatedGroups"></param>
-        public void PrintUpdates(Grid grid, List<CellGroup> updatedGroups)
+        public void WriteUpdates(Grid grid, List<CellGroup> updatedGroups)
         {
             ArgumentNullException.ThrowIfNull(updatedGroups);
             ArgumentNullException.ThrowIfNull(grid);
@@ -116,11 +114,11 @@ namespace GameOfLife
             {
                 foreach (var group in updatedGroups)
                 {
-                    SetCursorPosition(group.PrintLocation.X, group.PrintLocation.Y);
+                    SetCursorPosition(group.WriteLocation.X, group.WriteLocation.Y);
 
                     var signature = group.GetCellLifeSignature();
                     var @char = CellGroup.GetCharacterToPrint(signature);
-                    Write(@char);
+                    Console.Write(@char);
                 }
             }
             catch (Exception)
@@ -136,7 +134,7 @@ namespace GameOfLife
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="duration">An optional iteration time duration.</param>
-        public void PrintIterationSummary(Grid grid, TimeSpan? duration = null)
+        public void WriteIterationSummary(Grid grid, TimeSpan? duration = null)
         {
             ArgumentNullException.ThrowIfNull(grid);
 
@@ -148,7 +146,7 @@ namespace GameOfLife
                 ? ""
                 : $"({duration.Value.TotalMilliseconds:#,##0}ms)";
 
-            Write($"<Press any key to quit>  Iteration {grid.CurrentIteration:#,##0} {durationClause}  ");
+            Console.Write($"<Press any key to quit>  Iteration {grid.CurrentIteration:#,##0} {durationClause}  ");
         }
 
         /// <summary>
@@ -156,7 +154,7 @@ namespace GameOfLife
         /// Intended to be used when there's an entire-grid state change.
         /// </summary>
         /// <param name="grid"></param>
-        public void PrintGameSummary(Grid grid)
+        public void WriteGameSummary(Grid grid)
         {
             ArgumentNullException.ThrowIfNull(grid);
 
@@ -190,7 +188,7 @@ namespace GameOfLife
             ClearCurrentLine();
 
             // Ex.: Extinction | 813 iterations | 4.181 sec | 194.431 iterations/sec | 44 × 178 | 7,832 cells
-            Write(string.Join(" | ", new string[]
+            Console.Write(string.Join(" | ", new string[]
                 {
                     stateClause,
                     iterationClause,
@@ -206,7 +204,7 @@ namespace GameOfLife
             {
                 ForegroundColor = ConsoleColor.Gray;
                 SetCursorPosition(0, grid.OutputRow + 1);
-                WriteLine("Press any key to quit.");
+                Console.WriteLine("Press any key to quit.");
             }
         }
 

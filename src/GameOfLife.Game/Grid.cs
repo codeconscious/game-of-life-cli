@@ -246,11 +246,11 @@ namespace GameOfLife.Game
                     iterationGroups.Add(CellGroupMap[cell]);
                 }
 
-                GridPrinter.PrintUpdates(this, iterationGroups);
+                GridPrinter.WriteUpdates(this, iterationGroups);
             }
             else
             {
-                GridPrinter.PrintUpdates(this, iterationCells);
+                GridPrinter.WriteUpdates(this, iterationCells);
             }
         }
 
@@ -327,7 +327,7 @@ namespace GameOfLife.Game
             if (wasAlive)
             {
                 GameStopwatch.Stop();
-                GridPrinter.PrintGameSummary(this);
+                GridPrinter.WriteGameSummary(this);
                 IterationDelayMs = 250; // TODO: Clean up this magic number.
             }
         }

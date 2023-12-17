@@ -60,7 +60,7 @@ namespace GameOfLife
             {
                 if (File.Exists(settingsFile))
                 {
-                    printer.PrintLine("Parsing custom settings...");
+                    printer.WriteLine("Parsing custom settings...");
 
                     try
                     {
@@ -69,7 +69,7 @@ namespace GameOfLife
 
                         if (settingsDto == null)
                         {
-                            printer.PrintLine($"Could not parse settings file \"{settingsFile}\".");
+                            printer.WriteLine($"Could not parse settings file \"{settingsFile}\".");
                             return; // TODO: Use default settings instead.
                         }
 
@@ -85,7 +85,7 @@ namespace GameOfLife
                 }
                 else
                 {
-                    printer.PrintLine("Using default settings...");
+                    printer.WriteLine("Using default settings...");
 
                     var defaultDto = new SettingsDto(false, -1, -1, -1, 0);
 
@@ -109,7 +109,7 @@ namespace GameOfLife
                 }
 
                 ForegroundColor = ConsoleColor.Red; // TODO: Add to the PrintLine method parameters.
-                printer.PrintLine("Unrecognized command.");
+                printer.WriteLine("Unrecognized command.");
                 ForegroundColor = default;
                 PrintInstructions();
                 return;
@@ -117,7 +117,7 @@ namespace GameOfLife
             else // More than 1 argument
             {
                 ForegroundColor = ConsoleColor.Red; // TODO: Add to the PrintLine method parameters.
-                printer.PrintLine("Too many arguments were entered.");
+                printer.WriteLine("Too many arguments were entered.");
                 ForegroundColor = default;
                 PrintInstructions();
                 return;
@@ -157,10 +157,10 @@ namespace GameOfLife
             var grid = new Game.Grid(settings, printer);
             WriteLine("done in " + grid.GameStopwatch.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
 
-            printer.PrintEntire(grid, shouldClear: true);
+            printer.WriteEntire(grid, shouldClear: true);
             Thread.Sleep(settings.IterationDelayMs);
 
-            printer.PrintIterationSummary(grid, iterationStopwatch.Elapsed);
+            printer.WriteIterationSummary(grid, iterationStopwatch.Elapsed);
 
             // Process and print subsequent updates until an end state is reached.
             do
@@ -191,7 +191,7 @@ namespace GameOfLife
                 Thread.Sleep(grid.IterationDelayMs);
 
                 if (grid.State == GridState.Alive)
-                    printer.PrintIterationSummary(grid, iterationStopwatch.Elapsed);
+                    printer.WriteIterationSummary(grid, iterationStopwatch.Elapsed);
             }
             while (grid.State == GridState.Alive || grid.State == GridState.Looping);
 

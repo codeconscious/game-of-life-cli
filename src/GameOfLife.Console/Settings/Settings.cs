@@ -95,9 +95,9 @@ namespace GameOfLife
 
             IterationDelayMs = dto.IterationDelayMs;
 
-            printer.PrintLine($"Grid:            {Width} columns x {Height} rows ({Width * Height:#,##0} cells)");
-            printer.PrintLine($"Population:      {PopulationRatio}%");
-            printer.PrintLine($"Iteration delay: {IterationDelayMs}ms");
+            printer.WriteLine($"Grid:            {Width} columns x {Height} rows ({Width * Height:#,##0} cells)");
+            printer.WriteLine($"Population:      {PopulationRatio}%");
+            printer.WriteLine($"Iteration delay: {IterationDelayMs}ms");
         }
     }
 }

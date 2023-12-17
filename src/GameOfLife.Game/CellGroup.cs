@@ -6,7 +6,7 @@ namespace GameOfLife.Game;
 public class CellGroup : IPrintableUnit
 {
     public Dictionary<CellGroupLocation, Cell> MemberCells { get; init; } = new(4);
-    public Point PrintLocation { get; init; }
+    public Point WriteLocation { get; init; }
 
     private CellGroup() { }
 
@@ -17,7 +17,7 @@ public class CellGroup : IPrintableUnit
         MemberCells.Add(CellGroupLocation.LowerLeft, lowerLeftCell);
         MemberCells.Add(CellGroupLocation.LowerRight, lowerRightCell);
 
-        PrintLocation = location;
+        WriteLocation = location;
     }
 
     public void AddCell(Cell cell, CellGroupLocation locationInGroup)
