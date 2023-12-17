@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameOfLife.Console", "src\GameOfLife.Console\GameOfLife.Console.csproj", "{DE1FE888-B3A0-4CAE-886B-04EECA5C2E38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameOfLife.Tests", "src\GameOfLife.Tests\GameOfLife.Tests.csproj", "{AECE9614-7DF3-4ECE-B5CF-2A007CC1BB0B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameOfLife.Game", "src\GameOfLife.Game\GameOfLife.Game.csproj", "{7EE69724-D32B-4DC3-A42A-2AB6E2A0A1D4}"
 EndProject
 Global
