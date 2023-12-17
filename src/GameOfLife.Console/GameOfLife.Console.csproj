@@ -8,9 +8,9 @@
     <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GameOfLife.Game\GameOfLife.Game.csproj" />
+    <ProjectReference Include="..\GameOfLife.Game\GameOfLife.Game.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Spectre.Console" Version="0.42.0" />
+    <PackageReference Include="Spectre.Console" Version="0.48.0"/>
   </ItemGroup>
 </Project>
