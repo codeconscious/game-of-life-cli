@@ -176,10 +176,8 @@ namespace GameOfLife.Game
                 generatedPairs.AddRange(correctedPoints);
             }
 
-            IEnumerable<Point> validPairs = generatedPairs
-                .Where(p => p.IsValid(grid.Width, grid.Height));
-
-            return validPairs
+            return generatedPairs
+                .Where(p => p.IsValid(grid.Width, grid.Height))
                 .Select(v => new Point(v.X, v.Y))
                 .ToList();
         }
@@ -201,7 +199,7 @@ namespace GameOfLife.Game
 
         public Dictionary<Cell, CellGroup> CreateHighResCellGroupMap()
         {
-            Dictionary<Cell, CellGroup>map = [];
+            Dictionary<Cell, CellGroup> map = [];
 
             for (int y = 0; y < Height; y += 2)
             {
@@ -262,9 +260,7 @@ namespace GameOfLife.Game
             foreach (Cell cell in this.AllCellsFlattened)
             {
                 int livingNeighborCount = this.NeighborMap[cell].Count(c => c.IsAlive);
-
                 bool willSurvive = cell.ShouldCellLive(livingNeighborCount);
-
                 if (cell.IsAlive != willSurvive)
                     cellsToFlip.Add(cell);
             }

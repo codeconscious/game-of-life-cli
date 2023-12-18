@@ -26,28 +26,19 @@ public class CellGroup : IPrintableUnit
     }
 
     /// <summary>
-    /// Convert the life status to a single hex char??
+    /// Returns a single character that should be displayed for this cell group.
     /// </summary>
-    /// <returns></returns>
-    public int GetCellLifeSignature()
+    public char GetCellLifeCharacter()
     {
         int total = 0;
 
-        // TODO: Do without LINQ.
         foreach (Cell cellStatus in MemberCells.Values.ToList().Select(c => c).Reverse())
         {
             total <<= 1;
-            // Write("  " + total + "  ");
-
             total |= (byte) (cellStatus.IsAlive ? 1 : 0);
         }
 
-        return total;
-    }
-
-    public static char GetCharacterToPrint(int signature)
-    {
-        return signature switch
+        return total switch
         {
             // https://unicode-table.com/en/blocks/block-elements/
             15 => '█',

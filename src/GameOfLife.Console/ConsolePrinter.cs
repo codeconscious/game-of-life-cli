@@ -57,8 +57,7 @@ namespace GameOfLife
                 foreach (CellGroup group in grid.CellGroupMap.Values.Distinct().ToList())
                 {
                     SetCursorPosition(group.WriteLocation.X, group.WriteLocation.Y);
-                    int signature = group.GetCellLifeSignature();
-                    char @char = CellGroup.GetCharacterToPrint(signature);
+                    char @char = group.GetCellLifeCharacter();
                     Console.Write(@char);
                 }
             }
@@ -115,9 +114,7 @@ namespace GameOfLife
                 foreach (CellGroup group in updatedGroups)
                 {
                     SetCursorPosition(group.WriteLocation.X, group.WriteLocation.Y);
-
-                    int signature = group.GetCellLifeSignature();
-                    char @char = CellGroup.GetCharacterToPrint(signature);
+                    char @char = group.GetCellLifeCharacter();
                     Console.Write(@char);
                 }
             }

@@ -86,9 +86,7 @@ namespace GameOfLife
                 else
                 {
                     printer.WriteLine("Using default settings...");
-
                     SettingsDto defaultDto = new(false, -1, -1, -1, 0);
-
                     gameSettings = new Settings(defaultDto, printer);
                 }
             }
