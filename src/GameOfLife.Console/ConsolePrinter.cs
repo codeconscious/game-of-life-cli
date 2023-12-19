@@ -136,9 +136,7 @@ namespace GameOfLife
             ArgumentNullException.ThrowIfNull(grid);
 
             ResetColor();
-
             SetCursorPosition(0, grid.OutputRow);
-
             string durationClause = duration == null
                 ? string.Empty
                 : $"({duration.Value.TotalMilliseconds:#,##0}ms)";
@@ -165,17 +163,12 @@ namespace GameOfLife
             };
 
             string iterationClause = $"{grid.CurrentIteration:#,##0} iterations";
-
             double seconds = grid.GameStopwatch.Elapsed.TotalSeconds;
-
             string secondsClause = $"{seconds:#,##0.###} sec";
-
             string iterationsPerSecondClause =
                 (grid.CurrentIteration / seconds).ToString("#,##0.###") +
                 " iterations/sec";
-
             string gridClause = $"{grid.Width} × {grid.Height}";
-
             string populationClause = $"{grid.PopulationRatio * 100:0.##}%";
 
             ForegroundColor = GridStateColors.GameStateColors[grid.State];
@@ -185,16 +178,18 @@ namespace GameOfLife
             ClearCurrentLine();
 
             // Ex.: Extinction | 813 iterations | 4.181 sec | 194.431 iterations/sec | 44 × 178 | 7,832 cells
-            Console.Write(string.Join(" | ", new string[]
-                {
-                    stateClause,
-                    iterationClause,
-                    secondsClause,
-                    iterationsPerSecondClause,
-                    gridClause,
-                    grid.Area.ToString("#,##0 cells"),
-                    populationClause + " alive"
-                  }));
+            Console.Write(
+                string.Join(
+                    " | ",
+                    [
+                        stateClause,
+                        iterationClause,
+                        secondsClause,
+                        iterationsPerSecondClause,
+                        gridClause,
+                        grid.Area.ToString("#,##0 cells"),
+                        populationClause + " alive"
+                    ]));
 
             // If the grid is looping, then show how to exit.
             if (grid.State == GridState.Looping)

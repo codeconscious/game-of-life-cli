@@ -5,6 +5,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ReleaseVersion>1.0</ReleaseVersion>
+    <WarningsAsErrors>0219,CS0168,IDE0300</WarningsAsErrors>
   </PropertyGroup>
 
 </Project>

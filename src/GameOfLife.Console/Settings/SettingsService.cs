@@ -98,7 +98,7 @@ public class SettingsService
         string json = File.ReadAllText(settingsPath);
 
         if (string.IsNullOrWhiteSpace(json))
-            throw new InvalidDataException("The file was empty.");
+            throw new InvalidDataException("The settings file was empty.");
 
         return JsonSerializer.Deserialize<SettingsDto>(json);
     }
