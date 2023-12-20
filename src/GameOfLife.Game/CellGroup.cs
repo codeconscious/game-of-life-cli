@@ -6,7 +6,7 @@ namespace GameOfLife.Game;
 public class CellGroup : IPrintableUnit
 {
     public Dictionary<CellGroupLocation, Cell> MemberCells { get; init; } = new(4);
-    public Point PrintLocation { get; init; }
+    public Point WriteLocation { get; init; }
 
     private CellGroup() { }
 
@@ -17,7 +17,7 @@ public class CellGroup : IPrintableUnit
         MemberCells.Add(CellGroupLocation.LowerLeft, lowerLeftCell);
         MemberCells.Add(CellGroupLocation.LowerRight, lowerRightCell);
 
-        PrintLocation = location;
+        WriteLocation = location;
     }
 
     public void AddCell(Cell cell, CellGroupLocation locationInGroup)
@@ -26,28 +26,19 @@ public class CellGroup : IPrintableUnit
     }
 
     /// <summary>
-    /// Convert the life status to a single hex char??
+    /// Returns a single character that should be displayed for this cell group.
     /// </summary>
-    /// <returns></returns>
-    public int GetCellLifeSignature()
+    public char GetCellLifeCharacter()
     {
-        var total = 0;
+        int total = 0;
 
-        // TODO: Do without LINQ.
-        foreach (var cellStatus in MemberCells.Values.ToList().Select(c => c).Reverse())
+        foreach (Cell cellStatus in MemberCells.Values.ToList().Select(c => c).Reverse())
         {
             total <<= 1;
-            // Write("  " + total + "  ");
-
             total |= (byte) (cellStatus.IsAlive ? 1 : 0);
         }
 
-        return total;
-    }
-
-    public static char GetCharacterToPrint(int signature)
-    {
-        return signature switch
+        return total switch
         {
             // https://unicode-table.com/en/blocks/block-elements/
             15 => '█',

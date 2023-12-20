@@ -10,7 +10,7 @@ namespace GameOfLife
 
         private static void PrintInstructions()
         {
-            var table = new Table();
+            Table table = new();
             table.Border(TableBorder.Rounded).BorderColor(Spectre.Console.Color.Grey19);
 
             table.AddColumn(new TableColumn("[blue]Conway's Game of Life in your terminal![/]"));
@@ -60,16 +60,16 @@ namespace GameOfLife
             {
                 if (File.Exists(settingsFile))
                 {
-                    printer.PrintLine("Parsing custom settings...");
+                    printer.WriteLine("Parsing custom settings...");
 
                     try
                     {
-                        var settingsService = new SettingsService();
-                        var settingsDto = settingsService.ReadFromFile(settingsFile);
+                        SettingsService settingsService = new();
+                        SettingsDto? settingsDto = settingsService.ReadFromFile(settingsFile);
 
                         if (settingsDto == null)
                         {
-                            printer.PrintLine($"Could not parse settings file \"{settingsFile}\".");
+                            printer.WriteLine($"Could not parse settings file \"{settingsFile}\".");
                             return; // TODO: Use default settings instead.
                         }
 
@@ -85,10 +85,8 @@ namespace GameOfLife
                 }
                 else
                 {
-                    printer.PrintLine("Using default settings...");
-
-                    var defaultDto = new SettingsDto(false, -1, -1, -1, 0);
-
+                    printer.WriteLine("Using default settings...");
+                    SettingsDto defaultDto = new(false, -1, -1, -1, 0);
                     gameSettings = new Settings(defaultDto, printer);
                 }
             }
@@ -102,14 +100,14 @@ namespace GameOfLife
 
                 if (args[0] == "--save-settings" || args[0] == "-s")
                 {
-                    var settingsService = new SettingsService();
-                    var settingsDto = settingsService.CreateSettingsFromUserInput();
+                    SettingsService settingsService = new();
+                    SettingsDto settingsDto = settingsService.CreateSettingsFromUserInput();
                     settingsService.SaveToFile(settingsDto, settingsFile, printer);
                     return;
                 }
 
                 ForegroundColor = ConsoleColor.Red; // TODO: Add to the PrintLine method parameters.
-                printer.PrintLine("Unrecognized command.");
+                printer.WriteLine("Unrecognized command.");
                 ForegroundColor = default;
                 PrintInstructions();
                 return;
@@ -117,7 +115,7 @@ namespace GameOfLife
             else // More than 1 argument
             {
                 ForegroundColor = ConsoleColor.Red; // TODO: Add to the PrintLine method parameters.
-                printer.PrintLine("Too many arguments were entered.");
+                printer.WriteLine("Too many arguments were entered.");
                 ForegroundColor = default;
                 PrintInstructions();
                 return;
@@ -150,17 +148,17 @@ namespace GameOfLife
         /// <param name="settings"></param>
         private static void StartGame(IGridSettings settings, IPrinter printer)
         {
-            var iterationStopwatch = new Stopwatch();
+            Stopwatch iterationStopwatch = new();
             iterationStopwatch.Start();
 
             Write("Preparing... ");
-            var grid = new Game.Grid(settings, printer);
+            Game.Grid grid = new(settings, printer);
             WriteLine("done in " + grid.GameStopwatch.Elapsed.TotalMilliseconds.ToString("#,##0") + "ms");
 
-            printer.PrintEntire(grid, shouldClear: true);
+            printer.WriteEntire(grid, shouldClear: true);
             Thread.Sleep(settings.IterationDelayMs);
 
-            printer.PrintIterationSummary(grid, iterationStopwatch.Elapsed);
+            printer.WriteIterationSummary(grid, iterationStopwatch.Elapsed);
 
             // Process and print subsequent updates until an end state is reached.
             do
@@ -168,7 +166,7 @@ namespace GameOfLife
                 // Handle user key presses
                 if (Console.KeyAvailable)
                 {
-                    var key = Console.ReadKey(true).Key;
+                    ConsoleKey key = Console.ReadKey(true).Key;
 
                     if (key == ConsoleKey.LeftArrow) // Make slower
                     {
@@ -191,7 +189,7 @@ namespace GameOfLife
                 Thread.Sleep(grid.IterationDelayMs);
 
                 if (grid.State == GridState.Alive)
-                    printer.PrintIterationSummary(grid, iterationStopwatch.Elapsed);
+                    printer.WriteIterationSummary(grid, iterationStopwatch.Elapsed);
             }
             while (grid.State == GridState.Alive || grid.State == GridState.Looping);
 

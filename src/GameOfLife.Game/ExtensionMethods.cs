@@ -1,5 +1,3 @@
-using GameOfLife.Game;
-
 namespace GameOfLife
 {
     public static class ExtensionMethods
@@ -10,10 +8,8 @@ namespace GameOfLife
         /// </summary>
         public static bool IsValid(this Point point, int maxWidth, int maxHeight)
         {
-            if (maxWidth < 0)
-                throw new ArgumentOutOfRangeException(nameof(maxWidth));
-            if (maxHeight < 0)
-                throw new ArgumentOutOfRangeException(nameof(maxHeight));
+            ArgumentOutOfRangeException.ThrowIfNegative(maxWidth);
+            ArgumentOutOfRangeException.ThrowIfNegative(maxHeight);
 
             return
                 point.X >= 0 &&

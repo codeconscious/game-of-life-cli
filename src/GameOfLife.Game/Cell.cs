@@ -32,7 +32,7 @@ namespace GameOfLife.Game
         /// </summary>
         public static void FlipLifeStatuses(List<Cell> cellsToUpdate)
         {
-            foreach (var cell in cellsToUpdate)
+            foreach (Cell cell in cellsToUpdate)
                 cell.IsAlive = !cell.IsAlive;
         }
     }

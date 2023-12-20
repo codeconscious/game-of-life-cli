@@ -6,5 +6,5 @@ namespace GameOfLife.Game;
 /// </summary>
 public interface IPrintableUnit
 {
-    public Point PrintLocation { get; }
+    public Point WriteLocation { get; }
 }
