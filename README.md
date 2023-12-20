@@ -8,16 +8,14 @@ The board is populated randomly at the start, and its borders wrap around, such 
 
 ## Usage
 
-This program runs using .NET on Linux, Windows, or Mac OS, though you will need to compile and run it manually.
+This program runs using .NET 8 on Linux, Windows, or Mac OS.
 
-If you have the .NET SDK installed, you can publish the program yourself by using the following command within the GameOfLife.Console project:
-````dotnet publish -c Release --use-current-runtime````. Then, simply run the executable from your command line. Pass in ````--help```` or ````-h```` for more information.
+If you have the .NET SDK or runtime installed, just enter the GameOfLife.Console project folder, then run `dotnet run` to get started. Use `dotnet run -- --help` for more information.
 
-During the simulation, you can press the left and right arrows to adjust its speed.
+If you have the .NET SDK installed, you can also publish the program by using the following command within the GameOfLife.Console project folder:
+`dotnet publish -c Release --use-current-runtime`. Then, simply run the executable from your command line. Pass in `--help` or `-h` for more information.
 
-## Technical
-
-This console project targets .NET 7 and uses some newer C# features that I wanted to try out (e.g., nullable reference types, record structs, init, switch expressions, global usings).
+During the simulation, you can press the left and right arrows to adjust the speed.
 
 ### Performance
 
