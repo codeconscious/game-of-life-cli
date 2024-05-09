@@ -12,11 +12,13 @@ The board is populated randomly at the start, and its borders wrap around such t
 
 Requirements: .NET 8 Runtime or SDK
 
-To run the application, just enter the GameOfLife.Console project folder run `dotnet run`. Use `dotnet run -- --help` for more information.
+To run the application, enter the GameOfLife.Console project directory and run `dotnet run`.
+
+Run `dotnet run -- --help` for more information.
 
 During the simulation, you can press the left and right arrows on your keyboard to adjust the speed.
 
-### Performance
+## Performance notes
 
 * Larger grids (i.e., those generated on larger or high-resolution screens) lead to slower speeds due to the sheer number of cells. The application is generally fast, but it's not optimized.
 
