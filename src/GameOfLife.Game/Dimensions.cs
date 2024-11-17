@@ -9,9 +9,6 @@ public class Dimensions
 
     public Dimensions(int width, int height)
     {
-        ArgumentNullException.ThrowIfNull(width);
-        ArgumentNullException.ThrowIfNull(height);
-
         if (width < 0)
         {
             throw new ArgumentOutOfRangeException(
