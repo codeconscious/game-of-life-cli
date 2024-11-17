@@ -1,12 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors>0219,CS0168,IDE0300</WarningsAsErrors>
-    <ReleaseVersion>1.0</ReleaseVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ReleaseVersion>1.01</ReleaseVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\GameOfLife.Game\GameOfLife.Game.csproj"/>
