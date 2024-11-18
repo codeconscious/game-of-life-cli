@@ -5,8 +5,8 @@ namespace GameOfLife.Game;
 /// </summary>
 public class CellGroup : IPrintableUnit
 {
-    public Dictionary<CellGroupLocation, Cell> MemberCells { get; init; } = new(4);
-    public Point WriteLocation { get; init; }
+    public Dictionary<CellGroupLocation, Cell> MemberCells { get; } = new(4);
+    public Point WriteLocation { get; }
 
     private CellGroup() { }
 
@@ -30,7 +30,7 @@ public class CellGroup : IPrintableUnit
     /// </summary>
     public char GetCellLifeCharacter()
     {
-        int total = 0;
+        var total = 0;
 
         foreach (Cell cellStatus in MemberCells.Values.ToList().Select(c => c).Reverse())
         {

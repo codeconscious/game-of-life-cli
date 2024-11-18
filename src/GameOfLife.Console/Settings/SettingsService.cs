@@ -83,10 +83,10 @@ public class SettingsService
         table.AddColumn("Value");
 
         table.AddRow("High-res mode", settings.UseHighResMode ? "On" : "Off");
-        table.AddRow("Width", settings.Width == -1 ? "Fit" : settings.Width.ToString() + " rows");
-        table.AddRow("Height", settings.Height == -1 ? "Fit" : settings.Height.ToString() + " columns");
-        table.AddRow("Population", settings.PopulationRatio == -1 ? "Random" : settings.PopulationRatio.ToString() + "%");
-        table.AddRow("Iteration delay", settings.IterationDelayMs.ToString() + "ms");
+        table.AddRow("Width", settings.Width == -1 ? "Fit" : settings.Width + " rows");
+        table.AddRow("Height", settings.Height == -1 ? "Fit" : settings.Height + " columns");
+        table.AddRow("Population", settings.PopulationRatio == -1 ? "Random" : settings.PopulationRatio + "%");
+        table.AddRow("Iteration delay", settings.IterationDelayMs + "ms");
 
         AnsiConsole.Write(table);
     }

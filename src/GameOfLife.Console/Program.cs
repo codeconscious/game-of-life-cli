@@ -66,7 +66,7 @@ internal static class Program
                 try
                 {
                     SettingsService settingsService = new();
-                    SettingsDto? settingsDto = settingsService.ReadFromFile(settingsFile);
+                    var settingsDto = settingsService.ReadFromFile(settingsFile);
 
                     if (settingsDto == null)
                     {
@@ -87,7 +87,7 @@ internal static class Program
             else
             {
                 printer.WriteLine("Using default settings...");
-                SettingsDto defaultDto = new(false, -1, -1, -1, 0);
+                var defaultDto = new SettingsDto(false, -1, -1, -1, 0);
                 gameSettings = new Settings.Settings(defaultDto, printer);
             }
         }
@@ -147,6 +147,7 @@ internal static class Program
     /// Generate the grid and then continuously updates until it enters a non-living state.
     /// </summary>
     /// <param name="settings"></param>
+    /// <param name="printer"></param>
     private static void StartGame(IGridSettings settings, IPrinter printer)
     {
         Stopwatch iterationStopwatch = new();
@@ -165,9 +166,9 @@ internal static class Program
         do
         {
             // Handle user key presses
-            if (System.Console.KeyAvailable)
+            if (KeyAvailable)
             {
-                ConsoleKey key = System.Console.ReadKey(true).Key;
+                var key = ReadKey(true).Key;
 
                 if (key == ConsoleKey.LeftArrow) // Make slower
                 {

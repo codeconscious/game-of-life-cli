@@ -2,21 +2,21 @@ namespace GameOfLife.Game;
 
 public sealed class Grid
 {
-    public bool IsHighResMode { get; private init; }
-    public Cell[,] CellGrid { get; init; }
-    public int Width { get; private init; }
-    public int Height { get; private init; }
+    public bool IsHighResMode { get; }
+    public Cell[,] CellGrid { get; }
+    public int Width { get; }
+    public int Height { get; }
     public int Area => CellGrid.GetLength(0) * CellGrid.GetLength(1);
     public Dimensions ScreenDimensions { get; private init; }
 
-    public Dictionary<Cell, CellGroup> CellGroupMap = [];
+    public readonly Dictionary<Cell, CellGroup> CellGroupMap = [];
 
     /// <summary>
     /// A dictionary that maps each cell (key) with its neighbor cells (values).
     /// </summary>
-    public IDictionary<Cell, List<Cell>> NeighborMap { get; private init; }
+    private IDictionary<Cell, List<Cell>> NeighborMap { get; init; }
 
-    public List<Cell> AllCellsFlattened { get; private init; }
+    private List<Cell> AllCellsFlattened { get; init; }
 
     public float PopulationRatio => (float) AllCellsFlattened.Count(c => c.IsAlive) / Area;
 
@@ -31,7 +31,7 @@ public sealed class Grid
     /// <summary>
     /// A log of the last few cell updates made. Used for testing for certain grid states.
     /// </summary>
-    private Queue<string> ChangeHistory { get; } = new Queue<string>(ChangeHistoryMaxItems);
+    private Queue<string> ChangeHistory { get; } = new(ChangeHistoryMaxItems);
 
     private const ushort ChangeHistoryMaxItems = 5;
 
@@ -48,7 +48,7 @@ public sealed class Grid
 
     public Stopwatch GameStopwatch { get; private init; } = new();
 
-    public IPrinter GridPrinter { get; private init; }
+    private IPrinter GridPrinter { get; init; }
 
     #region Setup
 
@@ -236,7 +236,7 @@ public sealed class Grid
         {
             List<CellGroup> iterationGroups = new(iterationCells.Count);
 
-            foreach (Cell cell in iterationCells)
+            foreach (var cell in iterationCells)
             {
                 iterationGroups.Add(CellGroupMap[cell]);
             }
@@ -256,12 +256,15 @@ public sealed class Grid
     {
         List<Cell> cellsToFlip = [];
 
-        foreach (Cell cell in this.AllCellsFlattened)
+        foreach (var cell in this.AllCellsFlattened)
         {
-            int livingNeighborCount = this.NeighborMap[cell].Count(c => c.IsAlive);
+            var livingNeighborCount = this.NeighborMap[cell].Count(c => c.IsAlive);
             bool willSurvive = cell.ShouldCellLive(livingNeighborCount);
+            
             if (cell.IsAlive != willSurvive)
+            {
                 cellsToFlip.Add(cell);
+            }
         }
 
         return cellsToFlip;
@@ -296,7 +299,7 @@ public sealed class Grid
         ChangeHistory.Enqueue(updatedSignature);
 
         // Identical updates in the history indicate that the grid is looping.
-        if (this.State != GridState.Looping &&
+        if (State != GridState.Looping &&
             ChangeHistory.Count != ChangeHistory.Distinct().Count())
         {
             UpdateState(GridState.Looping);
@@ -305,7 +308,9 @@ public sealed class Grid
 
         // Otherwise, just remove the oldest history item, if needed.
         if (ChangeHistory.Count > ChangeHistoryMaxItems)
+        {
             ChangeHistory.Dequeue();
+        }
     }
 
     /// <summary>

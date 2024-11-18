@@ -24,13 +24,15 @@ public class ConsolePrinter : IPrinter
         ArgumentNullException.ThrowIfNull(grid);
 
         if (shouldClear)
+        {
             Clear();
+        }
 
         ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
-        for (int x = 0; x < grid.ScreenDimensions.Width; x++)
+        for (var x = 0; x < grid.ScreenDimensions.Width; x++)
         {
-            for (int y = 0; y < grid.ScreenDimensions.Height; y++)
+            for (var y = 0; y < grid.ScreenDimensions.Height; y++)
             {
                 SetCursorPosition(x, y);
                 System.Console.Write(grid.GridChars[grid.CellGrid[x, y].IsAlive]);
@@ -48,7 +50,9 @@ public class ConsolePrinter : IPrinter
         ArgumentNullException.ThrowIfNull(grid);
 
         if (shouldClear)
+        {
             Clear();
+        }
 
         ForegroundColor = GridStateColors.GameStateColors[grid.State];
 
@@ -114,7 +118,7 @@ public class ConsolePrinter : IPrinter
             foreach (CellGroup group in updatedGroups)
             {
                 SetCursorPosition(group.WriteLocation.X, group.WriteLocation.Y);
-                char @char = group.GetCellLifeCharacter();
+                var @char = group.GetCellLifeCharacter();
                 System.Console.Write(@char);
             }
         }
