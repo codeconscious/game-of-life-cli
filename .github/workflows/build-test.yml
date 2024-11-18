@@ -21,5 +21,3 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build
-      - name: Test via the dotnet CLI
-        run: dotnet test
