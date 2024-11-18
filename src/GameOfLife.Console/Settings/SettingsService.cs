@@ -1,8 +1,8 @@
-using Spectre.Console;
 using System.IO;
 using System.Text.Json;
+using Spectre.Console;
 
-namespace GameOfLife;
+namespace GameOfLife.Console.Settings;
 
 public class SettingsService
 {
@@ -63,9 +63,9 @@ public class SettingsService
         ArgumentNullException.ThrowIfNull(printer);
 
         JsonSerializerOptions options = new() { WriteIndented = true }; // TODO: Reuse instance.
-        string jsonString = JsonSerializer.Serialize(settings, options);
+        var json = JsonSerializer.Serialize(settings, options);
 
-        File.WriteAllText(fileName, jsonString, System.Text.Encoding.UTF8);
+        File.WriteAllText(fileName, json, System.Text.Encoding.UTF8);
 
         AnsiConsole.WriteLine("Settings saved.");
 
@@ -95,7 +95,7 @@ public class SettingsService
     {
         ArgumentNullException.ThrowIfNull(settingsPath);
 
-        string json = File.ReadAllText(settingsPath);
+        var json = File.ReadAllText(settingsPath);
 
         if (string.IsNullOrWhiteSpace(json))
             throw new InvalidDataException("The settings file was empty.");

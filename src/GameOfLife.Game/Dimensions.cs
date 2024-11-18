@@ -2,11 +2,9 @@ namespace GameOfLife.Game;
 
 public class Dimensions
 {
-    public int Width { get; init; }
-    public int Height { get; init; }
-
-    public int Area => Width * Height;
-
+    public int Width { get; }
+    public int Height { get; }
+    
     public Dimensions(int width, int height)
     {
         if (width < 0)
