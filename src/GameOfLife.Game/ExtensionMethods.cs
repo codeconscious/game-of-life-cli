@@ -12,8 +12,7 @@ public static class ExtensionMethods
         ArgumentOutOfRangeException.ThrowIfNegative(maxHeight);
 
         return
-            point.X >= 0 &&
-            point.Y >= 0 &&
+            point is { X: >= 0, Y: >= 0 } &&
             point.X < maxWidth &&
             point.Y < maxHeight;
     }

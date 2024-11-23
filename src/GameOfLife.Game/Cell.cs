@@ -2,8 +2,8 @@ namespace GameOfLife.Game;
 
 public class Cell
 {
-    public Point Location { get; init; }
-    public bool IsAlive { get; set; }
+    public Point Location { get; }
+    public bool IsAlive { get; private set; }
 
     public Cell(int x, int y, bool isAlive = false)
     {
@@ -20,8 +20,8 @@ public class Cell
     {
         return livingNeighborCount switch
         {
-            2 or 3 when this.IsAlive => true,
-            3 when !this.IsAlive => true,
+            2 or 3 when IsAlive => true,
+            3 when !IsAlive => true,
             _ => false
         };
     }

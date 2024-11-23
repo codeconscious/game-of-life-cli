@@ -29,10 +29,4 @@ public interface IGridSettings
     /// (The user can adjust this during the game.)
     /// </summary>
     public ushort IterationDelayMs { get; }
-
-    /// <summary>
-    /// The maximum population percentage allowed when setting it randomly.
-    /// If it's too high, then the game will likely end very quickly.
-    /// </summary>
-    public const byte MaximumRandomPopulationRatio = 70;
 }

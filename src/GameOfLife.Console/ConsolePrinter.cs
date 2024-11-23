@@ -170,7 +170,7 @@ public class ConsolePrinter : IPrinter
         double seconds = grid.GameStopwatch.Elapsed.TotalSeconds;
         string secondsClause = $"{seconds:#,##0.###} sec";
         string iterationsPerSecondClause =
-            $"{(grid.CurrentIteration / seconds):#,##0.###} iterations/sec";
+            $"{grid.CurrentIteration / seconds:#,##0.###} iterations/sec";
         string gridClause = $"{grid.Width} × {grid.Height}";
         string populationClause = $"{grid.PopulationRatio * 100:0.##}%";
 
@@ -190,12 +190,12 @@ public class ConsolePrinter : IPrinter
                     iterationsPerSecondClause,
                     gridClause,
                     grid.Area.ToString("#,##0 cells"),
-                    populationClause + " alive"
+                    $"{populationClause} alive"
                 }));
 
         if (grid.State != GridState.Looping)
             return;
-        
+
         // The grid is looping, so show how to exit.
         ForegroundColor = ConsoleColor.Gray;
         SetCursorPosition(0, grid.OutputRow + 1);

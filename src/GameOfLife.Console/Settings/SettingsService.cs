@@ -20,7 +20,7 @@ public class SettingsService
                     return width switch
                     {
                         < -1 => ValidationResult.Error("[red]Invalid width.[/]"),
-                        _ => ValidationResult.Success(),
+                        _ => ValidationResult.Success()
                     };
                 }));
 
@@ -32,7 +32,7 @@ public class SettingsService
                     return height switch
                     {
                         < -1 => ValidationResult.Error("[red]Invalid height.[/]"),
-                        _ => ValidationResult.Success(),
+                        _ => ValidationResult.Success()
                     };
                 }));
 
@@ -45,7 +45,7 @@ public class SettingsService
                     {
                         0 => ValidationResult.Error("[red]That's too low.[/]"),
                         >= 100 => ValidationResult.Error("[red]That's too high.[/]"),
-                        _ => ValidationResult.Success(),
+                        _ => ValidationResult.Success()
                     };
                 }));
 
@@ -83,10 +83,10 @@ public class SettingsService
         table.AddColumn("Value");
 
         table.AddRow("High-res mode", settings.UseHighResMode ? "On" : "Off");
-        table.AddRow("Width", settings.Width == -1 ? "Fit" : settings.Width + " rows");
-        table.AddRow("Height", settings.Height == -1 ? "Fit" : settings.Height + " columns");
-        table.AddRow("Population", settings.PopulationRatio == -1 ? "Random" : settings.PopulationRatio + "%");
-        table.AddRow("Iteration delay", settings.IterationDelayMs + "ms");
+        table.AddRow("Width", settings.Width == -1 ? "Fit" : $"{settings.Width} rows");
+        table.AddRow("Height", settings.Height == -1 ? "Fit" : $"{settings.Height} columns");
+        table.AddRow("Population", settings.PopulationRatio == -1 ? "Random" : $"{settings.PopulationRatio}%");
+        table.AddRow("Iteration delay", $"{settings.IterationDelayMs}ms");
 
         AnsiConsole.Write(table);
     }

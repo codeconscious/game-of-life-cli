@@ -9,6 +9,6 @@ public static class GridStateColors
             { GridState.Extinct, ConsoleColor.DarkRed },
             { GridState.Looping, ConsoleColor.Cyan },
             { GridState.Stagnated, ConsoleColor.Blue },
-            { GridState.Aborted, ConsoleColor.Red },
+            { GridState.Aborted, ConsoleColor.Red }
         };
 }

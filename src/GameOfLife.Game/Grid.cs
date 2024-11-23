@@ -7,16 +7,16 @@ public sealed class Grid
     public int Width { get; }
     public int Height { get; }
     public int Area => CellGrid.GetLength(0) * CellGrid.GetLength(1);
-    public Dimensions ScreenDimensions { get; private init; }
+    public Dimensions ScreenDimensions { get; }
 
     public readonly Dictionary<Cell, CellGroup> CellGroupMap = [];
 
     /// <summary>
     /// A dictionary that maps each cell (key) with its neighbor cells (values).
     /// </summary>
-    private IDictionary<Cell, List<Cell>> NeighborMap { get; init; }
+    private IDictionary<Cell, List<Cell>> NeighborMap { get; }
 
-    private List<Cell> AllCellsFlattened { get; init; }
+    private List<Cell> AllCellsFlattened { get; }
 
     public float PopulationRatio => (float) AllCellsFlattened.Count(c => c.IsAlive) / Area;
 
@@ -46,9 +46,9 @@ public sealed class Grid
 
     public int OutputRow => ScreenDimensions.Height;
 
-    public Stopwatch GameStopwatch { get; private init; } = new();
+    public Stopwatch GameStopwatch { get; } = new();
 
-    private IPrinter GridPrinter { get; init; }
+    private IPrinter GridPrinter { get; }
 
     #region Setup
 
@@ -106,7 +106,7 @@ public sealed class Grid
     /// Gets a dictionary that maps all cells in the given grid with their neighboring cells.
     /// </summary>
     /// <param name="grid"></param>
-    private static IDictionary<Cell, List<Cell>> GetCellNeighbors(Grid grid)
+    private static ConcurrentDictionary<Cell, List<Cell>> GetCellNeighbors(Grid grid)
     {
         ConcurrentDictionary<Cell, List<Cell>> cellsWithNeighbors = new();
 
@@ -196,7 +196,7 @@ public sealed class Grid
         return output;
     }
 
-    public Dictionary<Cell, CellGroup> CreateHighResCellGroupMap()
+    private Dictionary<Cell, CellGroup> CreateHighResCellGroupMap()
     {
         Dictionary<Cell, CellGroup> map = [];
 
@@ -256,11 +256,11 @@ public sealed class Grid
     {
         List<Cell> cellsToFlip = [];
 
-        foreach (var cell in this.AllCellsFlattened)
+        foreach (var cell in AllCellsFlattened)
         {
-            var livingNeighborCount = this.NeighborMap[cell].Count(c => c.IsAlive);
+            var livingNeighborCount = NeighborMap[cell].Count(c => c.IsAlive);
             bool willSurvive = cell.ShouldCellLive(livingNeighborCount);
-            
+
             if (cell.IsAlive != willSurvive)
             {
                 cellsToFlip.Add(cell);
@@ -274,7 +274,7 @@ public sealed class Grid
     /// Updates the grid change history, then uses it to check grid state.
     /// </summary>
     /// <param name="recentlyFlippedCells"></param>
-    private void UpdateHistoryAndGameState(IList<Cell> recentlyFlippedCells)
+    private void UpdateHistoryAndGameState(List<Cell> recentlyFlippedCells)
     {
         CurrentIteration++;
 
