@@ -1,8 +1,8 @@
-using Spectre.Console;
 using System.IO;
 using System.Text.Json;
+using Spectre.Console;
 
-namespace GameOfLife;
+namespace GameOfLife.Console.Settings;
 
 public class SettingsService
 {
@@ -20,7 +20,7 @@ public class SettingsService
                     return width switch
                     {
                         < -1 => ValidationResult.Error("[red]Invalid width.[/]"),
-                        _ => ValidationResult.Success(),
+                        _ => ValidationResult.Success()
                     };
                 }));
 
@@ -32,7 +32,7 @@ public class SettingsService
                     return height switch
                     {
                         < -1 => ValidationResult.Error("[red]Invalid height.[/]"),
-                        _ => ValidationResult.Success(),
+                        _ => ValidationResult.Success()
                     };
                 }));
 
@@ -45,7 +45,7 @@ public class SettingsService
                     {
                         0 => ValidationResult.Error("[red]That's too low.[/]"),
                         >= 100 => ValidationResult.Error("[red]That's too high.[/]"),
-                        _ => ValidationResult.Success(),
+                        _ => ValidationResult.Success()
                     };
                 }));
 
@@ -63,9 +63,9 @@ public class SettingsService
         ArgumentNullException.ThrowIfNull(printer);
 
         JsonSerializerOptions options = new() { WriteIndented = true }; // TODO: Reuse instance.
-        string jsonString = JsonSerializer.Serialize(settings, options);
+        var json = JsonSerializer.Serialize(settings, options);
 
-        File.WriteAllText(fileName, jsonString, System.Text.Encoding.UTF8);
+        File.WriteAllText(fileName, json, System.Text.Encoding.UTF8);
 
         AnsiConsole.WriteLine("Settings saved.");
 
@@ -83,10 +83,10 @@ public class SettingsService
         table.AddColumn("Value");
 
         table.AddRow("High-res mode", settings.UseHighResMode ? "On" : "Off");
-        table.AddRow("Width", settings.Width == -1 ? "Fit" : settings.Width.ToString() + " rows");
-        table.AddRow("Height", settings.Height == -1 ? "Fit" : settings.Height.ToString() + " columns");
-        table.AddRow("Population", settings.PopulationRatio == -1 ? "Random" : settings.PopulationRatio.ToString() + "%");
-        table.AddRow("Iteration delay", settings.IterationDelayMs.ToString() + "ms");
+        table.AddRow("Width", settings.Width == -1 ? "Fit" : $"{settings.Width} rows");
+        table.AddRow("Height", settings.Height == -1 ? "Fit" : $"{settings.Height} columns");
+        table.AddRow("Population", settings.PopulationRatio == -1 ? "Random" : $"{settings.PopulationRatio}%");
+        table.AddRow("Iteration delay", $"{settings.IterationDelayMs}ms");
 
         AnsiConsole.Write(table);
     }
@@ -95,7 +95,7 @@ public class SettingsService
     {
         ArgumentNullException.ThrowIfNull(settingsPath);
 
-        string json = File.ReadAllText(settingsPath);
+        var json = File.ReadAllText(settingsPath);
 
         if (string.IsNullOrWhiteSpace(json))
             throw new InvalidDataException("The settings file was empty.");

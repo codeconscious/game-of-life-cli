@@ -1,4 +1,4 @@
-namespace GameOfLife;
+namespace GameOfLife.Console.Settings;
 
 /// <summary>
 /// A setting DTO for creating a Settings object or saving settings.

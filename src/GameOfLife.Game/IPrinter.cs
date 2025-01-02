@@ -10,5 +10,4 @@ public interface IPrinter
     public void WriteUpdates(Grid grid, List<CellGroup> updatedGroups);
     public void WriteIterationSummary(Grid grid, TimeSpan? duration = null);
     public void WriteGameSummary(Grid grid);
-    public void ClearCurrentLine();
 }
